@@ -1,0 +1,8 @@
+[Buttons]
+用户许可协议
+
+[Inputs]
+INPUT type=text name=username id=username placeholder= value=admin
+INPUT type=password name=password id=password placeholder= value=Nsfocus@123
+INPUT type=button name= id= placeholder= value=登 录
+INPUT type=hidden name=csrfmiddlewaretoken id= placeholder= value=gkZ5rcUEk4K3LU6CzkBMzuiMOIF4Vw0R

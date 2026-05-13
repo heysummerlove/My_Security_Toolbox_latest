@@ -1,0 +1,6 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\nmap\nmap.exe -Pn -T4 -F -sV --open http://192.168.193.11/
+
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-05-08 16:39 +0800
+Unable to split netmask from target expression: "http://192.168.193.11/"
+WARNING: No targets were specified, so 0 hosts scanned.
+Nmap done: 0 IP addresses (0 hosts up) scanned in 0.11 seconds

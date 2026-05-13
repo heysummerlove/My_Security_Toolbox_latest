@@ -1,0 +1,17 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe -h 192.168.193.11
+
+[*] 服务插件: ms17010, redis, activemq, elasticsearch, mongodb ... 等24个
+[*] 192.168.193.11:21     ftp      [Product:vsftpd ||Version:2.3.4] Banner:(220 (vsFTPd 2.3.4))
+[*] 192.168.193.11:23     telnet   [Product:Linux telnetd] Banner:(# ')
+[*] 192.168.193.11:512    exec     [Product:netkit-rsh rexecd] Banner:(Where are you?)
+[*] 192.168.193.11:111    rpcbind  Banner:(r)
+[*] 192.168.193.11:53     domain   [Product:ISC BIND ||Version:9.4.2] Banner:(> version bind 9.4.2)
+[*] 192.168.193.11:8180   http     [Version:1.1] Banner:(HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Type: text/html;charset=ISO-88...)
+[*] 扫描完成，发现 22 个开放端口
+[-] 扫描失败率过高: 59.1% (78/132失败)
+[-] 可能原因: 线程数过高导致资源耗尽
+[-] 建议: 降低线程数(当前600)到50-100，或增加系统ulimit
+[!] MySQL 192.168.193.11:3306 root:
+[*] POC加载完成: 总共388个，成功380个，失败8个
+[+] http://192.168.193.11          code:200 len:891   title:Metasploitable2 - Linux server:Apache/2.2.8 (Ubuntu) DAV/2 [apache-http apache/2.2.8 php/5.2.4]
+[*] 扫描任务完成，耗时 13m17.815s，已扫描 18 个目标

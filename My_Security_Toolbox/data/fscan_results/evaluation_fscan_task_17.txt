@@ -1,0 +1,14 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe -h 127.0.0.1 -nop
+
+HTTP Cookie
+HTTP最大重定向次数 (default 10)
+-noredis
+禁用Redis利用
+HTTP代理
+Redis文件
+Redis Shell
+Redis写入内容
+Redis写入文件
+Redis写入路径
+-sshkey string
+SSH私钥文件

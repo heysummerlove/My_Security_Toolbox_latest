@@ -1,0 +1,44 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\runtime\python.exe -u -c "import os, sys; sys.path.insert(0, os.getcwd()); from app.adapters.nsfocus_auto import download_latest_report_only; path = download_latest_report_only(sys.argv[1] if len(sys.argv) > 1 else ''); print(path or '')" manual_report_fetch
+
+[*] 准备下载最近输出的 Web 漏扫报表
+[*] 正在连接扫描器: https://192.168.193.10/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_110225.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_110225.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_controls_20260509_110225.txt
+[*] 已填充输入框: input[name='username']
+[*] 已填充输入框: input[name='password']
+[*] 已点击元素: input.submit
+[+] 登录后页面已就绪: 检测到 mainFrame
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_110258.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_110258.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_controls_20260509_110258.txt
+[+] 登录成功
+[*] 打开报表列表页面: https://192.168.193.10/report/list/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_20260509_110302.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_20260509_110302.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_controls_20260509_110302.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_frame_20260509_110302.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_frame_url_20260509_110302.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_frame_controls_20260509_110302.txt
+[*] 准备下载最近报表: https://192.168.193.10/report/download/id/31/type/html/
+Traceback (most recent call last):
+File "<string>", line 1, in <module>
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 502, in download_latest_report_only
+report_path = download_latest_report(page, task_name=task_name)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 444, in download_latest_report
+page.goto(report_url, wait_until="domcontentloaded", timeout=30000)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\sync_api\_generated.py", line 9362, in goto
+self._sync(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+return task.result()
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_page.py", line 552, in goto
+return await self._main_frame.goto(**locals_to_params(locals()))
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_frame.py", line 153, in goto
+await self._channel.send(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_connection.py", line 69, in send
+return await self._connection.wrap_api_call(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_connection.py", line 559, in wrap_api_call
+raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.goto: Download is starting
+Call log:
+- navigating to "https://192.168.193.10/report/download/id/31/type/html/", waiting until "domcontentloaded"

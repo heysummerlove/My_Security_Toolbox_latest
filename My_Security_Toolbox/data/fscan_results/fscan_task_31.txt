@@ -1,0 +1,16 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe -h 192.168.193.11
+
+[*] 服务插件: ftp, ssh, rdp, rabbitmq, cassandra ... 等24个
+[*] 192.168.193.11:22     ssh      [Product:OpenSSH ||Version:4.7p1 Debian 8ubuntu1] Banner:(SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1)
+[*] 192.168.193.11:21     ftp      [Product:vsftpd ||Version:2.3.4] Banner:(220 (vsFTPd 2.3.4))
+[*] 192.168.193.11:512    exec     [Product:netkit-rsh rexecd] Banner:(Where are you?)
+[*] 192.168.193.11:2049   rpcbind  Banner:(r)
+[*] 192.168.193.11:80     http     [Product:Open Lighting Architecture daemon] Banner:(HTTP/1.1 200 OK Date: Sat, 09 May 2026 04:50:48 GMT Server: Apache/2.2.8 (Ubuntu...)
+[*] 扫描完成，发现 20 个开放端口
+[-] 扫描失败率过高: 31.8% (42/132失败)
+[-] 可能原因: 线程数过高导致资源耗尽
+[-] 建议: 降低线程数(当前600)到50-100，或增加系统ulimit
+[+] SMBInfo 192.168.193.11:139 METASPLOITABLE SMBv1
+[*] POC加载完成: 总共388个，成功380个，失败8个
+[+] http://192.168.193.11          code:200 len:891   title:Metasploitable2 - Linux server:Apache/2.2.8 (Ubuntu) DAV/2 [apache-http apache/2.2.8 php/5.2.4]
+[*] 扫描任务完成，耗时 16m35.376s，已扫描 16 个目标

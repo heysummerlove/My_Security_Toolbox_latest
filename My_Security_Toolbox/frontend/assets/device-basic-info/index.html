@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备调研表</title>
+    <style>
+        :root {
+            --bg: #f3f7fb;
+            --panel: rgba(255, 255, 255, 0.96);
+            --border: #d8e4ee;
+            --text: #163047;
+            --muted: #6a8094;
+            --accent: #0f8f88;
+            --accent-strong: #0b6d68;
+            --danger: #c0392b;
+            --warning: #cf7d10;
+            --success: #1f8a4d;
+            --shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(15, 143, 136, 0.12), transparent 24%),
+                linear-gradient(135deg, #eff4f8 0%, #e7eef6 100%);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1480px;
+            margin: 0 auto;
+            display: grid;
+            gap: 18px;
+        }
+
+        .hero,
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.78);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero {
+            padding: 24px 28px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 1.65rem;
+        }
+
+        .hero p {
+            margin: 0;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        button,
+        .file-trigger {
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+        }
+
+        button:hover,
+        .file-trigger:hover {
+            transform: translateY(-1px);
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #fff;
+            box-shadow: 0 12px 24px rgba(15, 143, 136, 0.22);
+        }
+
+        .secondary-btn {
+            background: #eef5fb;
+            color: #214761;
+            border: 1px solid var(--border);
+        }
+
+        .danger-btn {
+            background: #fff1ef;
+            color: var(--danger);
+            border: 1px solid rgba(192, 57, 43, 0.15);
+        }
+
+        .file-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel {
+            padding: 22px 24px;
+        }
+
+        .message {
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #edf9f1;
+            color: var(--success);
+            border: 1px solid rgba(31, 138, 77, 0.14);
+        }
+
+        .message.error {
+            background: #fff1ef;
+            color: var(--danger);
+            border: 1px solid rgba(192, 57, 43, 0.14);
+        }
+
+        .message.warning {
+            background: #fff8eb;
+            color: var(--warning);
+            border: 1px solid rgba(207, 125, 16, 0.14);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.span-2 {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.93rem;
+            font-weight: 600;
+            color: #1d425d;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text);
+            outline: none;
+            font-size: 0.95rem;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(15, 143, 136, 0.12);
+        }
+
+        textarea {
+            min-height: 98px;
+            resize: vertical;
+            line-height: 1.65;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar h2 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .toolbar p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .search-row input {
+            max-width: 340px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 12px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 0.92rem;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f6fafc;
+            color: #23475f;
+            font-weight: 700;
+        }
+
+        tbody tr:hover {
+            background: #fbfdff;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            padding: 7px 11px;
+            border-radius: 10px;
+            font-size: 0.84rem;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #274a63;
+            cursor: pointer;
+        }
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 5px 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .status-tag.draft {
+            background: #eef4fb;
+            color: #3f607d;
+        }
+
+        .status-tag.submitted {
+            background: #edf9f1;
+            color: var(--success);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .empty {
+            padding: 18px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 980px) {
+            body {
+                padding: 16px;
+            }
+
+            .hero {
+                padding: 20px;
+                flex-direction: column;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.span-2 {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div>
+                <h1>设备调研表</h1>
+                <p>覆盖设备名称、型号、编号、等级、IP、MAC、操作系统、硬件配置等核心字段，支持保存草稿、提交、Excel 导入联动、模板导出和后端唯一性校验。</p>
+            </div>
+            <div class="actions">
+                <button id="save-btn" class="secondary-btn" type="button">保存</button>
+                <button id="submit-btn" class="primary-btn" type="button">提交</button>
+                <button id="reset-btn" class="secondary-btn" type="button">新建</button>
+                <button id="export-btn" class="secondary-btn" type="button">导出 Excel</button>
+                <label class="file-trigger secondary-btn" for="import-file">导入 Excel</label>
+                <input id="import-file" class="sr-only" type="file" accept=".xlsx">
+            </div>
+        </section>
+
+        <div id="message" class="message"></div>
+
+        <section class="panel">
+            <div class="toolbar">
+                <div>
+                    <h2>基础信息录入</h2>
+                    <p>电脑端采用两列布局，必填项已标记 “*”。操作系统选择“其他”时会显示补充输入框。</p>
+                </div>
+                <div class="toolbar-right">
+                    <span class="hint">当前记录 ID：<strong id="current-id">新建</strong></span>
+                    <span class="hint">状态：<strong id="current-status">draft</strong></span>
+                </div>
+            </div>
+
+            <form id="device-form" novalidate>
+                <div class="grid">
+                    <div class="field">
+                        <label class="required" for="device-name">设备名称</label>
+                        <input id="device-name" name="device_name" type="text">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="device-type">设备类型</label>
+                        <input id="device-type" name="device_type" type="text">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="department">设备部门</label>
+                        <input id="department" name="department" type="text">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="device-no">设备编号</label>
+                        <input id="device-no" name="device_no" type="text">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="device-level">设备等级</label>
+                        <input id="device-level" name="device_level" type="text" placeholder="如：一级 / 二级 / 三级">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="device-model">型号</label>
+                        <input id="device-model" name="device_model" type="text">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="device-status">设备状态</label>
+                        <select id="device-status" name="device_status">
+                            <option value="">请选择</option>
+                            <option value="在用">在用</option>
+                            <option value="停用">停用</option>
+                            <option value="备用">备用</option>
+                            <option value="维修中">维修中</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="required" for="network-status">入网状态</label>
+                        <select id="network-status" name="network_status">
+                            <option value="">请选择</option>
+                            <option value="已入网">已入网</option>
+                            <option value="未入网">未入网</option>
+                            <option value="隔离网">隔离网</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="required" for="manufacturer">设备厂商</label>
+                        <input id="manufacturer" name="manufacturer" type="text">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="interface-type">接口类型</label>
+                        <input id="interface-type" name="interface_type" type="text" placeholder="如：RJ45 / 串口 / USB / 光口">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="protocol">通信协议</label>
+                        <input id="protocol" name="protocol" type="text" placeholder="如：TCP/IP / Modbus / HTTP">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="software-version">应用软件及版本</label>
+                        <input id="software-version" name="software_version" type="text">
+                    </div>
+                    <div class="field span-2">
+                        <label class="required" for="device-composition">硬件配置</label>
+                        <textarea id="device-composition" name="device_composition" placeholder="填写 CPU / 内存 / 存储 / 板卡 / 外设 等硬件组成"></textarea>
+                    </div>
+                    <div class="field">
+                        <label class="required" for="target-ip">IP 地址</label>
+                        <input id="target-ip" name="target_ip" type="text" placeholder="例如：192.168.1.10">
+                        <span class="hint">保存和提交前会做 IPv4 格式校验，后端同时校验唯一性。</span>
+                    </div>
+                    <div class="field">
+                        <label for="mac-address">MAC 地址</label>
+                        <input id="mac-address" name="mac_address" type="text" placeholder="例如：00:11:22:33:44:55">
+                    </div>
+                    <div class="field">
+                        <label class="required" for="operating-system-choice">操作系统</label>
+                        <select id="operating-system-choice" name="operating_system_choice">
+                            <option value="">请选择</option>
+                            <option value="Windows">Windows</option>
+                            <option value="Linux">Linux</option>
+                            <option value="Android">Android</option>
+                            <option value="Ubuntu">Ubuntu</option>
+                            <option value="CentOS">CentOS</option>
+                            <option value="Debian">Debian</option>
+                            <option value="麒麟">麒麟</option>
+                            <option value="统信UOS">统信UOS</option>
+                            <option value="VxWorks">VxWorks</option>
+                            <option value="FreeRTOS">FreeRTOS</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div id="operating-system-other-wrap" class="field" hidden>
+                        <label class="required" for="operating-system-other">其他操作系统</label>
+                        <input id="operating-system-other" name="operating_system_other" type="text" placeholder="请输入系统名称">
+                    </div>
+                    <div class="field">
+                        <label for="open-ports">开放端口</label>
+                        <input id="open-ports" name="open_ports" type="text" placeholder="如：22,80,443">
+                    </div>
+                    <div class="field">
+                        <label for="support-software">特定配套软件可拷贝情况</label>
+                        <select id="support-software" name="support_software">
+                            <option value="">请选择</option>
+                            <option value="是">是</option>
+                            <option value="否">否</option>
+                            <option value="部分可拷贝">部分可拷贝</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="source-code-available">源代码可拷贝情况</label>
+                        <select id="source-code-available" name="source_code_available">
+                            <option value="">请选择</option>
+                            <option value="是">是</option>
+                            <option value="否">否</option>
+                            <option value="部分可拷贝">部分可拷贝</option>
+                        </select>
+                    </div>
+                    <div class="field span-2">
+                        <label for="notes">备注</label>
+                        <textarea id="notes" name="notes" placeholder="填写补充说明、现场备注或导入联动说明"></textarea>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="toolbar">
+                <div>
+                    <h2>设备记录列表</h2>
+                    <p>导入 Excel 后会自动写入后台并刷新列表。点击“带入编辑”可直接联动到当前表单。</p>
+                </div>
+            </div>
+
+            <div class="search-row">
+                <input id="keyword" type="text" placeholder="搜索设备名称 / 编号 / IP / 厂商 / 部门">
+                <button id="search-btn" class="secondary-btn" type="button">查询</button>
+                <button id="refresh-btn" class="secondary-btn" type="button">刷新</button>
+            </div>
+
+            <div style="overflow:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="min-width:80px;">状态</th>
+                            <th style="min-width:160px;">设备名称</th>
+                            <th style="min-width:140px;">设备编号</th>
+                            <th style="min-width:140px;">IP</th>
+                            <th style="min-width:140px;">操作系统</th>
+                            <th style="min-width:140px;">厂商</th>
+                            <th style="min-width:160px;">更新时间</th>
+                            <th style="min-width:170px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr><td class="empty" colspan="8">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div id="pagination-text" class="hint">-</div>
+                <div class="pagination-controls">
+                    <button id="prev-btn" class="secondary-btn" type="button">上一页</button>
+                    <button id="next-btn" class="secondary-btn" type="button">下一页</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>

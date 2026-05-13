@@ -1,0 +1,64 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\runtime\python.exe -u -c "import os, sys; sys.path.insert(0, os.getcwd()); from app.adapters.nsfocus_auto import auto_submit_task; auto_submit_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else '')" 192.168.193.11 测试评估报告
+
+[*] Preparing web scan submission for target: 192.168.193.11
+[*] Opening scanner: https://192.168.193.10/
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_141536.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_141536.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_controls_20260509_141537.txt
+[*] Filled input: input[name='username']
+[*] Filled input: input[name='password']
+[*] Clicked element: input.submit
+[+] Post-login page is ready: mainFrame found
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_141555.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_141555.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_controls_20260509_141555.txt
+[+] Login successful
+[*] Opening web scan task page: https://192.168.193.10/task/index/8
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_141602.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_141602.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_controls_20260509_141602.txt
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_20260509_141602.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_url_20260509_141602.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_controls_20260509_141602.txt
+[*] Filled input: textarea#task_target
+[*] Triggered target validation and attempted to enable submit button
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_141606.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_141606.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_controls_20260509_141606.txt
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_20260509_141606.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_url_20260509_141606.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_controls_20260509_141606.txt
+[*] Filled input: input#task_name
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_141607.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_141607.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_controls_20260509_141607.txt
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_20260509_141607.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_url_20260509_141607.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_controls_20260509_141607.txt
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_141608.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_141608.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_controls_20260509_141608.txt
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_20260509_141608.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_url_20260509_141608.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_controls_20260509_141608.txt
+[*] Triggered submission via page script
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_20260509_141611.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_20260509_141611.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_controls_20260509_141611.txt
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_frame_20260509_141611.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_frame_url_20260509_141611.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_frame_controls_20260509_141611.txt
+[+] Progress page reached: https://192.168.193.10/list/getProcess/id/38/action/no
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_page_frame_20260509_141611.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_page_frame_url_20260509_141611.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_page_frame_controls_20260509_141611.txt
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_page_20260509_141611.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_page_20260509_141611.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_page_controls_20260509_141611.txt
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_20260509_141611.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_20260509_141611.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_controls_20260509_141611.txt
+[*] Saved frame snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_frame_20260509_141611.html
+[*] Saved frame URL: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_frame_url_20260509_141611.txt
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_frame_controls_20260509_141611.txt
+[+] Target http://192.168.193.11 was submitted successfully, progress page: https://192.168.193.10/list/getProcess/id/38/action/no

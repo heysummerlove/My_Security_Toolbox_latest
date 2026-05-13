@@ -1,0 +1,2794 @@
+<html><head>
+<title>新建任务</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="imagetoolbar" content="no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="/media/stylesheet/nsfocus_2012/nsfocus_rsasv6.css" type="text/css" rel="stylesheet">
+<link href="/media/stylesheet/nsfocus_2014/tab.css" type="text/css" rel="stylesheet">
+<link href="/media/stylesheet/nsfocus_2014/form.css" type="text/css" rel="stylesheet">
+<link href="/media/stylesheet/nsfocus_2014/pane.css" type="text/css" rel="stylesheet">
+<link href="/media/js/nform/jquery-nform.css" type="text/css" rel="stylesheet">
+<link href="/media/js/multiple-select/multiple-select.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="/media/js/prototype.js"></script>
+<script type="text/javascript" src="/media/js/ui.js"></script>
+<script type="text/javascript" src="/media/js/json2.js"></script>
+<script type="text/javascript" src="/media/js/datepicker/WdatePicker.js "></script><link href="/media/js/datepicker/skin/WdatePicker.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/media/js/common.js"></script>
+
+<script type="text/javascript" src="/media/js/jquery/jquery-1.2.6.min.js"></script>
+
+<script type="text/javascript" src="/media/js/jquery/ajaxfileupload.js"></script>
+<script type="text/javascript" src="/media/js/rsas_v6.js"></script>
+<script type="text/javascript" src="/media/js/cavy.js"></script>
+
+
+
+<script type="text/javascript">
+	function taskIndexChange(obj, taskclass){
+		jQuery(obj).parent().siblings().attr('class','tab_unselected');
+		jQuery(obj).parent().attr('class','tab_selected');
+		jQuery(obj).blur();
+		
+		var type, 
+			Tasks = {'fuzzscan': '16', 'pwdscan': '4', 'staticscan': '32', 'webscan': '8', 'vulscan': '1'};
+
+		// if (taskclass=='pwdtask'){	
+		// 	var type='4';
+		// }else{
+		// 	if (taskclass=='webscan'){
+		// 		var type='8';
+		// 	}else{
+		// 		var type='2';
+		// 	}
+		// };
+
+		type = Tasks[taskclass];
+		
+		window.location.href = "/task/index/" + type;
+	}
+</script>
+<script type="text/javascript">
+function showTab(obj,target) {
+	jQuery(obj).parent().parent().siblings().children().attr('class','tab_unselected');
+	jQuery(obj).parent().attr('class','tab_selected');
+	jQuery(obj).blur();
+	//jQuery(target).show();
+	//jQuery(target).siblings().hide();
+	jQuery(target).attr("class","content");
+	jQuery(target).siblings().attr('class','content hide');
+	// var tpath='/manual/HELP/wwhelp/wwhimpl/js/html/wwhelp.htm#href=';
+	
+	// if (target=='#vul_base'){
+	// 	if (ICSScan=="BVS"){
+	// 		tpath=tpath+'NewTask.html';
+	// 	}else{
+	// 		tpath=tpath+'NewTask_AssessmentTask_BasicOption.html';
+	// 	}
+	// }else if (target=='#vul_report'){
+	// 	tpath=tpath+'NewTask_AssessmentTask_Report.html';
+	// //for webscan
+	// }else if (target=='#web_base'){
+	// 	tpath=tpath+'NewTask_WebTask_BasicOption.html';
+	// }else if (target=='#web_report'){
+	// 	tpath=tpath+'NewTask_WebTask_Report.html';
+	// }else if (target=='#web_senior'){
+	// 	tpath=tpath+'NewTask_WebTask_AdvancedOption.html';
+	// }else if(target == '#fuzz_base'){
+	// 	tpath=tpath+'NewTask_FuzzingTask.html';
+	// }else if(target == '#static_base'){
+	// 	tpath=tpath+'NewTask_StaticTask.html';
+	// }else{
+	// 	tpath=tpath+'NewTask_AssessmentTask_AdvancedOption.html';
+	// };
+	// jQuery('#tools_help').attr("href",tpath);
+
+}
+</script>
+<script>
+function checkItem(obj,target){
+	if (jQuery(obj).attr("checked")){
+		jQuery(target).attr("disabled",false);
+	}
+	else
+	{
+		jQuery(target).attr("disabled",true);
+	}
+}
+</script>
+<script>
+	if (document.all){
+
+		jQuery(window).unload(function(){
+			top.clear_loginarray();
+			top.clear_protocalarray();
+			});
+	}else{
+		window.onbeforeunload=function(){
+			top.clear_loginarray();
+			top.clear_protocalarray();
+		};
+	}
+</script>
+<script>
+	function setLoginCheck(data){
+		var data = jQuery('#addTaskForm').serializeArray();
+		var d_s=top.get_loginarray();
+		var taskjson='({ "name": "loginarray", "value":'+d_s+'})';
+		var taskeval=eval(taskjson);
+		data.push(taskeval);
+		jQuery.ajax({
+			type:"POST",
+			url:"/task/vul/base/targetlogin",
+			data:data,//{'data':d_s,"csrfmiddlewaretoken":'zZ4GC6ayDb3nlEaI0zNW4U9St2oOGr71',"targets":targets},
+			success:function(msg){
+				//alert(msg);
+					jQuery("#login_table_div").html(msg);
+			}
+		});
+	}
+</script>
+<script>	
+	function setTaskName(tmp){
+		//if (tmp=="-1"){tmp="";};
+		tmp=tmp.replace(/(^\s*)|(\s*$)/g,'');
+		tmp=tmp.replace(/\n/g,';');
+		tmp=tmp.replace(/\r/g,';');
+		tmp=tmp.replace(/ /g,';');
+		tmp = tmp.replace(/\[/g,'');
+	    tmp = tmp.replace(/\]/g,'');
+	    tmp = tmp.replace(/,/g,';');
+	    tmp = tmp.replace(/http:\/\//gi,'');
+	    tmp = tmp.replace(/https:\/\//gi,'');
+	    tmp = tmp.replace(/ftp:\/\//gi,'');
+	    tmp = tmp.replace(/\//g,'_');
+		tmp=tmp.replace(/[;]+/g,';');
+		
+	    var taskName="";
+	    if (tmp.length<=32){
+	    	taskName=tmp;	
+	    }
+	    else
+	    {
+	    	taskName=tmp.substring(0,32)+'...';
+	    }
+		jQuery('#name').val('扫描【'+taskName+'】');
+		jQuery("#name_validate").hide();
+		jQuery("#name").removeClass('tip_error');
+		validateTaskName();
+	}
+
+	
+	function valTargets(){
+		var type=jQuery('[name=target]:radio:checked').val();
+		var tmp="";
+		var t_obj='#ipList';
+		var data = jQuery('#subTaskForm').serializeArray();
+		if (type=="ip"||type=='pwd'){
+			tmp=jQuery('#ipList').val();
+			tmpr=encodeURI(tmp);
+			var taskjson='({ "name": "ipList", "value":\"'+tmpr+'\"})';
+			var taskeval=eval(taskjson);
+			data.push(taskeval);
+			var url="/task/vul/base/validate/targets/ip";
+		}else if (type=="domain"){
+			t_obj='#domainList';
+			tmp=jQuery("#domainList").val();
+			tmpr=encodeURI(tmp);
+			var taskjson='({ "name": "domainList", "value":\"'+tmpr+'\"})';
+			var taskeval=eval(taskjson);
+			data.push(taskeval);
+			
+			if (jQuery("#is_vhost").attr("checked")){
+				var vflag="yes";
+			}else{
+				var vflag="no";
+			};
+			var vflagjson='({ "name": "vflag", "value":\"'+vflag+'\"})';
+			var vflageval=eval(vflagjson);
+			data.push(vflageval);
+			var url="/task/vul/base/validate/targets/domain";
+			
+		};
+		
+		jQuery.ajax({
+			type:"POST",
+			url:url,
+			data:data,
+			success:function(msg){
+				if (msg.length==1){
+					jQuery("#target_validate").hide();
+					jQuery(t_obj).removeClass('tip_error');
+					jQuery("#submitButton").attr("disabled",false);
+					if (type=="ip"){
+						setLoginCheck(data);
+					};
+					setTaskName(tmp);
+				}
+				else if(msg.length==2){
+					if (window.confirm("扫描目标中存在重复目标，确认去除重复？")){
+						jQuery.ajax({
+							type:"POST",
+							url:url+'/duplicate',
+							data:data,
+							success:function(msg){
+								//alert(msg);
+								jQuery(t_obj).val(msg);
+								//jQuery("#ipList").val(msg);
+								jQuery("#target_validate").hide();
+								jQuery(t_obj).removeClass('tip_error');
+								jQuery("#submitButton").attr("disabled",false);
+								tmp=jQuery(t_obj).val();
+								tmp=tmp.replace(/\n/g,';');
+								setTaskName(tmp);
+
+								if (type=="ip"){
+									setLoginCheck(data);
+								};
+							}
+						});
+					}
+					else
+					{
+						jQuery("#target_validate").text("扫描目标中存在重复目标");
+						jQuery("#target_validate").show();
+						jQuery(t_obj).addClass('tip_error');
+						jQuery("#submitButton").attr("disabled",true);
+					};
+				}
+				else
+				{
+					var obj=eval(msg);
+					var m=obj.context.fieldErrors.targets;
+					jQuery("#target_validate").text(""+m);
+					jQuery("#target_validate").show();
+					jQuery(t_obj).addClass('tip_error');
+					jQuery("#submitButton").attr("disabled",true);
+				}
+			}
+		});
+		
+		
+	};
+	function validateTaskName() {
+		var taskName = jQuery("#name").val();
+
+		var data = jQuery('#subTaskForm').serializeArray();
+		
+		var taskjson='({ "name": "taskname", "value":\"'+taskName+'\"})';
+		var taskeval=eval(taskjson);
+		data.push(taskeval);
+		jQuery.ajax({
+			type:"POST",
+			url:"/task/vul/base/validate/taskname/",
+			data:data,
+			success:function(msg){
+
+				if (msg.length==1){
+					jQuery("#name_validate").hide();
+					jQuery("#name").removeClass('tip_error');
+					if (jQuery("#target_validate").is(":hidden")){
+						jQuery("#submitButton").attr("disabled",false);
+					}
+					
+				}
+				else
+				{ 
+					var m=obj.context.fieldErrors.name;
+					jQuery("#name_validate").text(""+m);
+					jQuery("#name_validate").show();
+					jQuery("#name").addClass('tip_error');
+					jQuery("#submitButton").attr("disabled",true);
+				}
+			}
+		});
+	}
+</script>
+<script>
+	function liveCheck(obj,flag){
+		if(!jQuery(obj).attr("checked"))
+		{
+			if (flag=="edit"){
+				alert("警告！取消主机存活测试会极度降低扫描速度！");
+			};
+			jQuery("#live_icmp").attr("disabled",true);
+			jQuery("#live_udp").attr("disabled",true);
+			jQuery("#live_tcp").attr("disabled",true);
+			jQuery("#live_tcp_ports").attr("disabled",true);
+		}
+		else
+		{
+			jQuery("#live_icmp").attr("disabled",false);
+			jQuery("#live_udp").attr("disabled",false);
+			jQuery("#live_tcp").attr("disabled",false);
+			jQuery("#live_tcp_ports").attr("disabled",false);
+		} 
+ 	}
+	function liveTcpCheck(obj){
+		if(jQuery(obj).attr("checked"))
+		{
+			jQuery("#live_tcp_info").show();
+		}
+		else
+		{
+			jQuery("#live_tcp_info").hide();
+		}
+		
+	}
+	function validateTcpPorts(obj){
+		value=jQuery(obj).val();
+
+		jQuery.ajax({
+			type:"GET",
+			url:"/task/vul/senior/validate/tcpports/"+value,
+			success:function(msg){
+				if (msg.length==1){
+					jQuery('#live_tcp_ports_validate').hide();
+					jQuery('#live_tcp_ports').removeClass('tip_error');
+				}
+				else
+				{
+					var robj=eval(msg);
+					var m=robj.context.fieldErrors.live_tcp_ports;
+					//alert(m);
+					jQuery('#live_tcp_ports_validate').text(""+m);
+					jQuery('#live_tcp_ports_validate').show();
+					jQuery('#live_tcp_ports').addClass('tip_error');
+				}
+			},
+			error:function(msg){alert(msg)}
+		});
+		
+	}
+</script>
+<script>
+	function importTxtExcel(){
+		var tasktype=jQuery('[name=target]:radio:checked').val();
+		var target="#ipList";
+		var elemId='ip_import_txtexcel';
+		var filename=jQuery('#ip_import_txtexcel').val();
+		if (tasktype=="domain"){target="#domainList";elemId="domain_import_txt";filename=jQuery('#domain_import_txt').val();};
+		//alert("{'csrfmiddlewaretoken': 'zZ4GC6ayDb3nlEaI0zNW4U9St2oOGr71','filename':filename,'tasktype':tasktype}");
+		var vul_or_pwd=jQuery('#vul_or_pwd').val();
+		if (filename.length<1){
+			alert('请选择导入文件！');
+		}else{
+			jQuery.ajaxFileUpload({
+				url:"/task/vul/base/import",
+				secureuri: false,
+				fileElementId:elemId,
+				dataType:'text',
+				data: {'csrfmiddlewaretoken': 'zZ4GC6ayDb3nlEaI0zNW4U9St2oOGr71','filename':filename,'tasktype':tasktype,'vulorpwd':vul_or_pwd},
+				success:function(msg){
+					var ind=msg.indexOf('<table class="cmn_table">');
+					var indsub=msg.indexOf('<TABLE class=cmn_table>');
+
+					if (ind>-1||indsub>-1){
+						jQuery('#login_table_div').html(msg);
+					}else{
+						if (msg.substring(0,4)=='err:'){
+							alert(msg.substring(4,msg.length));
+						}else{
+							jQuery(target).val(msg);
+							valTargets();
+						};
+					};
+					jQuery('#target_textfield').val('');
+					jQuery('#target2_textfield').val('');
+				},
+				error:function(msg){
+					alert('导入失败！');
+				}
+				});
+		};
+		
+	}
+	
+	function treeImport(){
+		top.dialog.show({title:'从资产树导入！', url:'/task/vul/base/treeimport'});
+	}
+</script>
+
+<script>
+	function multiPlex(obj){
+		var value=jQuery(obj).val();
+		if (value=="-1"){}else{
+			if (window.confirm("加载已有任务配置将覆盖现有任务配置，确认复用？")){
+				var url='/task/vul/base/multiplex/'+value+'/';
+				window.location.href = url;
+			};
+		};
+		
+	}
+</script>
+<script>
+	function validateExecRange(){
+		var data = jQuery('#subTaskForm').serializeArray();
+		var tmp = jQuery('#exec_range').val();
+		var taskjson='({ "name": "exec_range", "value":\"'+tmp+'\"})';
+		var taskeval=eval(taskjson);
+		data.push(taskeval);
+		jQuery.ajax({
+			type:"POST",
+			url:"/task/vul/base/validate/execrange/",
+			data:data,
+			success:function(msg){
+				if (msg.length==1){
+					jQuery("#exec_range_validate").hide();
+					jQuery('#exec_range').removeClass('tip_error');
+				}
+				else
+				{
+					var obj=eval(msg);
+					var m=obj.context.fieldErrors.exec_range;
+					
+					jQuery("#exec_range_validate").text(""+m);
+					jQuery("#exec_range_validate").show();
+					jQuery('#exec_range').addClass('tip_error');
+				}
+			}
+		});
+	}
+</script>
+<!--webscan新建任务所需基本js函数-->
+<script type="text/javascript" language="javascript">
+
+/*加载任务时对修改任务目标时的任务名同步*/
+function replace_taskname(){
+    var taskname = "扫描["+jQuery("#task_target").val().replace(/(;|\n|,| ){1,}/g,",").substring(0,56)+"]";
+	jQuery('#task_name').val(taskname);
+}
+/*检查新建扫描目标*/
+function web_check_tasktarget(){
+	//发送ajax请求验证扫描目标
+	//输入的目标格式、是否包含不容许扫描的站点、站点是否全部不可达
+	//自动填充任务名称
+	jQuery("#error_tab").hide();
+	jQuery("#task_target_error").hide();
+	jQuery("#reachable_error").hide();
+	jQuery('#submitButton').attr('disabled','true')
+	var data = jQuery('#webtaskForm').serializeArray();
+	var pro_data=top.protocalarray;
+	var pro_data=JSON.stringify(pro_data);
+	var pro_data='({ "name": "protocalarray", "value":'+pro_data+'})';
+	var pro_data=eval(pro_data);
+	data.push(pro_data);
+	jQuery("#error_tab").show();
+	jQuery("#reachable_error").show();
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/web_validate_targets/",
+		data:data,
+		dataType:"json",
+		success:function(msg){
+			jQuery('#target_count').val(msg.count);
+			if(msg.status=="success"){
+				//验证站点的可达性
+				jQuery.ajax({
+					type:"POST",
+					url:"/task/web_is_reachable/",
+					data:data,
+					success:function(reachable){
+					jQuery("#reachable_error").hide();
+						var name = jQuery("#task_target").val().replace(/(;|\n|,| ){1,}/g,",");
+						if(name.length>56){
+							name = name.substring(0,56)+"...";
+						}else{
+							name = name.substring(0,56);
+						}
+						name = "扫描["+name+"]";
+						if(reachable=="true"){
+							jQuery("#error_tab").hide();
+							jQuery("#task_target_error").hide();
+							jQuery('#task_name').val(name);
+							set_protocal_auth(data);
+							jQuery('#submitButton').attr('disabled','')
+						}else{
+							jQuery("#error_tab").show();
+							jQuery("#task_target_error").show();
+							jQuery("#task_target_error").html(reachable);
+							jQuery('#task_name').val(name);
+							set_protocal_auth(data);
+							jQuery('#submitButton').attr('disabled','')
+						}
+						
+					}
+				});	
+			}else{
+				if (msg.msg =="lic"){
+					info = "试用证书购买的Web应用扫描模块已到使用期限，请更换证书"	
+				}else{
+					info = msg.msg
+				}
+				jQuery("#reachable_error").hide();
+				jQuery("#error_tab").show();
+				jQuery("#task_target_error").show();
+				jQuery("#task_target_error").html(info);
+
+				jQuery('#submitButton').attr('disabled','true')
+				}
+		}
+	});	
+}
+
+
+/*验证task_target后根据各站点设置协议认证*/
+function set_protocal_auth(data){
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/web_protocal_auth/",
+		data:data,
+		success:function(msg){
+			jQuery("#protocol_auth_div").html(msg);
+		}
+	});	
+}
+
+
+/*编辑单个站点的协议认证和登录扫描信息*/
+function editNode(target){
+	var flag="";
+	flag=top.grep_one_protocal(target);
+	black = flag.black_links;
+	black=encodeURI(black);
+	black=encodeTest(black);
+	white = flag.wihte_links;
+	white=encodeURI(white);
+	white=encodeTest(white);
+	var obj=JSON.stringify(flag);
+	obj=encodeURI(obj);
+	obj=encodeTest(obj);
+	target = encodeTest(target);
+	top.dialog.show({title:"配置", url:'/task/web_edit_node/'+obj+"?tar="+target+"&white="+white+"&black="+black, width:500,height:500});
+	
+};
+
+/*替换字符*/
+function encodeTest(tmp){
+	tmp=tmp.replace(/#/g,'%23');
+	tmp=tmp.replace(/\$/g,'%24');
+	tmp=tmp.replace(/&/g,'%26');
+	tmp=tmp.replace(/:/g,'%3A');
+	tmp=tmp.replace(/;/g,'%3B');
+	tmp=tmp.replace(/\?/g,'%3F');
+	tmp=tmp.replace(/@/g,'%40');
+	tmp=tmp.replace(/=/g,'%3D');
+
+	return tmp;
+}
+
+/*删除登录协议认证配置信息*/
+function deleNode(obj,target){
+	if (window.confirm("确认删除？")){
+		var p=jQuery(obj).parent().parent().parent();
+		jQuery(obj).parent().parent().remove();
+		if (p.children().length==2){
+			jQuery("#check_table_nodata_tr").show();
+		};
+		
+		top.grep_protocalarray(target);
+	}
+}
+/*扫描时间段的验证*/
+function check_exec_range(){
+	cron_range = jQuery("#cron_range").val();
+}
+/*任务执行方式切换*/
+function change_exec_type(obj){
+		var exectype=jQuery(obj).val();
+		jQuery(obj).parent().siblings().hide();
+		if (exectype!='senior'){
+			jQuery('#exec_senior_div').hide();
+		};
+		var execdiv="#exec_"+exectype+"_div";
+		jQuery(execdiv).show();
+}
+
+/*关于执行方式处时间格式各种验证*/
+function timeCheck(obj,divobj){
+	var value=jQuery(obj).val();
+	value=jQuery.trim(value);
+	msg="";
+	reg=/^[01][0-9]:[0-5][0-9]|^2[0-3]:[0-5][0-9]/;
+	if (!reg.test(value)){
+		msg="格式错误";
+	};
+	if (msg==""){
+		jQuery(divobj).hide();
+		jQuery(obj).removeClass('tip_error');
+	}else{
+		jQuery(divobj).html(msg);
+		jQuery(divobj).show();
+		jQuery(obj).addClass('tip_error');
+	}
+}
+
+/*填写任务信息提交任务下发*/
+
+function webscan_submit(){
+	var data = jQuery('#webtaskForm').serializeArray();
+	var s=jQuery('#exec').val();
+	if (s=='senior'){
+		var retstr=testT();
+		var rjson='({ "name": "seniorstr", "value":\"'+retstr+'\"})';
+		var reval=eval(rjson);
+		data.push(reval);
+	};
+	var pro_data=top.protocalarray;
+	var pro_data=JSON.stringify(pro_data);
+	//alert(loginarrayjson);
+	var pro_data='({ "name": "protocalarray", "value":'+pro_data+'})';
+	var pro_data=eval(pro_data);
+	data.push(pro_data);
+	jQuery.ajax({
+		type:'POST',
+		data:data,
+		url:"/task/web_newtask/",
+		success:status
+	});
+}
+/*扫描任务提交后的验证提示*/
+function status(data){
+	var flagindex=data.indexOf("msg:");
+	if(flagindex==0){
+		data=data.substring(4,data.length);
+		dataflag=data.substring(0,4);
+		if(dataflag =="err:"){
+			alert(data.substring(4,data.length));
+		}else if(dataflag =="lic:"){
+			alert("试用证书购买的Web应用扫描模块已到使用期限，请更换证书后继续使用！")
+			window.location="/task/index/8";
+		}else if(dataflag =="ctl:"){
+			alert("定时任务时间不在webscan模块授权时间内，请更换证书后继续使用！")
+			window.location="/task/index/8";
+		}else{
+			window.location="/list/getProcess/id/"+data.substring(4,data.length)+"/action/no";
+		}
+	}else{
+		var obj=eval(data);
+		alert("请检查任务参数！");
+		base_validate(obj);
+		report_validate(obj);
+		senior_validate(obj);
+	}
+}
+
+//新建任务基本选项验证显示
+function base_validate(obj){
+	if(obj.context.fieldErrors.task_target){
+		jQuery("#task_target_error").show();
+		jQuery("#task_target_error").html(String(obj.context.fieldErrors.task_target))
+	}else{
+		jQuery("#task_target_error").hide();
+	}
+	if(obj.context.fieldErrors.task_name){
+		jQuery("#task_name_error").show();
+		jQuery("#task_name_error").html(String(obj.context.fieldErrors.task_name))
+	}else{
+		jQuery("#task_name_error").hide();
+	}
+	if(obj.context.fieldErrors.dispatchLevel){
+		jQuery("#dispatchLevel_error").show();
+		jQuery("#dispatchLevel_error").html(String(obj.context.fieldErrors.dispatchLevel))
+	}else{
+		jQuery("#dispatchLevel_error").hide();
+	}
+	if(obj.context.fieldErrors.senior_added){
+		jQuery("#exec_senior_added_validate").show();
+		jQuery("#exec_senior_added_validate").html(String(obj.context.fieldErrors.senior_added))
+	}else{
+		jQuery("#exec_senior_added_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_everyday_time){
+		jQuery("#exec_everyday_time_validate").show();
+		jQuery("#exec_everyday_time_validate").html(String(obj.context.fieldErrors.exec_everyday_time))
+	}else{
+		jQuery("#exec_everyday_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_everyweek_time){
+		jQuery("#exec_everyweek_time_validate").show();
+		jQuery("#exec_everyweek_time_validate").html(String(obj.context.fieldErrors.exec_everyweek_time))
+	}else{
+		jQuery("#exec_everyweek_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_emonthdate_time){
+		jQuery("#exec_emonthdate_time_validate").show();
+		jQuery("#exec_emonthdate_time_validate").html(String(obj.context.fieldErrors.exec_emonthdate_time))
+	}else{
+		jQuery("#exec_emonthdate_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_emonthweek_time){
+		jQuery("#exec_emonthweek_time_validate").show();
+		jQuery("#exec_emonthweek_time_validate").html(String(obj.context.fieldErrors.exec_emonthweek_time))
+	}else{
+		jQuery("#exec_emonthweek_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.cron_range){
+		jQuery("#crontime_range_validate").show();
+		jQuery("#crontime_range_validate").html(String(obj.context.fieldErrors.cron_range))
+	}else{
+		jQuery("#crontime_range_validate").hide();
+	}
+	if(obj.context.fieldErrors.tpl){
+		jQuery("#tpl_validate").show();
+		jQuery("#tpl_validate").html(String(obj.context.fieldErrors.tpl))
+	}else{
+		jQuery("#tpl_validate").hide();
+	}
+	if(obj.context.fieldErrors.dispatchLevel){
+		jQuery("#dispatchLevel_error").show();
+		jQuery("#dispatchLevel_error").html(String(obj.context.fieldErrors.dispatchLevel))
+	}else{
+		jQuery("#dispatchLevel_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_conf){
+		jQuery("#proxy_conf_error").show();
+		jQuery("#proxy_conf_error").html(String(obj.context.fieldErrors.proxy_conf))
+	}else{
+		jQuery("#proxy_conf_error").hide();
+	}
+	if(obj.context.fieldErrors.target_description){
+		jQuery("#target_description_error").show();
+		jQuery("#target_description_error").html(String(obj.context.fieldErrors.target_description))
+	}else{
+		jQuery("#target_description_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_type){
+		jQuery("#proxy_type_error").show();
+		jQuery("#proxy_type_error").html(String(obj.context.fieldErrors.proxy_type))
+	}else{
+		jQuery("#proxy_type_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_auth){
+		jQuery("#proxy_auth_error").show();
+		jQuery("#proxy_auth_error").html(String(obj.context.fieldErrors.proxy_auth))
+	}else{
+		jQuery("#proxy_auth_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_server){
+		jQuery("#proxy_server_error").show();
+		jQuery("#proxy_server_error").html(String(obj.context.fieldErrors.proxy_server))
+	}else{
+		jQuery("#proxy_server_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_port){
+		jQuery("#proxy_port_error").show();
+		jQuery("#proxy_port_error").html(String(obj.context.fieldErrors.proxy_port))
+	}else{
+		jQuery("#proxy_port_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_name){
+		jQuery("#proxy_name_error").show();
+		jQuery("#proxy_name_error").html(String(obj.context.fieldErrors.proxy_name))
+	}else{
+		jQuery("#proxy_name_error").hide();
+	}
+	if(obj.context.fieldErrors.subdomains){
+		jQuery("#subdomains_error").show();
+		jQuery("#subdomains_error").html(String(obj.context.fieldErrors.subdomains))
+	}else{
+		jQuery("#subdomains_error").hide();
+	}
+	if(obj.context.fieldErrors.auto_export){
+    	jQuery("#auto_export_validate").text(String(obj.context.fieldErrors.auto_export));
+		jQuery("#auto_export_validate").show();
+		jQuery('#auto_export').addClass('tip_error');
+    }
+}
+//新建任务任务报表验证显示
+function report_validate(obj){
+	if(obj.context.fieldErrors.report_type){
+		jQuery("#report_type_error").show();
+		jQuery("#report_type_error").html(String(obj.context.fieldErrors.report_type))
+	}else{
+		jQuery("#report_type_error").hide();
+	}
+	if(obj.context.fieldErrors.sum_report_tpl){
+		jQuery("#sum_report_tpl_error").show();
+		jQuery("#sum_report_tpl_error").html(String(obj.context.fieldErrors.sum_report_tpl))
+	}else{
+		jQuery("#sum_report_tpl_error").hide();
+	}
+	if(obj.context.fieldErrors.site_report_tpl){
+		jQuery("#site_report_tpl_error").show();
+		jQuery("#site_report_tpl_error").html(String(obj.context.fieldErrors.site_report_tpl))
+	}else{
+		jQuery("#site_report_tpl_error").hide();
+	}
+	if(obj.context.fieldErrors.sendReport_type){
+		jQuery("#sendReport_type_error").show();
+		jQuery("#sendReport_type_error").html(String(obj.context.fieldErrors.sendReport_type))
+	}else{
+		jQuery("#sendReport_type_error").hide();
+	}
+	if(obj.context.fieldErrors.email_address){
+		jQuery("#email_address_error").show();
+		jQuery("#email_address_error").html(String(obj.context.fieldErrors.email_address))
+	}else{
+		jQuery("#email_address_error").hide();
+	}
+	
+}
+
+//新建任务高级选项验证显示
+function senior_validate(obj){
+	if(obj.context.fieldErrors.plugin_threads){
+		jQuery("#plugin_threads_error").show();
+		jQuery("#plugin_threads_error").html(String(obj.context.fieldErrors.plugin_threads))
+	}else{
+		jQuery("#plugin_threads_error").hide();
+	}
+	if(obj.context.fieldErrors.webscan_timeout){
+		jQuery("#webscan_timeout_error").show();
+		jQuery("#webscan_timeout_error").html(String(obj.context.fieldErrors.webscan_timeout))
+	}else{
+		jQuery("#webscan_timeout_error").hide();
+	}
+	if(obj.context.fieldErrors.user_agent){
+		jQuery("#user_agent_error").show();
+		jQuery("#user_agent_error").html(String(obj.context.fieldErrors.user_agent))
+	}else{
+		jQuery("#user_agent_error").hide();
+	}
+	if(obj.context.fieldErrors.dir_limit){
+		jQuery("#dir_limit_error").show();
+		jQuery("#dir_limit_error").html(String(obj.context.fieldErrors.dir_limit))
+	}else{
+		jQuery("#dir_limit_error").hide();
+	}
+	if(obj.context.fieldErrors.filetype_to_check_backup){
+		jQuery("#filetype_to_check_backup_error").show();
+		jQuery("#filetype_to_check_backup_error").html(String(obj.context.fieldErrors.filetype_to_check_backup))
+	}else{
+		jQuery("#filetype_to_check_backup_error").hide();
+	}
+	if(obj.context.fieldErrors.backup_filetype){
+		jQuery("#backup_filetype_error").show();
+		jQuery("#backup_filetype_error").html(String(obj.context.fieldErrors.backup_filetype))
+	}else{
+		jQuery("#backup_filetype_error").hide();
+	}
+	if(obj.context.fieldErrors.dir_files_limit){
+		jQuery("#dir_files_limit_error").show();
+		jQuery("#dir_files_limit_error").html(String(obj.context.fieldErrors.dir_files_limit))
+	}else{
+		jQuery("#dir_files_limit_error").hide();
+	}
+	if(obj.context.fieldErrors.dir_depth_limit){
+		jQuery("#dir_depth_limit_error").show();
+		jQuery("#dir_depth_limit_error").html(String(obj.context.fieldErrors.dir_depth_limit))
+	}else{
+		jQuery("#dir_depth_limit_error").hide();
+	}
+	if(obj.context.fieldErrors.scan_link_limit){
+		jQuery("#scan_link_limit_error").show();
+		jQuery("#scan_link_limit_error").html(String(obj.context.fieldErrors.scan_link_limit))
+	}else{
+		jQuery("#scan_link_limit_error").hide();
+	}
+}
+
+/*检测报表类型*/
+function web_checkType(obj){
+	//当点击选择某种报表类型，动态添加可发送报表类型种类
+	if (jQuery(obj).attr("checked")){
+		var nowval=jQuery("#sendReport_type").val();
+		jQuery("#sendReport_type").children().remove();
+		jQuery(obj).parent().children('input:checkbox:checked').each(function(){
+			if (nowval==jQuery(this).val()){
+				jQuery("#sendReport_type").append("<option value='"+jQuery(this).val()+"' selected>"+jQuery(this).val()+"</option>");
+			}else{
+				jQuery("#sendReport_type").append("<option value='"+jQuery(this).val()+"'>"+jQuery(this).val()+"</option>");
+			};
+		});
+	}else{
+	//提醒必须选择一种报表类型
+		var tlen=jQuery(obj).siblings('input:checkbox:checked').length;
+		if (tlen==0){
+			alert('报表类型至少选择1种！');
+			jQuery(obj).attr("checked",true);
+		}else{
+			jQuery("#sendReport_type option[value='"+jQuery(obj).val()+"']").remove();
+		}
+	}
+}
+
+/*检测报表内容*/
+function web_checktpl(obj,target){
+	if (jQuery(obj).attr("checked")){
+		jQuery(target).show();
+	}
+	else
+	{
+		if (target=='#report_tpl_sum_tr'||target=='#report_tpl_host_tr'){
+			var tlen=jQuery(obj).siblings('input:checkbox:checked').length;
+			if (tlen==0){
+				alert('报表内容至少选择1种！');
+				jQuery(obj).attr("checked",true);
+			}else{
+				jQuery(target).hide();
+			};
+		}else{
+			jQuery(target).hide();
+		};
+	}	
+}
+
+
+/*任务报表发送邮箱验证*/
+function validate_emails(){
+	var data = jQuery('#webtaskForm').serializeArray();
+	var tmp=jQuery('#email_address').val();
+	tmp=tmp.replace(/\n/g,';');
+	var taskjson='({ "name": "emails", "value":\"'+tmp+'\"})';
+	var taskeval=eval(taskjson);
+	data.push(taskeval);
+	
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/vul/report/validate/emails/",
+		data:data,
+		success:function(msg){
+		if(msg.length ==1){
+			jQuery("#email_address_error").hide();
+		}else{
+			var obj=eval(msg);
+			var m=obj.context.fieldErrors.report_ifsent_email;
+			jQuery("#email_address_error").show();
+			jQuery("#email_address_error").html(String(m))
+		}
+		}
+		
+	});
+}
+
+
+/*web扫描任务参数导入*/
+function web_importTxtExcel(){
+		jQuery.ajaxFileUpload({
+	           url:'/task/web_importTarget/', //你处理上传文件的服务端
+	           secureuri:false,
+	           fileElementId:'webscan_import_txtexcel',
+	           dataType: 'json',
+	           data:{'csrfmiddlewaretoken':jQuery('#csrfmiddlewaretoken').val()},
+	           success: function (data, status){
+					if(data.error)
+					{
+						alert(data.error);
+					}else{
+						vuls = data.msg.replace(/(;|\n|,| ){1,}/g,"\n")
+						jQuery('#task_target').html(vuls);
+						web_check_tasktarget()
+					}
+				},
+			   error: function (data, status, e)
+					{
+						//alert(e)
+					}
+
+		})
+	return false;
+}
+
+/*web扫描任务的加载参数*/
+function web_multiPlex(obj){
+	var value=jQuery(obj).val();
+	
+	if (value=="-1"){}else{
+		if (window.confirm("加载已有任务配置将覆盖现有任务配置，确认复用？")){
+			//var url='/task/vul/base/multiplex/'+value;
+			//alert(url);
+			//window.location.href = url;
+			var url = '/task/web_multiplex/'+value+"?flag=reload";
+			window.location.href = url;
+		};
+	};
+	
+}
+
+/*自动生成报表与ftp和发送表报的逻辑判断*/
+function check_autoexport(){
+	if(jQuery("#auto_export").attr("checked")==true){
+		jQuery('#sendReport_ftp').attr('disabled','');
+		jQuery('#sendReport_email').attr('disabled','');
+	}else{
+		jQuery('#sendReport_ftp').attr('disabled','true');
+		jQuery('#sendReport_email').attr('disabled','true');
+		jQuery('#sendReport_ftp').attr('checked','');
+		jQuery('#sendReport_email').attr('checked','');
+		jQuery('#sendReport_email_table').hide();
+	}			
+}
+
+/*测试代理连通性*/
+function testProxy(){
+	var data = jQuery('#webtaskForm').serializeArray();
+	jQuery('#test_proxy_msg').show();
+	jQuery("#proxy_conf_error").hide();
+	jQuery("#proxy_test_result").hide();
+	jQuery("#proxy_server_error").hide();
+	jQuery("#proxy_port_error").hide();
+	jQuery("#proxy_name_error").hide();
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/web_testproxy/",
+		data:data,
+		success:function(msg){
+			switch(msg){
+			case "success":
+				jQuery('#test_proxy_msg').hide();
+				jQuery("#proxy_test_result").show();
+				break;
+			case "notargets":
+				jQuery('#test_proxy_msg').hide();
+				alert("请填写完成的扫描目标！")
+				break;
+			case "unreached":
+				jQuery('#test_proxy_msg').hide();
+				jQuery("#proxy_conf_error").show();
+				jQuery("#proxy_conf_error").html("无法连通，请检查扫描目标/代理类型/服务器地址/端口/用户名/密码配置是否正确，或者确认代理是否可用")
+				break;
+			default :
+				jQuery('#test_proxy_msg').hide();
+				var obj=eval(msg);
+				if(obj.context.fieldErrors.proxy_type){
+					jQuery("#proxy_type_error").show();
+					jQuery("#proxy_type_error").html(String(obj.context.fieldErrors.proxy_type))
+				}else{
+					jQuery("#proxy_type_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_auth){
+					jQuery("#proxy_auth_error").show();
+					jQuery("#proxy_auth_error").html(String(obj.context.fieldErrors.proxy_auth))
+				}else{
+					jQuery("#proxy_auth_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_server){
+					jQuery("#proxy_server_error").show();
+					jQuery("#proxy_server_error").html(String(obj.context.fieldErrors.proxy_server))
+				}else{
+					jQuery("#proxy_server_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_port){
+					jQuery("#proxy_port_error").show();
+					jQuery("#proxy_port_error").html(String(obj.context.fieldErrors.proxy_port))
+				}else{
+					jQuery("#proxy_port_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_name){
+					jQuery("#proxy_name_error").show();
+					jQuery("#proxy_name_error").html(String(obj.context.fieldErrors.proxy_name))
+				}else{
+					jQuery("#proxy_name_error").hide();
+				}
+			}
+			
+		}
+	});
+}
+function test_ftpConfig(){
+	if(jQuery("#sendReport_ftp").attr("checked")==true){
+		jQuery.ajax({
+			type:"GET",
+			url:"/task/test_ftpconf/",
+			data:"",
+			success:function(msg){
+				if(msg=="fail"){
+					alert("请先配置FTP相关配置项")
+					jQuery("#sendReport_ftp").attr("checked","");
+				}
+			}
+		});	
+	}
+}
+//判断扫描范围的js判断
+function if_show_subdomain_config()
+{
+	if((jQuery('[name=scan_method]').val()==0)&&(jQuery('#target_count').val()<=1)){
+		jQuery('#if_show_subdomain').show()
+	}else{
+		jQuery('#if_show_subdomain').hide()
+	}
+}
+//子域名选项的js判断
+function subdomain_scan(ob){
+	if(jQuery(ob).val() == '1'||jQuery(ob).val() == '2')
+		jQuery('#div1').show();
+	else{
+		jQuery('#div1').hide();
+	}
+}
+//判断子域名
+function checksubdomain(){
+	
+}
+</script>
+</head>
+
+
+<body>
+<div class="cmn_tab">
+<table>
+	<tbody>
+		<tr>
+			<!--add fuzz task-->
+			
+			<td class="tab_unselected">
+				<a style="cursor:pointer" onclick="taskIndexChange(this,'fuzzscan')">Fuzzing任务</a>
+			</td>
+			
+
+			
+				<td class="tab_unselected">
+					<a style="cursor:pointer" onclick="taskIndexChange(this,'vulscan')">评估任务</a>
+				</td>
+			
+			
+				
+				<td class="tab_unselected">
+					<a style="cursor:pointer" onclick="taskIndexChange(this,'pwdscan')">口令猜测任务</a>
+				</td>
+				
+			
+			
+			<td class="tab_unselected">
+				<a style="cursor:pointer" onclick="taskIndexChange(this,'staticscan')">静态扫描任务</a>
+			</td>
+			
+			
+				<td class="tab_selected">
+					<a style="cursor:pointer" onclick="taskIndexChange(this,'webscan')">Web应用扫描</a>
+				</td>
+			
+		</tr>
+	</tbody>
+</table>
+	<div class="tools">
+	
+		
+			
+				<a id="tools_help" target="_blank" href="/manual/HELP/wwhelp/wwhimpl/js/html/wwhelp.htm#href=NewTask_WebTask_BasicOption.html">
+			
+		
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/help.gif">
+		</a> 
+	
+	</div>
+</div>
+<div class="b_cont" style="height: 593px; padding-right: 0px;">
+	
+	
+
+	<div id="task_content" class="content">
+		<form enctype="multipart/form-data" class="cmn_form" name="subTaskForm" id="subTaskForm" method="POST" action="">
+			<input type="hidden" value="zZ4GC6ayDb3nlEaI0zNW4U9St2oOGr71" name="csrfmiddlewaretoken" style="">
+		</form>
+		
+	        <script>
+	jQuery(function(){
+		change_exec_type('#exec');
+	})
+
+</script>
+
+
+<form enctype="multipart/form-data" class="cmn_form" name="addTaskForm" id="webtaskForm" method="POST" action="">
+	<input type="hidden" value="zZ4GC6ayDb3nlEaI0zNW4U9St2oOGr71" name="csrfmiddlewaretoken" style="">
+	<table width="100%" height="auto" cellspacing="0" cellpadding="0" class="inner vertical">
+		<tbody><tr>
+			<td style=" width:75px;height:100%;" class="tab_cell">
+				<div style="float:none" class="cmn_tab">
+					<table>
+						<tbody>
+							<tr>
+								<td class="tab_selected"><a onclick="showTab(this,'#web_base')" href="###">基本选项</a></td>
+							</tr>
+							
+							<tr>
+								<td class="tab_unselected"><a onclick="showTab(this,'#web_report')" href="###">任务报表</a></td>
+							</tr>
+							<tr>
+								<td class="tab_unselected"><a onclick="showTab(this,'#web_senior')" href="###">高级选项</a></td>
+							</tr>
+							<tr>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+								
+			</td>
+			
+			
+			<td width="100%" class="tab_cell">
+				<table class="tab_border">
+					<tbody><tr><td class="nopadding tab_cell">
+						<div id="web_base" class="content" style="margin-top: 0px">
+							<div style="float:right;">
+	加载已有任务配置
+	<select class="text" style="width:240px" onchange="web_multiPlex(this);">
+        <option value="-1">请选择</option>
+        
+	    <option title="扫描[http://192.168.193.11/]" value="37">37 扫描[http://192.1...</option>
+	    
+	</select>
+</div>&nbsp;
+<div style="display:none">
+    <input type="hidden" name="target_count" id="target_count" value="1" style="">
+</div><table width="100%" height="98%">
+<!-- web扫描目标与加载任务信息 -->
+<tbody><tr>
+	<th width="15%" valign="top">扫描目标<span class="cmn_must">*</span></th>
+	<td style="padding-bottom: 0px;">
+	<div>
+	<table id="error_tab" border="0" cellspacing="0" cellpadding="0" style="display: table; table-layout: fixed; word-break: break-all; margin: 0px; padding: 0px; width: 365px;">
+		<tbody><tr>
+			<td style="padding:0;">
+				<span id="task_target_error" class="error" style="display: inline;">协议不正确或站点输入不正确</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding:0;">
+			<div id="reachable_error" class="load_con anywhere" style="display: none; position: relative; top: 0px;"><span>正在检验站点格式、扫描授权范围和是否可达,请稍候.....</span></div>
+			</td>
+		</tr>
+	</tbody></table>
+	<input type="hidden" name="csrfmiddlewaretoken" id="csrfmiddlewaretoken" value="zZ4GC6ayDb3nlEaI0zNW4U9St2oOGr71" style="">
+    
+	<textarea style="width: 365px;" rows="5" id="task_target" name="task_target" class="textResize" onchange="web_check_tasktarget();"></textarea>
+	
+       <span class="text_comment" align="top">			          
+	   <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" style="vertical-align: top; cursor: pointer;" title="" <="" img="" tipbox="扫描目标格式&lt;br/&gt;
+	   http://[fe80::1a03:73ff:feaf:8b3c:8080]&lt;br/&gt;
+	   https://[fe80::]:80&lt;br/&gt;
+       https://www.nsfocus.com&lt;br/&gt;
+       https://192.168.1.1&lt;br/&gt;
+       多个链接之间使用,、;、回车换行等分隔符隔开，分隔符均为英文输入。若是进行目录限制扫描,则需要添加扫描目标格式为：
+       http://www.example.com/test/
+       " w_tip="" h_tip="">
+       </span>
+   	</div>
+    <div style="margin-top:8px;margin-bottom:3px;position:relative">
+    <div class="file-box" style="width:310px">
+       <input type="text" class="text" style="width: 225px;" id="target_textfield" readonly="">
+       <input type="button" class="cmn_btn" value="浏览..." style="">
+       <input type="file" id="webscan_import_txtexcel" name="webscan_import_txtexcel" class="file" onchange="document.getElementById('target_textfield').value=this.value" style="">
+    </div>
+       <input type="button" class="cmn_btn" onclick="web_importTxtExcel()" style="margin-left: -5px;" value="导入">
+     <span class="text_comment" align="top">			          
+	   <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" title="" tipbox="导入扫描目标，支持txt和excel格式。txt格式中各扫描目标之间使用,、;、回车换行等分隔符隔开，分隔符均为英文输入；excel格式中，只使用excel表格的第一列，每行一个扫描目标。" w_tip="" h_tip="" style="cursor: pointer;">
+       </span>
+    </div>  
+	</td>
+</tr>
+<!-- web扫描任务名称 -->
+<tr>
+    <th>任务名称<span class="cmn_must">*</span></th>
+    <td>
+        <div id="task_name_error" class="error" style="display:none"></div>
+        
+        <input type="text" class="text input_click_down" style="width: 365px;" name="task_name" id="task_name" maxlength="256" value="" "="">
+        <span class="text_comment">长度小于256个字符</span> <!-- size="57" -->
+    </td>
+</tr>
+
+<tr class="line"><td colspan="2"></td></tr>
+
+<!-- web扫描范围 -->
+
+<tr class="odd">
+    <th>扫描范围</th>
+    <td>
+        <select name="scan_method" style="width:365px" onchange="if_show_subdomain_config()">
+            <option value="0">按域名扫描</option>
+            <option value="1" selected="selected">扫描当前目录及子目录</option>
+            <option value="2">只扫描任务目标链接</option>
+        </select>
+        <span class="text_comment comment_middle" style="*margin-bottom:3px;">指定爬虫的扫描范围</span>
+    </td>
+</tr>
+<tr id="if_show_subdomain" style="display:none">
+    <th>子域名</th>
+    <td>
+    	<div id="subdomains_error" class="error" style="display:none"></div>
+        <select onchange="subdomain_scan(this)" id="subdomains_scan_select" name="subdomains_scan" style="width:365px">
+            <option selected="selected" value="0">整站扫描</option>
+            <option value="1">扫描子域名</option>
+            <option value="2">不扫描子域名</option>
+        </select>
+        <div id="div0"></div>
+        <div id="div2"></div>
+        <div style="display: none" id="div1">
+	        <textarea id="webscan_subdomains" style="width: 365px; margin-top: 10px;" title="" rows="3" name="subdomains"></textarea>
+	        <span class="text_comment" align="top">			          
+			<img style="vertical-align: top; margin-top: 10px; cursor: pointer;" class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" title="" tipbox="扫描指定站点的子域名&amp;lt;br /&amp;gt;格式如下（多个子域名之间用“;”、“,”、回车换行隔开）&lt;br /&gt;news.target.com&lt;br /&gt;update.target.com" w_tip="" h_tip="">
+	  		</span>
+        </div>
+    </td>
+</tr>
+<!-- web扫描执行方式 -->
+<tr class="odd">
+    <th>执行方式</th>
+    <td>
+        <div style="float:left">
+            <select id="exec" name="exec" onchange="change_exec_type(this)" style="width:365px">
+                <option value="immediate">立即执行</option>
+                <option value="timing">定时执行</option>
+                <option value="everyday">每天一次</option>
+                <option value="everyweek">每周一次</option>
+                <option value="emonthdate">每月一次（按日期）</option>
+                <option value="emonthweek">每月一次（按星期）</option>
+                <option value="senior">高级配置</option>
+            </select>
+        </div>
+        <div id="exec_immediate_div" style="display: block;"></div>
+			<div id="exec_timing_div" style="display:none">
+				&nbsp;
+				<input type="text" name="exec_timing_date" id="exec_timing_date" onchange="valTiming(this)" class="Wdate text" style="width: 160px !important;" value="2026-05-09 14:01:03" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowToday:false})">
+				<span id="exec_timing_validate" class="new_line error" style="display:none"></span>
+			</div>
+			<div id="exec_everyday_div" style="display:none">
+				&nbsp;
+				<input type="text" name="exec_everyday_time" id="exec_everyday_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_everyday_time_validate')" onmouseout="timeCheck(this,'#exec_everyday_time_validate')" style="">
+				<span id="exec_everyday_time_validate" class="new_line error" style="display:none"></span>
+				<span class="text_comment">例：14:23</span>
+
+			</div>
+			<div id="exec_everyweek_div" style="display:none">
+				&nbsp;
+				<select class="text" name="exec_everyweek_day">
+					<option value="1" selected="">星期一</option>
+					
+						<option value="2">星期二</option>
+					
+						<option value="3">星期三 </option>
+					
+						<option value="4">星期四</option>
+					
+						<option value="5">星期五</option>
+					
+						<option value="6">星期六</option>
+					
+						<option value="7">星期日</option>
+					
+				</select>				
+				&nbsp;
+				<input type="text" name="exec_everyweek_time" id="exec_everyweek_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_everyweek_time_validate')" onmouseout="timeCheck(this,'#exec_everyweek_time_validate')" style="">
+				<span id="exec_everyweek_time_validate" class="new_line error" style="display:none"></span>
+				<span class="text_comment">例：14:23</span>
+			</div>
+			<div id="exec_emonthdate_div" style="display:none">
+				&nbsp;
+				<select class="text" name="exec_emonthdate_day">
+					<option value="1" selected="">1</option>
+					
+			
+						<option value="2">2</option>
+					
+			
+						<option value="3">3</option>
+					
+			
+						<option value="4">4</option>
+					
+			
+						<option value="5">5</option>
+					
+			
+						<option value="6">6</option>
+					
+			
+						<option value="7">7</option>
+					
+			
+						<option value="8">8</option>
+					
+			
+						<option value="9">9</option>
+					
+			
+						<option value="10">10</option>
+					
+			
+						<option value="11">11</option>
+					
+			
+						<option value="12">12</option>
+					
+			
+						<option value="13">13</option>
+					
+			
+						<option value="14">14</option>
+					
+			
+						<option value="15">15</option>
+					
+			
+						<option value="16">16</option>
+					
+			
+						<option value="17">17</option>
+					
+			
+						<option value="18">18</option>
+					
+			
+						<option value="19">19</option>
+					
+			
+						<option value="20">20</option>
+					
+			
+						<option value="21">21</option>
+					
+			
+						<option value="22">22</option>
+					
+			
+						<option value="23">23</option>
+					
+			
+						<option value="24">24</option>
+					
+			
+						<option value="25">25</option>
+					
+			
+						<option value="26">26</option>
+					
+			
+						<option value="27">27</option>
+					
+			
+						<option value="28">28</option>
+					
+			
+						<option value="29">29</option>
+					
+			
+						<option value="30">30</option>
+					
+			
+						<option value="31">31</option>
+					
+					
+				</select>
+				&nbsp;
+				<input type="text" name="exec_emonthdate_time" id="exec_emonthdate_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_emonthdate_time_validate')" onmouseout="timeCheck(this,'#exec_emonthdate_time_validate')" style="">
+				<span id="exec_emonthdate_time_validate" class="new_line error" style="display:none"></span>
+				<span class="text_comment">例：14:23</span>
+			</div>
+			<div id="exec_emonthweek_div" style="display:none">
+				&nbsp;
+				第
+				<select class="text" name="exec_emonthweek_pre">
+					<option value="1" selected="">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+				个
+				&nbsp;
+				<select class="text" name="exec_emonthweek_day">
+					<option value="1" selected="">星期一</option>
+					
+						<option value="2">星期二</option>
+					
+						<option value="3">星期三 </option>
+					
+						<option value="4">星期四</option>
+					
+						<option value="5">星期五</option>
+					
+						<option value="6">星期六</option>
+					
+						<option value="7">星期日</option>
+					
+				
+				</select>
+				&nbsp;
+				<input type="text" name="exec_emonthweek_time" id="exec_emonthweek_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_emonthweek_time_validate')" onmouseout="timeCheck(this,'#exec_emonthweek_time_validate')" style="">
+				<span id="exec_emonthweek_time_validate" class="new_line error" style="display:none"></span>
+				<span class="text_comment">例：14:23</span>
+			</div>
+    </td>
+</tr>	
+<tr class="odd" id="exec_senior_div" style="display:none">
+		<th></th>
+		<td style="padding: 0px 8px;">
+			<div>			
+								<table width="auto" height="auto" cellspacing="0" cellpadding="0">
+					<tbody><tr>
+						<td style="vertical-align:text-top; padding:0">
+							<fieldset>
+								<legend>添加周期时间</legend>
+								<table width="345px"><tbody id="toadd_senior_time">
+									<tr>
+										<td>
+											每
+											<select style="width:40px"><!-- ; position:static -->
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											天
+										</td>
+										<td width="40px">
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time1_validate')" style="">
+											<span id="exec_senior_time1_validate" class="new_line error" style="display:none"></span>
+										</td>
+										<td width="15px">
+											<a title="添加" onclick="addSeniorTime(this,1)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											每
+											<select style="width:40px">
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											周
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div class="cont" style="width:140px" id="a">
+													
+													<ul>
+														
+														<li><input type="checkbox" checked="" name="weekmulti2" value="1" disabled="" onclick="multiClick(this,event,7);" style="">星期一</li>
+														
+															<li><input type="checkbox" name="weekmulti2" value="2" onclick="multiClick(this,event,7);" style="">星期二</li>
+														
+															<li><input type="checkbox" name="weekmulti2" value="3" onclick="multiClick(this,event,7);" style="">星期三 </li>
+														
+															<li><input type="checkbox" name="weekmulti2" value="4" onclick="multiClick(this,event,7);" style="">星期四</li>
+														
+															<li><input type="checkbox" name="weekmulti2" value="5" onclick="multiClick(this,event,7);" style="">星期五</li>
+														
+															<li><input type="checkbox" name="weekmulti2" value="6" onclick="multiClick(this,event,7);" style="">星期六</li>
+														
+															<li><input type="checkbox" name="weekmulti2" value="7" onclick="multiClick(this,event,7);" style="">星期日</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,7)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											
+											
+											<!-- <select class="text">
+												<option value="1" selected>星期一</option>
+												
+													<option value=2>星期二</option>
+												
+													<option value=3>星期三 </option>
+												
+													<option value=4>星期四</option>
+												
+													<option value=5>星期五</option>
+												
+													<option value=6>星期六</option>
+												
+													<option value=7>星期日</option>
+												
+											</select>-->
+											
+										</td>
+										<td>
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time2_validate')" style="">
+											<span id="exec_senior_time2_validate" class="new_line error" style="display:none"></span>
+										</td>
+										<td>
+											<a title="添加" onclick="addSeniorTime(this,2)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap">
+											每
+											<select style="width:40px">
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											月
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div style="width: 140px; height: 161px;" class="cont">
+													<ul>
+														<li><input type="checkbox" name="daymulti3" checked="" value="1" disabled="" onclick="multiClick(this,event,31);" style="">1日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="2" onclick="multiClick(this,event,31);" style="">2日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="3" onclick="multiClick(this,event,31);" style="">3日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="4" onclick="multiClick(this,event,31);" style="">4日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="5" onclick="multiClick(this,event,31);" style="">5日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="6" onclick="multiClick(this,event,31);" style="">6日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="7" onclick="multiClick(this,event,31);" style="">7日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="8" onclick="multiClick(this,event,31);" style="">8日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="9" onclick="multiClick(this,event,31);" style="">9日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="10" onclick="multiClick(this,event,31);" style="">10日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="11" onclick="multiClick(this,event,31);" style="">11日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="12" onclick="multiClick(this,event,31);" style="">12日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="13" onclick="multiClick(this,event,31);" style="">13日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="14" onclick="multiClick(this,event,31);" style="">14日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="15" onclick="multiClick(this,event,31);" style="">15日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="16" onclick="multiClick(this,event,31);" style="">16日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="17" onclick="multiClick(this,event,31);" style="">17日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="18" onclick="multiClick(this,event,31);" style="">18日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="19" onclick="multiClick(this,event,31);" style="">19日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="20" onclick="multiClick(this,event,31);" style="">20日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="21" onclick="multiClick(this,event,31);" style="">21日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="22" onclick="multiClick(this,event,31);" style="">22日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="23" onclick="multiClick(this,event,31);" style="">23日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="24" onclick="multiClick(this,event,31);" style="">24日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="25" onclick="multiClick(this,event,31);" style="">25日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="26" onclick="multiClick(this,event,31);" style="">26日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="27" onclick="multiClick(this,event,31);" style="">27日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="28" onclick="multiClick(this,event,31);" style="">28日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="29" onclick="multiClick(this,event,31);" style="">29日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="30" onclick="multiClick(this,event,31);" style="">30日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="31" onclick="multiClick(this,event,31);" style="">31日</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,31)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											<!-- 
+											<select class="text">
+												<option value="1" selected >1</option>
+												
+													<option value=1>1</option>
+												
+													<option value=2>2</option>
+												
+													<option value=3>3</option>
+												
+													<option value=4>4</option>
+												
+													<option value=5>5</option>
+												
+													<option value=6>6</option>
+												
+													<option value=7>7</option>
+												
+													<option value=8>8</option>
+												
+													<option value=9>9</option>
+												
+													<option value=10>10</option>
+												
+													<option value=11>11</option>
+												
+													<option value=12>12</option>
+												
+													<option value=13>13</option>
+												
+													<option value=14>14</option>
+												
+													<option value=15>15</option>
+												
+													<option value=16>16</option>
+												
+													<option value=17>17</option>
+												
+													<option value=18>18</option>
+												
+													<option value=19>19</option>
+												
+													<option value=20>20</option>
+												
+													<option value=21>21</option>
+												
+													<option value=22>22</option>
+												
+													<option value=23>23</option>
+												
+													<option value=24>24</option>
+												
+													<option value=25>25</option>
+												
+													<option value=26>26</option>
+												
+													<option value=27>27</option>
+												
+													<option value=28>28</option>
+												
+													<option value=29>29</option>
+												
+													<option value=30>30</option>
+												
+													<option value=31>31</option>
+												
+											</select>
+											 -->
+											
+										</td>
+										<td>
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time3_validate')" style="">
+											<span id="exec_senior_time3_validate" class="new_line error" style="display:none"></span>
+										</td>
+										<td>
+											<a title="添加" onclick="addSeniorTime(this,3)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											每
+											<select style="width:40px">
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											月
+											
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div style="width:140px" class="cont">
+													<ul>
+														<li><input type="checkbox" checked="" name="permulti4" value="1" disabled="" onclick="multiClick(this,event,4);" style="">第1个</li>
+														
+															<li><input type="checkbox" name="permulti4" value="2" onclick="multiClick(this,event,4);" style="">第2个</li>
+														
+															<li><input type="checkbox" name="permulti4" value="3" onclick="multiClick(this,event,4);" style="">第3个</li>
+														
+															<li><input type="checkbox" name="permulti4" value="4" onclick="multiClick(this,event,4);" style="">第4个</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,4)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											<!-- 
+											<select>
+												
+													<option value=1>1</option>
+												
+													<option value=2>2</option>
+												
+													<option value=3>3</option>
+												
+													<option value=4>4</option>
+												
+													<option value=5>5</option>
+												
+											</select> -->
+											&nbsp;
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div class="cont" style="width:140px">
+													<ul>
+														<li><input type="checkbox" checked="" name="weekmulti4" value="1" disabled="" onclick="multiClick(this,event,7);" style="">星期一</li>
+														
+															<li><input type="checkbox" name="weekmulti4" value="2" onclick="multiClick(this,event,7);" style="">星期二</li>
+														
+															<li><input type="checkbox" name="weekmulti4" value="3" onclick="multiClick(this,event,7);" style="">星期三 </li>
+														
+															<li><input type="checkbox" name="weekmulti4" value="4" onclick="multiClick(this,event,7);" style="">星期四</li>
+														
+															<li><input type="checkbox" name="weekmulti4" value="5" onclick="multiClick(this,event,7);" style="">星期五</li>
+														
+															<li><input type="checkbox" name="weekmulti4" value="6" onclick="multiClick(this,event,7);" style="">星期六</li>
+														
+															<li><input type="checkbox" name="weekmulti4" value="7" onclick="multiClick(this,event,7);" style="">星期日</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,7)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											<!-- 
+											<select class="text" name="exec_everyweek_day">
+												<option value="1" selected>星期一</option>
+												
+													<option value=2>星期二</option>
+												
+													<option value=3>星期三 </option>
+												
+													<option value=4>星期四</option>
+												
+													<option value=5>星期五</option>
+												
+													<option value=6>星期六</option>
+												
+													<option value=7>星期日</option>
+												
+											</select> -->
+										</td>
+										<td>
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time4_validate')" style="">
+											<span id="exec_senior_time4_validate" class="new_line error" style="display:none"></span>
+										</td><td>
+											<a title="添加" onclick="addSeniorTime(this,4)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+								</tbody></table>
+							</fieldset>
+						</td>
+						<td style="vertical-align:text-top; padding:0 8px" "="">
+							<fieldset style="min-height: 155px;">
+								<legend>已添加周期时间</legend>
+								<span id="exec_senior_added_validate" class="new_line error" style="display:none"></span>
+								<table style="width:345px;" class="cmn_table"><tbody id="added_senior_time">
+									
+									
+										<tr value="-1" id="no_data_tr">
+											<td colspan="5">
+												
+												<div class="cmn_warning tip">
+													<img class="ico" src="/media/stylesheet/nsfocus_2012/images/blank.gif"> 
+													无数据
+												</div>
+												
+						
+											</td>
+										</tr>
+									
+								</tbody></table>
+							</fieldset>
+						</td>
+					</tr>
+				</tbody></table>
+				<!-- <input type="button" onclick="testT()" value="测试"> -->
+<script>
+	function multiSelectAll(obj,e){
+		if (e.stopPropagation){e.stopPropagation();}
+		else{e.cancelBubble = true;};
+		jQuery(obj).parent().prev().children().children('input:checkbox').attr('disabled',false);
+		jQuery(obj).next().attr('disabled',true);
+	}
+	function multiReverse(obj,e,eflag){
+		var len=jQuery(obj).parent().prev().children().children('input:checkbox:checked').length;
+		if (e.stopPropagation){e.stopPropagation();}
+		else{e.cancelBubble = true;};
+		if (len>=eflag-1){
+			jQuery(obj).parent().prev().children().children('input:checkbox').attr('disabled',true);
+			jQuery(obj).parent().prev().children().children('input:checkbox:checked').attr('disabled',false);
+		}else{
+			jQuery(obj).parent().prev().children().children('input:checkbox').attr('disabled',false);
+		};
+	}
+	function multiClick(obj,e,eflag){
+		var len=jQuery(obj).parent().siblings().children('input:checkbox:checked').length;
+		//勾去时，为勾去之后的个数，勾对时为勾之前的个数
+		if (!jQuery(obj).attr("checked")){
+			jQuery(obj).parent().parent().next().children().eq(1).attr('disabled',false);
+			if (len<=1){
+				jQuery(obj).parent().siblings().children('input:checkbox:checked').attr('disabled',true)
+			};
+		}else{
+			jQuery(obj).parent().siblings().children('input:checkbox').attr('disabled',false);
+			if (len>=eflag-1){
+				jQuery(obj).parent().parent().next().children().eq(1).attr('disabled',true);
+			};
+		};
+		if (e.stopPropagation){e.stopPropagation();}
+		else{e.cancelBubble = true;};
+	}
+</script>
+		
+<script>
+	function addSeniorTime(obj,type){
+		var tm=jQuery(obj).parent().parent().children().eq(1).find('span:visible');
+		if (tm.length>0){alert("添加失败，格式有错误");}else{
+			if (jQuery("#added_senior_time").children().length<2){
+				jQuery("#no_data_tr").hide();
+				jQuery('#exec_senior_added_validate').hide();
+			};
+			var tr=jQuery(obj).parent().parent();
+			var tre=jQuery('<tr>');
+			jQuery("#added_senior_time").append(tre);
+			tde=getCronObj(obj,type);
+			tre.append(tde);
+			
+			var time=jQuery(obj).parent().parent().children().eq(1).find('input').val();
+			tde=jQuery('<td>',{'text':time})
+			tre.append(tde);
+			
+			tde=jQuery('<td>');
+			
+			var ae=jQuery('<a>',{'title':"删除",'style':"cursor:pointer"});
+			ae.bind("click",function(){
+				delSeniorTime(this);
+			});
+			
+			var ie=jQuery('<img>',{'src':"/media/stylesheet/nsfocus_2012/images/icon/delete.gif","align":"absmiddle","alt":"删除"});
+			ae.append(ie);
+			tde.append(ae);
+			tre.append(tde);
+			jQuery('#added_senior_time').append(tre);
+		};
+
+	}
+	function getCronObj(obj,type){
+		var td= document.createElement("td");
+		var time=jQuery(obj).parent().parent().children().eq(1).find('input').val();
+		if (type==1){
+			var value=jQuery(obj).parent().parent().children().eq(0).find('select').val();
+			var s='1@day#'+time+'#*/'+value+"#*#*#*";
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value+"天";
+		}else if(type==2){
+			var value1=jQuery(obj).parent().parent().children().eq(0).find('select').eq(0).val();
+			var value2=jQuery(obj).parent().parent().children().eq(0).find('span').eq(0).find('input').eq(0).val();
+			var value3="";
+			jQuery("[name=weekmulti2]").each(function(){
+				if (jQuery(this).attr('checked')){value3=value3+jQuery(this).val()+',';};
+			});
+			if (value3.length>1){
+				value3=value3.substr(0,value3.length-1);
+			};
+			var s='2@week#'+time+'#*#'+value3+'#*/'+value1+"#*";
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value1+"周&nbsp;"+value2;
+		}else if(type==3){
+			var value1=jQuery(obj).parent().parent().children().eq(0).find('select').eq(0).val();
+			var value2=jQuery(obj).parent().parent().children().eq(0).find('span').eq(0).find('input').eq(0).val();
+			var value3="";
+			jQuery("[name=daymulti3]").each(function(){
+				if (jQuery(this).attr('checked')){value3=value3+jQuery(this).val()+',';};
+			});
+			if (value3.length>1){
+				value3=value3.substr(0,value3.length-1);
+			};
+			var s='3@day#'+time+'#'+value3+"#*#*#*/"+value1;
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value1+"月&nbsp;"+value2;  //+"日"
+		}else if(type==4){
+			var value1=jQuery(obj).parent().parent().children().eq(0).find('select').eq(0).val();
+			var value2=jQuery(obj).parent().parent().children().eq(0).find('span').eq(0).find('input').eq(0).val();
+			var value3=jQuery(obj).parent().parent().children().eq(0).find('span').eq(1).find('input').eq(0).val();
+			var value4="";
+			jQuery("[name=weekmulti4]").each(function(){
+				if (jQuery(this).attr('checked')){value4=value4+jQuery(this).val()+',';};
+			});
+			if (value4.length>1){
+				value4=value4.substr(0,value4.length-1);
+			};
+			var value5="";
+			jQuery("[name=permulti4]").each(function(){
+				if (jQuery(this).attr('checked')){value5=value5+jQuery(this).val()+',';};
+			});
+			if (value5.length>1){
+				value5=value5.substr(0,value5.length-1);
+			};
+
+			var s='4@week#'+time+'#*#'+value4+'#'+value5+"#*/"+value1;
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value1+"月&nbsp;"+value2+"&nbsp;"+value3; //"个"
+		};
+		
+		return td
+	}
+	function delSeniorTime(obj){
+		jQuery(obj).parent().parent().remove();
+		if (jQuery("#added_senior_time").children().length<2){
+			jQuery("#no_data_tr").show();
+		};
+	}
+</script>
+<script>
+	function testT(){
+		
+		var retstr="";
+		jQuery("#added_senior_time").children().each(function(){
+			var ins=jQuery(this).children().eq(0).find('input');
+			//alert(ins.length);
+			if (ins.length>0){
+				var tmpstr=ins.eq(0).val();
+				retstr=retstr+tmpstr+';';
+			};
+		});
+		if (retstr!=""){
+			retstr=retstr.substr(0,retstr.length-1);
+		};
+		
+		//alert(retstr);
+		return retstr
+		
+	}
+	function testTOLD(){
+		
+		var retstr="";
+		jQuery("#added_senior_time").children().each(function(){
+			var ins=jQuery(this).children().eq(0).find('input');
+			//alert(ins.length);
+			if (ins.length>0){
+				
+				var type=ins.eq(0).val();
+				retstr=retstr+type+'@';
+				var time=jQuery(this).children().eq(1).text();
+				if (type=='1'){
+					retstr=retstr+'day:';
+					retstr=retstr+time;
+					retstr=retstr+':*/'+ins.eq(1).val()+":*:*:*";
+					//retstr=retstr+ins.eq(1).val()+'#';
+				}else if(type=='2'){
+					retstr=retstr+'week:';
+					retstr=retstr+time;
+					retstr=retstr+':*:'+ins.eq(2).val()+":"+ins.eq(1).val()+":*";
+					//retstr=retstr+ins.eq(1).val()+'#';
+					//retstr=retstr+ins.eq(2).val()+'#';
+				}else if(type=='3'){
+					retstr=retstr+'day:';
+					retstr=retstr+time;
+					retstr=retstr+':'+ins.eq(2).val()+":*:*:*/"+ins.eq(1).val();
+					//retstr=retstr+ins.eq(1).val()+'#';
+					//retstr=retstr+ins.eq(2).val()+'#';
+				}else if(type=='4'){
+					retstr=retstr+'week:';
+					retstr=retstr+time;
+					retstr=retstr+':*:'+ins.eq(3).val()+":"+ins.eq(2).val()+":*/"+ins.eq(1).val();
+					//retstr=retstr+ins.eq(1).val()+'#';
+					//retstr=retstr+ins.eq(2).val()+'#';
+					//retstr=retstr+ins.eq(3).val()+'#';
+				};
+				
+				//retstr=retstr+time;
+				retstr=retstr+';';
+			};
+		});
+		if (retstr!=""){
+			retstr=retstr.substr(0,retstr.length-1);
+		};
+		
+		alert(retstr);
+		return retstr
+		
+	}
+</script>
+			</div>
+		</td>
+</tr>
+<!-- web扫描插件模板-->
+<tr class="odd">
+    <th>漏洞模板</th>
+    <td>
+    	<div id="tpl_validate" class="error" style="display:none"></div>
+        <select id="tpl" class="text" name="tpl" style="width:365px">
+            <option selected="" value="0">自动匹配扫描</option>
+            
+                <option value="107">未知漏洞扫描</option>
+            
+                <option value="113">危险插件模版</option>
+            
+                <option value="100">Web应用漏洞(全部)</option>
+            
+                <option value="102">快速扫描</option>
+            
+                <option value="103">高危漏洞扫描</option>
+            
+                <option value="104">SQL注入扫描</option>
+            
+                <option value="105">XSS扫描</option>
+            
+                <option value="106">远程挂马扫描</option>
+            
+        </select>
+        
+    
+        <a href="/template/webIndex/web" style="cursor:pointer;" target="_blank">
+            <img src="/media/stylesheet/nsfocus_2012/images/icon/template_manage.gif" align="absmiddle">
+            漏洞模板管理
+        </a>
+        
+        
+    </td>
+</tr>
+<tr class="line"><td colspan="2"></td></tr>
+<!-- 认证配置-->
+<tr>
+        <th>认证配置</th>
+        <td style="padding-bottom: 0px">
+            <input id="protocol_auth" type="checkbox" name="protocol_auth" value="yes" onclick="$('protocol_auth_wrap').toggle();" style="">
+            <label for="protocol_auth">启用</label>
+            <div id="protocol_auth_wrap" style="display:none;">      
+               <div id="protocol_auth_div">
+               <script type="text/javascript" src="/media/js/prototype.js"></script>
+<script type="text/javascript" src="/media/js/jquery/jquery.js"></script>
+<!-- <script type="text/javascript" src="/media/js/jquery/jquery-1.7.2.js"></script> -->
+<script type="text/javascript" src="/media/js/jquery/ajaxfileupload.js"></script>
+
+
+
+<table class="cmn_table" style="TABLE-LAYOUT:fixed;WORD-BREAK:break-all">
+	<tbody><tr class="first_title">
+		<td width="40%">扫描目标</td>
+		<td width="15%">协议认证</td>
+		<td width="15%">用户名</td>
+		<!-- <td>密码</td>-->
+		<td width="20%">登录扫描方式</td>
+		<!-- <td width="17%">登陆扫描参数</td>-->
+		<td width="10%">操作</td>
+	</tr>
+	<tr id="check_table_nodata_tr" style="display:none;">
+		<td colspan="5" style="position:relative;height:60px;">
+
+			<div class="cmn_warning tip">
+				<img class="ico" src="/media/stylesheet/nsfocus_2012/images/blank.gif"> 
+				无数据
+			</div>
+
+		</td>
+	</tr>
+	
+	<tr id="check_table_nodata_tr">
+		<td colspan="5" style="position:relative;;height:60px;">
+			<div class="cmn_warning tip">
+				<img class="ico" src="/media/stylesheet/nsfocus_2012/images/blank.gif"> 
+				无数据
+			</div>
+		</td>
+	</tr>
+	
+</tbody></table>
+	
+            	</div>
+            </div>
+        </td>   
+</tr>
+
+<!-- 代理配置 -->
+<tr>
+<th>代理配置</th>
+	<td>
+         <input id="proxy_conf" type="checkbox" name="proxy_conf" value="yes" onclick="$('proxy_conf_div').toggle();" style="">
+         <label for="proxy_conf">启用</label>
+         <div id="proxy_conf_div" style="display:none;">      
+         <table id="proxy">
+         	<tbody><tr>
+         	<td colspan="3">
+         	<div id="proxy_type_error" class="error" style="display:none"></div>
+         	<div id="proxy_auth_error" class="error" style="display:none"></div>
+         	</td>
+         	</tr>
+			<tr class="even">
+			<td>代理类型</td>
+			<td>
+				<select id="ws_proxy_type" name="ws_proxy_type" style="width:136px;">
+				<option svalue="HTTP">HTTP</option>
+				<option value="SOCKS5">SOCKS5</option>
+				<option value="SOCKS4">SOCKS4</option>
+				</select>
+			</td>
+			<td>协议认证</td>
+			<td>
+				<select name="ws_proxy_auth" style="width:136px;">
+					<option value="Basic">Basic</option>
+					<option value="NTLM">NTLM</option>
+					<option value="Digest-MD5">Digest-MD5</option>
+				</select>
+			</td>
+			<td>
+				<span class="text_comment comment_middle">支持NTLM、Basic、Digest-MD5认证</span>
+			</td>
+			</tr>
+			<tr>
+         	<td colspan="3">
+         	<div id="proxy_server_error" class="error" style="display:none"></div>
+         	<div id="proxy_port_error" class="error" style="display:none"></div>
+         	</td>
+         	</tr>
+			<tr class="even">
+			<td>服务器地址
+				<span class="cmn_must">*</span>
+			</td>
+			<td>
+				<input type="text" maxlength="30" style="width: 130px;" id="ws_proxy_server" name="ws_proxy_server" class="text">
+			</td>
+			<td>	
+				端口 <span class="cmn_must">*</span>
+			</td>
+			<td>
+				<input type="text" maxlength="5" style="width: 130px;" id="ws_proxy_port" name="ws_proxy_port" class="text">
+			</td>
+			<td>
+				<span class="text_comment comment_middle">服务器地址可以为IP或域名</span>
+			</td>
+			</tr><tr>
+         	<td colspan="3">
+         	<div id="proxy_name_error" class="error" style="display:none"></div>
+         	</td>
+         	</tr>
+			
+			<tr class="even" id="proxy_user_pwd">
+			<td>用户名</td>
+			<td>
+				<input type="text" maxlength="20" style="width: 130px;" id="ws_proxy_username" name="ws_proxy_username" class="text">
+			</td>
+			<td>
+				密码
+			</td>
+			<td>
+				<input type="password" maxlength="14" style="width: 130px;" id="ws_proxy_password" name="ws_proxy_password" class="text">
+			</td>
+			<td>
+				<span class="text_comment comment_middle" style="padding:2px 0 0 0;">用户名和密码不能单个为空</span>
+			</td>
+			</tr>
+			<tr class="even">
+			<td colspan="5">
+			<div id="proxy_conf_error" class="error" style="display:none"></div>
+			<input type="button" class="cmn_btn" value="连通测试" onclick="testProxy();" style="">
+			<span id="proxy_test_result" class="success" style="display: none;">连通</span>
+			<div id="test_proxy_msg" class="load_con anywhere" style="display:none;position:relative;top:0;"><span>正在进行代理连通测试,请稍候.....</span></div>
+			</td>
+			</tr>
+		</tbody></table> 
+    	</div>
+	</td>   
+</tr>
+<!-- web扫描时间段 -->
+<tr class="line"><td colspan="2"></td></tr>
+<tr class="odd">
+    <th>扫描时间段</th>
+    <td>
+    	<div id="crontime_range_validate" class="error" style="display:none"></div>
+        <div style="float:left">
+				<input class="text" type="text" name="cron_range" id="cron_range" size="5" maxlength="256" style="width: 365px;" onchange="check_exec_range();">
+				<img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" align="absmiddle" style="vertical-align: top; cursor: pointer;" title="" tipbox="内容格式如00:00-12:00，多个时间段用分号隔开" w_tip="" h_tip="">
+        </div>
+    </td>
+</tr>
+<!-- 调度优先级-->
+<tr class="odd">
+    <th>调度优先级</th>
+    <td>
+    <div id="dispatchLevel_error" class="error" style="display:none"></div>
+        <select id="dispatchLevel" class="text" name="dispatchLevel" style="width:365px">
+            <option value="1">低</option>
+            <option value="2" selected="">中</option>
+            <option value="3">高</option>
+        </select>  
+        <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" align="absmiddle" style="vertical-align: top; cursor: pointer;" title="" tipbox="优先级越高的任务被优先执行的概率越大" w_tip="" h_tip=""> 
+    </td>
+</tr>
+<tr class="odd">
+		<th>调试模式</th>
+		<td>
+			<input type="checkbox" id="ifdebug" name="ifdebug" value="yes" onclick="if(this.checked){alert('开启调试模式将会降低扫描执行效率。')}" style="">
+            <label for="ifdebug">启用</label>
+		</td>
+	</tr>
+<tr class="line"><td colspan="2"></td></tr>
+<!-- 任务说明-->
+<tr>
+        <th>任务说明</th>
+        <td style="padding-bottom: 0px" align="top">
+		<div id="target_description_error" class="error" style="display:none"></div>
+        <div style="float:left;"><span class="resize_box"><b class="ico"></b><span><textarea class="text Resize" name="target_description" id="target_description" rows="3" style="width: 365px;" maxlength="256"></textarea></span></span></div>
+    	<div style="float:left;"><span class="text_comment">长度小于256个字符</span></div>
+        </td>   
+</tr>
+</tbody></table>
+<script type="text/javascript">
+jQuery("#ws_proxy_type").change(function(){
+	var checkValue = jQuery("#ws_proxy_type").val();
+	if(checkValue=='SOCKS4'){	
+		jQuery("#proxy_user_pwd").hide()
+	}else{
+		jQuery("#proxy_user_pwd").show()
+	}
+			
+})
+
+</script>
+						</div>
+						<div id="web_report" class="content hide" style="margin-top: 0px">
+							<table width="100%">
+<!-- 报表类型-->
+	<tbody><tr> 
+		<th width="15%">
+			报表类型
+		</th>
+		<td id="report_type_td">
+			<div id="report_type_error" class="error" style="display:none"></div>
+			<input type="checkbox" id="report_type_html" name="report_type_html" value="html" checked="" onclick="web_checkType(this)" style="">
+			<label for="report_type_html">
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/html.gif">
+			HTML&nbsp;&nbsp;
+			</label>
+			<input type="checkbox" id="report_type_doc" name="report_type_doc" value="doc" onclick="web_checkType(this)" style="">
+			<label for="report_type_doc">
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/word.gif">
+			Word&nbsp;&nbsp;
+			</label>
+			<input type="checkbox" id="report_type_xls" name="report_type_xls" value="xls" onclick="web_checkType(this)" style="">
+			<label for="report_type_xls">
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif">
+			Excel&nbsp;&nbsp;
+			</label>
+			<!-- <input type="checkbox" id="report_type_pdf"  name="report_type_pdf" value="pdf"    onclick="web_checkType(this)"/>
+			<label for="report_type_pdf">
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif"/>
+			</label>
+			PDF-->
+		</td>
+	</tr>
+<!-- 报表内容-->
+	<tr>
+		<th>
+			报表内容
+		</th>
+		<td>
+			<input id="summarizeReport" type="checkbox" name="summarizeReport" value="yes" checked="" onclick="web_checktpl(this,'#report_tpl_sum_tr')" style="">
+			<label for="summarizeReport">综述报表</label>
+			&nbsp;&nbsp;
+			<input id="oneSiteReport" type="checkbox" name="oneSiteReport" value="yes" checked="" onclick="web_checktpl(this,'#report_tpl_host_tr')" style="">
+			<label for="oneSiteReport">单站点报表</label>
+		</td>
+	</tr>
+<!-- 总数报表模板-->
+	<tr id="report_tpl_sum_tr">
+		<th>综述报表模板</th>
+		<td>
+			<div id="sum_report_tpl_error" class="error" style="display:none"></div>
+			<select style="width:200px;" name="sum_report_tpl">
+				
+					<option value="201">系统默认模板</option>
+				
+					<option value="202">行政主管模板</option>
+				
+					<option value="203">技术主管模板</option>
+				
+					<option value="204">历史数据分析模板</option>
+				
+	
+			</select>
+			
+			<a href="/template/report/websummary_tpl" style="cursor:pointer;" target="_blank">
+				<img src="/media/stylesheet/nsfocus_2012/images/icon/template_report.gif" align="absmiddle">
+				报表模板管理
+			</a>
+			
+		</td>
+	</tr>
+<!-- 单站点报表模板-->
+	<tr id="report_tpl_host_tr">
+		<th>单站点报表模板</th>
+		<td>
+			<div id="site_report_tpl_error" class="error" style="display:none"></div>
+			<select style="width:200px;" name="site_report_tpl">
+				
+					<option value="301">系统默认模板</option>
+				
+					<option value="302">技术主管模板</option>
+				
+					<option value="303">历史数据分析模板</option>
+				
+			
+			</select>
+			
+			<a href="/template/report/site_tpl" style="cursor:pointer;" target="_blank">
+				<img src="/media/stylesheet/nsfocus_2012/images/icon/template_report.gif" align="absmiddle">
+				报表模板管理
+			</a>
+			
+		</td>
+	</tr>
+<!-- 自动生成报表-->
+	<tr>
+		<th>自动生成报表</th>
+		<td>
+			<input id="auto_export" type="checkbox" name="auto_export" value="yes" onclick="check_autoexport();" style="">
+			<label for="auto_export">启用</label>
+			<span id="auto_export_validate" class="error" style="display:none"></span>
+		</td>
+	</tr>
+<!-- FTP上传-->
+	<tr>
+		<th>FTP上传</th>
+		<td>
+			<input id="sendReport_ftp" type="checkbox" name="sendReport_ftp" value="yes" disabled="" onclick="test_ftpConfig();" style="">
+			<label for="sendReport_ftp">启用</label>
+		</td>
+	</tr>
+<!-- 报表发送-->
+	<tr>
+		<th>发送报表</th>
+		<td>
+			<input id="sendReport_email" type="checkbox" name="sendReport_email" value="yes" onclick="$('sendReport_email_table').toggle();" disabled="" style="">
+			<label for="sendReport_email">启用</label><br>
+			
+			<table style="padding:0px;display:none;" id="sendReport_email_table">
+				
+				<tbody><tr>
+					<th style="padding:0px;padding-top: 4px;">报表类型</th>
+					<td style="padding-top: 8px;">
+					<div id="sendReport_type_error" class="error" style="display:none"></div>
+						<select style="width:144px;" id="sendReport_type" name="sendReport_type">
+							
+								<option value="html">html</option>
+							
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th style="padding:0px">邮箱地址</th>
+					<td>
+						<div id="email_address_error" class="error" style="display:none"></div>
+						<textarea style="width: 144px;" class="textResize" rows="3" id="email_address" name="email_address" onchange="validate_emails();"></textarea>
+						<img class="tipBox" align="absmiddle" style="vertical-align: top; cursor: pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" title="" tipbox="例：admin@example.com，多个邮箱用空格、回车、逗号或分号分隔，最多输入5个邮箱。" w_tip="" h_tip="">
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+						</div>
+						<div id="web_senior" class="content hide" style="margin-top: 0px;">
+							<style type="text/css">
+.web_title {
+	color:black;
+	font-weight: bold;
+	margin:10px 0 ;
+}
+</style>
+
+<script>
+jQuery(document).ready(function(){
+	jQuery("#auto_detect").click(function(){
+		jQuery("#coding_con").hide();
+	});
+	jQuery("#manual_detect").click(function(){
+		jQuery("#coding_con").show();
+	});
+})
+</script>
+
+<!-- Web访问策略-->
+<div class="web_title">Web访问策略</div>
+<table width="100%">
+	<tbody><tr> 
+		<th width="18%">
+			并发线程数
+		</th>
+		<td id="report_type_td">
+		<div id="plugin_threads_error" class="error" style="display:none"></div>
+		<input type="text" class="text" name="plugin_threads" id="plugin_threads" value="100" style="width: 270px;">
+		<span class="text_comment"><img class="tipBox comment_tipBox" style="vertical-align: top; cursor: pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" align="absmiddle" title="" tipbox="Web扫描插件并发扫描线程数，此数值越大，扫描速度越快；此数值的调整要考虑网络带宽以及服务器的处理能力，过大的数值会影响目标服务器的正常运行，范围：1-100" w_tip="" h_tip=""></span>
+		</td>
+	</tr>
+	<tr class="even">
+	<th>超时限制</th>
+	<td>
+	<div id="webscan_timeout_error" class="error" style="display:none"></div>
+	<input type="text" class="text" name="webscan_timeout" value="30" style="width: 270px;">
+	<span class="text_comment comment_middle" style="*margin-bottom:5px;">单位（秒）  分析一个页面最长时间限制,范围1~300</span>
+	</td>
+	</tr>
+	<tr class="even">
+	<th>网页编码方式</th>
+	<td>
+		<div class="align_fix clearfix" style="float: left;width:90px;">
+		<label><input class="form-radio" type="radio" name="page_encoding" checked="checked" value="0" id="auto_detect" style=""><span>自动检测</span></label>
+		</div>
+		<div class="align_fix clearfix" style="float: left;width:90px;">
+		<label><input class="form-radio" type="radio" name="page_encoding" value="manual_detect" id="manual_detect" style=""><span>手动检测</span></label>
+		</div>
+		<span class="text_comment">指定所爬网站的页面编码</span></td>
+	</tr>
+	<tr id="coding_con" style="display:none;">
+	<td></td>
+	<td>
+	<select name="coding" id="coding" style="width:270px;">
+			<option value="GB18030">简体中文（GB18030）</option>
+			<option value="BIG5">BIG5</option>
+			<option value="UTF8" selected="">Unicode(UTF-8)</option>
+	</select>
+	</td>
+	</tr>
+	<tr>
+	<th>自定义User-Agent</th>
+	<td>
+         <input id="login_ifuse" type="checkbox" checked="" name="login_ifuse" value="yes" onclick="$('login_ifuse_div').toggle();" style="">
+         <label for="login_ifuse">启用</label>
+         <div id="user_agent_error" class="error" style="display:none"></div>
+         <div id="login_ifuse_div">      
+         <span class="resize_box"><b class="ico"></b><span><textarea name="user_agent" id="user_agent" class="text Resize adaptive" rows="4" style="width: 270px; height: 91px;">Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4</textarea></span></span>
+		 <span class="text_comment">指定执行扫描时，发包所用的user-agent值</span>
+    	 </div>
+	</td>   
+	</tr>
+	<tr class="line"><td colspan="2"></td></tr>
+</tbody></table>
+<div class="web_title">Web检测策略</div>
+<!-- Web检测策略-->
+<table width="100%">
+<tbody><tr class="even">
+	<th width="18%">目录猜测范围</th>
+	<td>
+		<select id="dir_level" name="dir_level" style="width:270px;">
+			<option value="0">0</option>
+			<option value="1" selected="selected">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+		</select>
+		<span class="text_comment"><img class="tipBox" style="margin-bottom: 0px; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="常见目录，文件的猜测范围。值越大，猜测的范围越广，可能猜测出的目录，文件越多，但是扫描时间会更长。0表示不猜测" w_tip="" h_tip=""></span>
+	</td>
+</tr>
+<tr class="even">
+	<th>目录猜测深度</th>
+	<td>
+		<div id="dir_limit_error" class="error" style="display:none"></div>
+		<input type="text" id="dir_limit" name="dir_limit" class="text" value="3" style="width: 270px;">
+		<span class="text_comment"><img class="tipBox" style="margin-bottom: 0px; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="敏感目录或文件猜测的链接深度,必须小于目录深度的设置，范围：0~30" w_tip="" h_tip=""></span>
+	</td>
+</tr>
+<tr class="even">
+	<td>备份文件检查类型</td>
+	<td>
+		<div id="filetype_to_check_backup_error" class="error" style="display:none"></div>
+		<input type="text" class="text" id="filetype_to_check_backup" name="filetype_to_check_backup" value="shtml,php,jsp,asp,aspx" style="width: 270px;">
+		<span class="text_comment"><img class="tipBox" style="margin-bottom: 0px; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="需要检查哪些文件存在备份文件，由数字和字母组成，多个类型之间使用逗号隔开" w_tip="" h_tip=""></span>
+	</td>
+</tr>
+<tr class="even">
+	<td>备份文件检查扩展名</td>
+	<td>
+		<div id="backup_filetype_error" class="error" style="display:none"></div>
+		<input type="text" class="text" id="backup_filetype" name="backup_filetype" value="bak,old" style="width: 270px;">
+		<span class="text_comment"><img class="tipBox" style="margin-bottom: 0px; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="检查的备份文件的扩展名，由数字和字母组成，多个扩展名之间使用逗号隔开" w_tip="" h_tip=""></span>
+	</td>
+</tr>	
+<tr class="line"><td colspan="2"></td></tr>
+</tbody></table>
+
+<div class="web_title">Web爬行策略</div>
+<!-- Web爬行策略-->
+<table width="100%">
+<tbody><tr class="even">
+<td width="18%">爬行顺序</td>
+<td>
+	<div class="align_fix clearfix" style="float: left;width:90px;">
+	<label><input type="radio" checked="checked" value="0" name="scan_type" style="">
+	广度优先</label>
+	</div>                                        
+	<div class="align_fix clearfix" style="float: left;width:90px;">
+	<label><input type="radio" value="1" name="scan_type" style="">
+	深度优先</label>
+	</div>   
+	<span class="text_comment">爬取过程中采取的链接获取方式</span>                                                                            
+</td>
+</tr>
+<tr class="even"><td>单目录文件数</td>
+	<td>
+	<div id="dir_files_limit_error" class="error" style="display:none"></div>
+	<input type="text" size="5" class="text" name="dir_files_limit" id="dir_files_limit" value="-1" style="width: 270px;">
+	<span class="text_comment"><img class="tipBox" style="vertical-align: top; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="当选择消重时，每个目录下被扫描的文件个数！范围：大于等于-1的整数，-1表示不限制" w_tip="" h_tip=""></span>
+	</td>
+</tr>
+<tr class="even">
+	<td>目录深度</td>
+	<td>
+		<div id="dir_depth_limit_error" class="error" style="display:none"></div>
+		<input type="text" class="text" value="15" size="5" name="dir_depth_limit" id="dir_depth_limit" style="width: 270px;">
+		<span class="text_comment"><img class="tipBox" style="vertical-align: top; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="扫描中爬虫追溯的目录层次深度，范围-1~30，-1表示不限制" w_tip="" h_tip=""></span>
+	</td>
+</tr>
+<tr class="even">
+<td>链接总数</td>
+<td>
+	<div id="scan_link_limit_error" class="error" style="display:none"></div>
+	<input type="text" class="text" value="-1" size="5" name="scan_link_limit" id="scan_link_limit" style="width: 270px;">
+	<span class="text_comment"><img class="tipBox" style="vertical-align: top; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="限制扫描链接总个数，范围：大于等于-1的整数，-1表示不限制" w_tip="" h_tip=""></span>
+</td>
+</tr>
+<tr class="even">
+<td>区分大小写</td>
+<td>
+   <div style="float: left;width:90px;" class="align_fix clearfix">
+   <label><input type="radio" name="case_sensitive" value="1" checked="checked" style="">区分</label>
+   </div>
+   <div style="float: left;width:185px;" class="align_fix clearfix">
+   <label><input type="radio" name="case_sensitive" value="0" style="">不区分</label>
+   </div>
+   <div style="float: left;width:90px;" class="align_fix clearfix">
+   <span class="text_comment"><img class="tipBox" style="vertical-align: top; cursor: pointer;" title="" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" tipbox="扫描过程中是否区分目录和链接中的大小写" w_tip="" h_tip=""></span>
+   </div>
+</td>
+</tr>
+<tr class="odd">
+<td>解析Flash文件</td>
+<td>
+	<input type="checkbox" id="if_flash" name="if_flash" value="1" style="">
+	<label for="if_flash">启用</label>
+	<span class="text_comment" align="top">			          
+	   <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" style="vertical-align: top; cursor: pointer;" title="" <="" img="" tipbox="指定是否开启flash相关扫描，目前flash只支持flash10以下的版本" w_tip="" h_tip="">
+    </span>
+</td>
+</tr>
+<tr class="odd">
+<td>执行JavaScript</td>
+<td>
+	<input type="checkbox" id="if_javascript" name="if_javascript" value="1" checked="" style="">
+	<label for="if_javascript">启用</label>
+	<span class="text_comment" align="top">			          
+	   <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" style="vertical-align: top; cursor: pointer;" title="" <="" img="" tipbox="用于指定在爬取页面时，页面中的javascript脚本代码如何处理：“是”表示需要执行javascript代码，并且模拟触发各类事件；“否”表示禁止执行javascript代码，这样会提高扫描速度，但是有部分链接就不会被爬取" w_tip="" h_tip="">
+    </span>
+</td>
+</tr>
+<tr class="odd">
+<td>链接消重策略</td>
+<td>
+<select name="if_repeat" style="width:270px;">
+		<option value="0">0</option>
+		<option value="1">1</option>
+		<option value="2" selected="selected">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+</select>
+<span class="text_comment" align="top">			          
+	   <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" style="vertical-align: top; cursor: pointer;" title="" <="" img="" tipbox="指定链接消重策略的等级，可选值0,1,2,3,4，默认值为2&lt;br/&gt;
+										0：对页面敏感；1：对页面，请求方式敏感；2：对页面，请求方式，参数名敏感； 3：对页面，请求方式，参数名，GET参数值敏感；4：对页面，请求方式，参数名，GET参数值，POST提交数据敏感" w_tip="" h_tip="">
+</span>
+</td>
+</tr>
+</tbody></table>
+
+						</div>
+					</td></tr>
+				</tbody></table>
+			</td>
+		</tr>
+		<tr>
+			<td class="tab_cell"></td>
+			<td id="submit_btn" class="tab_cell">
+				<input id="submitButton" class="cmn_btn" type="button" onclick="webscan_submit();" value="确定" disabled="" style="">
+			</td>
+		</tr>
+	</tbody></table>
+</form>
+		
+		
+		   
+			
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	UI.tipBox();
+	UI.resize('textarea.Resize');
+	UI.selectMulti();
+</script>
+
+</body></html>

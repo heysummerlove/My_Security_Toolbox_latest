@@ -1,0 +1,157 @@
+综合评估报告
+========================================================================
+任务ID: 27
+任务名称: 报告评估
+评估目标: 192.168.193.11
+成功阶段: 3/4
+失败阶段: 1
+
+1. 基础连通性检测
+------------------------------------------------------------------------
+阶段标识: basic-ping
+执行状态: COMPLETED
+阶段摘要: COMPLETED: ping finished successfully | 来自 192.168.193.11 的回复: 字节=32 时间<1ms TTL=64
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\basic_results\evaluation_basic_task_27.txt
+输出摘录:
+正在 Ping 192.168.193.11 具有 32 字节的数据:
+来自 192.168.193.11 的回复: 字节=32 时间<1ms TTL=64
+来自 192.168.193.11 的回复: 字节=32 时间<1ms TTL=64
+来自 192.168.193.11 的回复: 字节=32 时间<1ms TTL=64
+来自 192.168.193.11 的回复: 字节=32 时间<1ms TTL=64
+192.168.193.11 的 Ping 统计信息:
+数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，
+往返行程的估计时间(以毫秒为单位):
+最短 = 0ms，最长 = 0ms，平均 = 0ms
+
+2. Nmap 端口扫描
+------------------------------------------------------------------------
+阶段标识: nmap
+执行状态: COMPLETED
+阶段摘要: COMPLETED: found 18 open ports
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\nmap_results\evaluation_nmap_task_27.txt
+输出摘录:
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-05-09 14:16 +0800
+Nmap scan report for 192.168.193.11
+Host is up (0.00097s latency).
+Not shown: 82 closed tcp ports (reset)
+PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+23/tcp   open  telnet      Linux telnetd
+25/tcp   open  smtp        Postfix smtpd
+53/tcp   open  domain      ISC BIND 9.4.2
+80/tcp   open  http        Apache httpd 2.2.8 (DAV/2)
+111/tcp  open  rpcbind     2 (RPC #100000)
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+513/tcp  open  login       OpenBSD or Solaris rlogind
+514/tcp  open  shell       Netkit rshd
+2049/tcp open  nfs         2-4 (RPC #100003)
+2121/tcp open  ftp         ProFTPD 1.3.1
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+5900/tcp open  vnc         VNC (protocol 3.3)
+6000/tcp open  X11         (access denied)
+8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)
+MAC Address: 00:0C:29:88:21:90 (VMware)
+Service Info: Hosts:  metasploitable.localdomain, metasploitable.localdomain; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 113.03 seconds
+
+3. Fscan 综合漏扫
+------------------------------------------------------------------------
+阶段标识: fscan
+执行状态: COMPLETED
+阶段摘要: COMPLETED: found 6 notable lines
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\fscan_results\evaluation_fscan_task_27.txt
+输出摘录:
+[*] 服务插件: oracle, mysql, neo4j, findnet, netbios ... 等24个
+[*] 192.168.193.11:5900   vnc      [Product:VNC] Banner:(RFB 003.003)
+[*] 192.168.193.11:3306   genetec-5400 [Product:Genetec Security Center] Banner:(> 5.0.51a-3ubuntu5 2 q6W38_Wv , l=+]sK^sJVPq)
+[*] 192.168.193.11:21     ftp      [Product:vsftpd ||Version:2.3.4] Banner:(220 (vsFTPd 2.3.4))
+[*] 192.168.193.11:22     ssh      [Product:OpenSSH ||Version:4.7p1 Debian 8ubuntu1] Banner:(SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1)
+[*] 192.168.193.11:25     smtp     [Product:Postfix smtpd] Banner:(220 metasploitable.localdomain ESMTP Postfix (Ubuntu))
+[*] 192.168.193.11:23     telnet   [Product:Linux telnetd] Banner:(# ')
+[*] 192.168.193.11:6667   irc      [Product:UnrealIRCd] Banner:(:irc.Metasploitable.LAN NOTICE AUTH :*** Looking up your hostname... :irc.Metasp...)
+[*] 192.168.193.11:514    shell    [Product:Netkit rshd] Banner:(getnameinfo: Temporary failure in name resolution)
+[*] 192.168.193.11:512    exec     [Product:netkit-rsh rexecd] Banner:(Where are you?)
+[*] 192.168.193.11:6000   X11      Banner:(- Client is not authorized to connect to Server!)
+[*] 192.168.193.11:2049   rpcbind  Banner:(r)
+[*] 192.168.193.11:1099   java-rmi [Product:GNU Classpath grmiregistry] Banner:(N localhost K)
+[*] 192.168.193.11:111    rpcbind  Banner:(r)
+[*] 192.168.193.11:53     domain   [Product:ISC BIND ||Version:9.4.2] Banner:(> version bind 9.4.2)
+[*] 192.168.193.11:513    http     [Product:Open Lighting Architecture daemon] Banner:(rlogind: Permission denied.)
+[*] 192.168.193.11:5432   postgresql [Product:PostgreSQL DB ||Version:8.3.0 - 8.3.7] Banner:(E SFATAL C0A000 Munsupported frontend protocol 65363.19778: server supports 1.0 ...)
+[*] 192.168.193.11:80     http     [Product:Open Lighting Architecture daemon] Banner:(HTTP/1.1 200 OK Date: Sat, 09 May 2026 03:50:10 GMT Server: Apache/2.2.8 (Ubuntu...)
+[*] 192.168.193.11:445    Banner:(SMBr H 2 A lC f :: metasploitable `( + 0 0 + 7 0 NONE)
+[*] 192.168.193.11:2121
+[*] 192.168.193.11:139    Banner:(SMBr H 2 A o f :: metasploitable `( + 0 0 + 7 0 NONE)
+[*] 扫描完成，发现 20 个开放端口
+[-] 扫描失败率过高: 58.3% (77/132失败)
+[-] 可能原因: 线程数过高导致资源耗尽
+[-] 建议: 降低线程数(当前600)到50-100，或增加系统ulimit
+[!] MySQL 192.168.193.11:3306 root:
+[+] SMBInfo 192.168.193.11:445 METASPLOITABLE SMBv1
+[+] SMBInfo 192.168.193.11:139 METASPLOITABLE SMBv1
+[*] POC加载完成: 总共388个，成功380个，失败8个
+[+] http://192.168.193.11          code:200 len:891   title:Metasploitable2 - Linux server:Apache/2.2.8 (Ubuntu) DAV/2 [apache-http apache/2.2.8 php/5.2.4]
+[!] FTP 192.168.193.11:21 匿名访问 - anonymous:anonymous
+[+] NetBios 192.168.193.11:139 metasploitable.localdomain Unix
+[-] 插件扫描错误 192.168.193.11:445 - 目标可能不支持SMBv1
+[-] 插件扫描错误 192.168.193.11:513 - Get "http://192.168.193.11:513": read tcp 192.168.193.1:52558->192.168.193.11:513: wsarecv: An existing connection was forcibly closed by the remote host.
+[-] 192.168.193.11:5900 vnc 未发现弱密码
+[-] 192.168.193.11:25 smtp 未发现弱密码
+[-] 192.168.193.11:22 ssh 未发现弱密码
+[-] 192.168.193.11:5432 postgresql 未发现弱密码
+[-] 192.168.193.11:445 smb 未发现弱密码
+[-] 192.168.193.11:139 smb 未发现弱密码
+[-] 192.168.193.11:23 telnet 未发现弱密码
+[-] 192.168.193.11:2121 ftp 未发现弱密码
+[*] 扫描任务完成，耗时 10m16.065s，已扫描 16 个目标
+
+4. Web 漏扫下发
+------------------------------------------------------------------------
+阶段标识: nsfocus
+执行状态: ERROR
+阶段摘要: ERROR: evaluation/nsfocus exited with code 1
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_results\evaluation_nsfocus_task_27.txt
+输出摘录:
+[*] Preparing web scan submission for target: 192.168.193.11
+[*] Opening scanner: https://192.168.193.10/
+[-] Automation failed: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://192.168.193.10/
+Call log:
+- navigating to "https://192.168.193.10/", waiting until "domcontentloaded"
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\submit_error_20260509_142915.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\submit_error_20260509_142915.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\submit_error_controls_20260509_142916.txt
+Traceback (most recent call last):
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 487, in auto_submit_task
+login(page)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 222, in login
+page.goto(NSFOCUS_URL, wait_until="domcontentloaded", timeout=30000)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\sync_api\_generated.py", line 9362, in goto
+self._sync(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+return task.result()
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_page.py", line 552, in goto
+return await self._main_frame.goto(**locals_to_params(locals()))
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_frame.py", line 153, in goto
+await self._channel.send(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_connection.py", line 69, in send
+return await self._connection.wrap_api_call(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_connection.py", line 559, in wrap_api_call
+raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://192.168.193.10/
+Call log:
+- navigating to "https://192.168.193.10/", waiting until "domcontentloaded"
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+File "<string>", line 1, in <module>
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 511, in auto_submit_task
+export_frame_snapshot(page, "submit_error")
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 97, in export_frame_snapshot
+frame = get_main_frame(page)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 92, in get_main_frame
+raise RuntimeError("mainFrame iframe not found")
+RuntimeError: mainFrame iframe not found
+

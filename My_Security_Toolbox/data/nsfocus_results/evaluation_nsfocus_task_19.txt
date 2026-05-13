@@ -1,0 +1,64 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\runtime\python.exe -u -c "import os, sys; sys.path.insert(0, os.getcwd()); from app.adapters.nsfocus_auto import auto_submit_task; auto_submit_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else '')" 192.168.193.11 测试报告输出
+
+[*] 准备下发 Web 漏扫任务，目标: 192.168.193.11
+[*] 正在连接扫描器: https://192.168.193.10/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_104559.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_104559.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_controls_20260509_104559.txt
+[*] 已填充输入框: input[name='username']
+[*] 已填充输入框: input[name='password']
+[*] 已点击元素: input.submit
+[+] 登录后页面已就绪: 检测到 mainFrame
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_104633.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_104633.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_controls_20260509_104636.txt
+[+] 登录成功
+[*] 直接打开 Web 扫描任务页面: https://192.168.193.10/task/index/8
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_104643.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_104643.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_controls_20260509_104646.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_20260509_104646.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_url_20260509_104646.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_controls_20260509_104646.txt
+[*] 已填充输入框: textarea#task_target
+[*] 已触发 Web 目标校验并尝试启用提交按钮
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_104650.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_104650.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_controls_20260509_104652.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_20260509_104652.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_url_20260509_104652.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_controls_20260509_104652.txt
+[*] 已填充输入框: input#task_name
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_104652.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_104652.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_controls_20260509_104654.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_20260509_104654.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_url_20260509_104654.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_controls_20260509_104654.txt
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_104655.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_104655.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_controls_20260509_104656.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_20260509_104656.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_url_20260509_104656.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_controls_20260509_104656.txt
+[*] 已通过页面脚本触发提交
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_20260509_104659.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_20260509_104659.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_controls_20260509_104701.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_frame_20260509_104701.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_frame_url_20260509_104701.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_submit_task_frame_controls_20260509_104701.txt
+[*] 提交后未自动跳转到进度页，当前 frame URL: https://192.168.193.10/task/index/8
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_wait_frame_20260509_104732.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_wait_frame_url_20260509_104732.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_wait_frame_controls_20260509_104732.txt
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_wait_20260509_104732.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_wait_20260509_104732.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_progress_wait_controls_20260509_104736.txt
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_20260509_104736.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_20260509_104736.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_controls_20260509_104738.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_frame_20260509_104738.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_frame_url_20260509_104738.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_06_submit_success_frame_controls_20260509_104738.txt
+[+] 目标 192.168.193.11 的扫描任务已完成下发，当前进度页: https://192.168.193.10/task/index/8

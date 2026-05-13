@@ -1,0 +1,144 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe -h 192.168.193.11 -nop
+
+flag provided but not defined: -nop
+Usage of E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe:
+  -ao
+    	仅进行存活探测
+  -cookie string
+    	HTTP Cookie
+  -dns
+    	DNS日志记录
+  -domain string
+    	域名
+  -download-path string
+    	下载文件保存路径
+  -download-url string
+    	要下载的文件URL
+  -eh string
+    	排除主机
+  -ehf string
+    	排除主机文件
+  -ep string
+    	排除端口
+  -f string
+    	输出格式: txt, json, csv (default "txt")
+  -fsh-port int
+    	启动正向Shell服务器端口 (如: 4444) (default 4444)
+  -full
+    	全量POC扫描
+  -gt int
+    	全局超时时间 (default 180)
+  -h string
+    	目标主机: IP, IP段, IP段文件, 域名
+  -hash string
+    	哈希值
+  -hashf string
+    	哈希文件
+  -help
+    	显示帮助信息
+  -hf string
+    	主机文件
+  -icmp-rate float
+    	ICMP发包速率 (相对于最大速率的比例，默认0.1，约1463 pps) (default 0.1)
+  -iface string
+    	指定本地网卡IP地址 (VPN场景，如: 10.8.0.5)
+  -keylog-output string
+    	键盘记录输出文件路径 (default "keylog.txt")
+  -lang string
+    	语言: zh, en (default "zh")
+  -local string
+    	指定本地插件名称 (如: cleaner, avdetect, keylogger 等)
+  -log string
+    	日志级别 (default "base,info,success")
+  -m string
+    	扫描模式: all(全部), icmp(存活探测), 或指定插件名称 (default "all")
+  -max-redirect int
+    	HTTP最大重定向次数 (default 10)
+  -maxpkts int
+    	整个程序最大发包总数 (0表示不限制)
+  -mt int
+    	模块线程数 (default 20)
+  -no
+    	禁用结果保存
+  -nobr
+    	禁用暴力破解
+  -nocolor
+    	禁用颜色输出
+  -nopg
+    	禁用进度条
+  -nopoc
+    	禁用POC扫描
+  -noredis
+    	禁用Redis利用
+  -np
+    	禁用ping探测
+  -num int
+    	POC并发数 (default 20)
+  -o string
+    	输出文件 (default "result.txt")
+  -p string
+    	端口: 默认1000个常用端口 (default "21,22,23,25,53,80,81,88,110,111,135,139,143,161,389,443,445,465,502,512,513,514,515,548,554,587,623,636,873,902,993,995,1080,1099,1194,1433,1434,1521,1522,1525,1723,1883,2049,2121,2181,2200,2222,2375,2376,2379,2380,3000,3128,3268,3269,3306,3389,3690,4369,4444,4848,5000,5005,5044,5060,5432,5601,5631,5632,5671,5672,5900,5984,5985,5986,6000,6379,6380,6443,6666,6667,7001,7002,7474,7687,8000,8005,8008,8009,8080,8081,8086,8088,8089,8090,8161,8180,8443,8500,8834,8848,8880,8888,9000,9001,9042,9080,9090,9092,9093,9160,9200,9300,9418,9443,9999,10000,10051,10250,10255,11211,15672,22222,26379,27017,27018,50000,50070,50075,61613,61614,61616")
+  -perf
+    	输出性能统计JSON
+  -persistence-file string
+    	Linux持久化目标文件路径 (支持.elf/.sh文件)
+  -pf string
+    	端口文件
+  -pocname string
+    	POC名称
+  -pocpath string
+    	POC脚本路径
+  -proxy string
+    	HTTP代理
+  -pwd string
+    	密码
+  -pwda string
+    	额外密码
+  -pwdf string
+    	密码字典文件
+  -rate int
+    	每分钟最大发包次数 (0表示不限制)
+  -retry int
+    	最大重试次数 (default 3)
+  -rf string
+    	Redis文件
+  -rs string
+    	Redis Shell
+  -rsh string
+    	反弹Shell目标地址:端口 (如: 192.168.1.100:4444)
+  -rwc string
+    	Redis写入内容
+  -rwf string
+    	Redis写入文件
+  -rwp string
+    	Redis写入路径
+  -sc string
+    	Shellcode
+  -silent
+    	静默模式
+  -socks5 string
+    	使用SOCKS5代理 (如: 127.0.0.1:1080)
+  -sshkey string
+    	SSH私钥文件
+  -start-socks5 int
+    	启动SOCKS5代理服务器端口 (如: 1080)
+  -t int
+    	端口扫描线程数 (default 600)
+  -time int
+    	端口扫描超时时间 (default 3)
+  -u string
+    	目标URL
+  -uf string
+    	URL文件
+  -upf string
+    	用户名:密码对文件
+  -user string
+    	用户名
+  -usera string
+    	额外用户名
+  -userf string
+    	用户名字典文件
+  -win-pe string
+    	Windows持久化目标PE文件路径 (支持.exe/.dll文件)
+  -wt int
+    	Web超时时间 (default 5)

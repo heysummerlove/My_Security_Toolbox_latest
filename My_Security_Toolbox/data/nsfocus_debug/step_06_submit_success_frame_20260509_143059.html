@@ -1,0 +1,310 @@
+<html><head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link type="text/css" rel="stylesheet" href="/media/stylesheet/nsfocus_2012/nsfocus_rsasv6.css">
+		<link type="text/css" rel="stylesheet" href="/media/stylesheet/nsfocus_2012/page.css">
+		<link href="/media/stylesheet/nsfocus_2012/pane.css" rel="stylesheet" type="text/css">
+		
+		<script type="text/javascript" src="/media/js/common.js"></script>
+		<script type="text/javascript" src="/media/js/jquery/jquery-1.7.2.js"></script>
+		<script type="text/javascript" src="/media/js/ui.js"></script>
+		<script type="text/javascript" src="/media/js/jquery.ajaxSend.js"></script>
+		<script type="text/javascript" src="/media/js/prototype.js"></script>
+		<script type="text/javascript" src="/media/js/cavy.js"></script>
+		<script type="text/javascript" src="/media/js/rsas_v6.js"></script>
+		
+		<script language="javascript">
+	        Array.prototype.remove = function(val) {
+				this.splice(jQuery.inArray(val,this),1);
+	        };
+			var timer;
+			var extned_ids = [];
+			var toggle_flag = '';
+			function a() {
+				var id = '39';
+				//console.log(id);
+				var csrfmiddlewaretoken = 'frOw6nmQY3XykhzhiUV6iEPN0yChoMPg'
+				var data = [];
+				var id_obj = toJsionObj('id',id);
+				var csrfmiddlewaretoken_obj = toJsionObj('csrfmiddlewaretoken',csrfmiddlewaretoken);
+				data.push(id_obj);
+				data.push(csrfmiddlewaretoken_obj);
+				jQuery.ajax({
+							type:'POST',
+							url:'/list/process/',
+							data:data,
+							success:function(msg){
+								//_CbFunc(msg);
+								jQuery('#processWithLatest50').html(msg);
+								timer = setTimeout('a()', 2000);
+							}
+						})
+			}
+			
+			function _CbFunc(msg) {
+				if (msg == "done") {
+					clearTimeout(timer);
+					alert('已完成');
+				} else {
+					jQuery('#processWithLatest50').html(msg);
+					extend_tr(extned_ids);
+				}
+			}
+			function clear_time(){
+				if (timer){
+					clearTimeout(timer);
+				};
+			}
+			function toJsionObj(name,data)
+			{
+				var j_str =  '{ "name":"'+name+'", "value":"'+data+'"}';
+				var j_obj = eval('(' + j_str + ')');
+				return j_obj
+			}
+			function more_toggle(o, id, same_bg){
+				var tr_more = jQuery('#' + id)[0];
+				var tr_class = (o.className != "" && same_bg) ? (" " + o.className) : "";
+				
+				if (jQuery('#' + id).hasClass("hide")) {
+					jQuery(o).find('img.plus').attr('class', 'ico minus')
+					jQuery(tr_more).removeClass('hide');
+					extned_ids.push({target:jQuery(o).attr("id"),id:id});
+				}
+				else {
+					jQuery(o).find('img.minus').attr('class', 'ico plus')
+					jQuery(tr_more).addClass('hide');
+					extned_ids.remove({target:jQuery(o).attr("id"),id:id});
+				};
+			}
+			function extend_tr(extned_ids){
+				jQuery(extned_ids).each(function(index,e){
+					jQuery(jQuery('#' + e.target)).find('img.plus').attr('class', 'ico minus')
+					jQuery(jQuery('#' + e.id)).removeClass('hide');					
+				})
+			}
+			function arrow_toggle(obj){
+				if (toggle_flag.length>1){
+					jQuery(obj).attr('class','title');
+					jQuery(obj.parentNode).next().show();
+					toggle_flag='';
+				}else{
+					jQuery(obj).attr('class','title off');
+					jQuery(obj.parentNode).next().hide();
+					toggle_flag='off';
+				};
+			}
+			
+			
+			function stopTask(id)
+			{
+				location.href = '/list/proStopTask/id/'+id+'/';
+			}
+			function pauseTask(id)
+			{
+				location.href = '/list/proPauseTask/id/'+id+'/';
+			}
+			function goBack()
+			{
+				location.href = '/list/';
+			}
+			function toJsionObj(name,data)
+			{
+				var j_str =  '{ "name":"'+name+'", "value":"'+data+'"}';
+				var j_obj = eval('(' + j_str + ')');
+				return j_obj
+			}
+			jQuery(function() {
+			    a();
+			})
+
+		</script>
+		
+</head>
+<body class="main">
+<div class="cmn_tab">
+ <table>
+  <tbody><tr>
+    <td class="tab tab_selected"><a style="cursor:pointer" href="#">任务进度</a></td>
+    
+  </tr>
+</tbody></table>
+</div>
+<div class="b_cont" style="height: 593px; padding-right: 0px;">
+<div class="content" id="processWithLatest50" style="width:100%"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+    .cmn_progress_custom{width:81.5%;}
+    .process{color:#888888;margin-bottom:5px;}
+    .pane .title .text,.pane .title .button{display:inline;float:none;}
+    .group_btn{display:block;float:right;width:150px;margin:-4px 0 0 0;}
+    .group_btn .cmn_btn{width:50px;}
+    .progress_bar{float:left;margin:0 -150px 0 0;width:100%;}
+</style>
+
+
+
+
+
+
+
+<table style="width:98%">
+    <tbody><tr>
+        <td valign="top" style="width:100%" colspan="3">
+            <table style="width:100%">
+                <tbody><tr>
+                    <td>
+                        <div class="process" id="process">正在扫描，请稍候...</div>
+                        <div>
+                            <div class="progress_bar">
+                                <span class="cmn_progress_custom">
+                                    <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="0%">
+                                </span>0%
+                            </div>
+                            <div class="group_btn">
+                                <input class="cmn_btn " type="button" onclick="pauseTask(&quot;39&quot;)" value="暂停" style="">
+                                <input class="cmn_btn " type="button" onclick="stopTask(&quot;39&quot;)" value="停止" style="">
+                                <input class="cmn_btn " type="button" onclick="goBack()" value="返回" style="">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </td>
+    </tr>
+	<tr>
+		<td valign="top" style="width:45%">
+			<table style="width:100%">
+				<tbody><tr>
+					<td>
+						<div class="sub_title" style="margin-top:8px;position:relative;">
+								<a style="cursor:pointer" title="任务名称：测试评估报告2">
+								    <span>测试评估报告2(ID: 39)进度信息</span>
+								</a>
+
+							</div><table class="cmn_table">
+							
+							<tbody><tr>
+								<td>存活站点数</td>
+                                <td>1</td>
+                                <td>开始时间</td>
+                                <td>2026-05-09 14:30:56</td>
+					        </tr>
+					        <tr>
+                                <td>已完成站点数</td>
+					        	<td>0</td>
+                                <td>已执行时间</td>
+                                <td>0:1</td>
+							</tr>
+					        <tr>
+                                <td>正在扫描站点数</td>
+					            <td>1</td>
+					            <td>预计结束时间</td>
+                                <td>2026-05-09 14:30:59</td>
+					        </tr>
+					        <tr>
+                                <td>未完成扫描站点数</td>
+					            <td>1</td>
+                                <td>预计还需时间</td>
+					            <td>0:1</td>
+							</tr>
+							
+							<tr>
+								<td colspan="2">已爬取链接数</td>
+                                <td colspan="2">0</td>
+							</tr>
+							<tr>
+                                <td colspan="2">已扫描链接数</td>
+								<td colspan="2">0</td>
+							</tr>
+							
+						</tbody></table>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+                        <div id="ip-info" class="pane blue" style="width:100%;">
+                            <div class="title">
+						      <div class="text">各主机扫描进度</div>
+                              <div class="button">
+						        <a href="javascript:void(0)" class="refresh hide" style="display: none;"></a><a href="javascript:void(0)" class="arrow"></a>
+						      </div>
+						   	</div>
+                            <div class="content">
+                              
+                            <div id="ip-content">
+                              <table class="cmn_table" style="width:100%;word-break: break-all;">
+                                <tbody id="ip_data_tbody">
+                                    <tr>
+                                        <td>站点</td>
+                                        <td>任务类型</td>
+                                        <td>进度</td>
+                                    </tr>
+                                    
+                                    
+                                    <tr class="odd ">
+                                        <td>
+                                        http://192.168.193.11
+                                        </td>
+                                        <td>
+                                        <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/scan_web.gif" title="web扫描">
+                                        </td>
+                                        <td>
+                                            
+                                            <span class="cmn_progress">
+                                                <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="0%">
+                                            </span>0%
+                                            
+                                        </td>
+                                    </tr>
+                                    
+                                    
+                                </tbody>
+                            </table>
+                            </div></div>
+                        
+                        </div>
+					</td>
+				</tr>
+				
+			</tbody></table>
+		</td>
+		<td valign="top" style="width:5%">
+		</td><td valign="top" style="width:50%">
+			<table style="width:100%">
+                
+				<tbody><tr>
+					<td>
+						<div id="vul-info" class="pane blue" style="width:100%;">
+						    <div class="title">
+
+						      <div class="text">漏洞风险信息</div>
+                              <div class="button">
+						        <a href="javascript:void(0)" class="refresh hide" style="display: none;"></a><a href="javascript:void(0)" class="arrow"></a>
+						      </div>
+						   	</div>
+							<div class="content">
+                                
+                            <div id="vul-content">
+                                
+                                 <div style="width: 100%;text-align: center;">
+                                    <div class="load_con" style="top:0;"> <span>扫描进行中，暂无漏洞信息...</span> </div>
+                                 </div>
+                                
+							    </div></div>
+							  
+						</div>
+					</td>
+				</tr>
+                
+				
+				
+				
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+
+
+</div>
+</div>
+</body></html>

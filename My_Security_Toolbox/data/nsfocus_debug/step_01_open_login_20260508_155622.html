@@ -1,0 +1,131 @@
+<html style="overflow: hidden;"><head>
+<title>NSFOCUS ICSScan</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="shortcut icon" href="/media/stylesheet/nsfocus_2012/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="/media/stylesheet/nsfocus_2012/login_2012.css" type="text/css">
+<link rel="stylesheet" href="/media/stylesheet/nsfocus_2012/page.css" type="text/css">
+<script type="text/javascript" src="/media/js/ui.js"></script>
+<script type="text/javascript" src="/media/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="/media/js/jquery.base64.js"></script>
+<script type="text/javascript"> 
+if (top != self) top.location.replace('/accounts/login/');
+	function antohide() {
+		var username = UI.G('username'),password = UI.G('password');
+		//Kill Bug
+		if (username.value!='') {
+			UI.addClass(UI.prev(username),'hide');
+		}else {
+			UI.removeClass(UI.prev(username),'hide');
+			username.blur();
+		}
+		if(password.value == ''){
+			UI.removeClass(UI.prev(password),'hide');
+		}else{
+			UI.addClass(UI.prev(password),'hide');
+			password.blur();
+		}
+	}
+
+	function onloadTextBox() {
+		antohide();
+		//Add Event
+		var username = UI.G('username'),password = UI.G('password');
+
+		password.onblur =  username.onblur = function(){antohide();}
+		password.onfocus = username.onfocus = function(){UI.addClass(UI.prev(this),'hide');}
+
+		//username.focus();
+		//Kill Scroll
+		document.documentElement.style.overflow = 'hidden';
+		
+		
+	}
+	
+	function switchOn(obj,imgId){
+		UI.addClass(obj,'on');
+		UI.G(imgId).src='/media/stylesheet/nsfocus_2012/images/login/login_tip.gif';	
+	}
+	
+	function switchOff(obj,imgId){
+		UI.removeClass(obj,'on');
+			UI.G(imgId).src='/media/stylesheet/nsfocus_2012/images/login/login_tip_2.gif';
+	}
+	function login() {
+		//$('loginForm').submit();
+		//UI.addClass(UI.G('filedset'),'error');
+	}
+	
+	
+	function keypress(e) {
+		var keynum
+		if(window.event) { //IE
+			keynum = window.event.keyCode
+		} else if(e.which) {// Netscape/Firefox/Opera 
+			keynum = e.which
+		}
+		if (keynum == 13) {
+			login();
+			Event.stop(e); //Stop Chrome's event buubbl.
+		}
+	}
+	function user_info(){
+		
+		top.dialog.show({title:"用户许可协议",url:'/media/LicenseAgreement_zh_CN.html',size:'medium',height:280,resize:false});
+	}
+	UI.EA(window, 'load', onloadTextBox);
+	var dialog = new UI.Dialog({name:'dialog'});
+</script>
+
+</head>
+<body class="login">
+<img width="0" height="0" class="bg" src="/media/images/login_bg.png">
+<div class="header"> <a href="http://www.nsfocus.com" target="_blank" tabindex="-1"><img src="/media/stylesheet/nsfocus_2012/images/logo/nsfocus.png" class="nsfocus" alt="绿盟科技"></a></div>
+<div class="body" align="center"> 
+
+
+<img id="logo_img" src="/media/stylesheet/nsfocus_2012/images/logo/login_logo_icsscan_zh_CN.png" class="logo">
+
+
+  <form method="post" name="loginForm" id="loginForm" action="/accounts/login_view/" autocomplete="off">
+    <fieldset class="fieldset" id="filedset">
+      <legend>用户登录</legend>
+      <label for="username" class="">用户名</label>
+      <input type="text" value="" name="username" id="username" maxlength="20" style="">  
+      <label for="password" class="">密码</label>
+      <input type="password" value="" id="password" name="password" onkeypress="keypress(event)" maxlength="32" style="">
+      
+      <input class="submit" type="button" value="登 录" onfocus="this.blur()" onclick="submitFormEncrypt();" style="">
+      
+      <input type="hidden" name="csrfmiddlewaretoken" value="Z7gq7x2AYXpkXcWGUwYuT2SpR2W1jsy7" style="">
+    </fieldset>
+  </form>
+  
+</div>
+<div class="footer">
+  <div class="copyright"> <span>版权所有 © 2016 绿盟科技</span> <a href="javascript:void(0);" title="用户许可协议" onclick="user_info();"><span class="about">用户许可协议</span> </a> </div>
+  <!-- <div class="tools">
+    <div id="language" class="tool" onmouseover ="switchOn(this,'switchLanImg');" onMouseOut="switchOff(this,'switchLanImg')" style="width: 122px;">
+      <div class="list" style="width:122px;"> <a class="cn" href="javascript:changeLanguage('zh_CN', '/auth/locale')" onFocus="this.blur()"></a> <a class="en" href="javascript:changeLanguage('en_US','/auth/locale')" onFocus="this.blur()"></a> <a class="cn2" href="javascript:changeLanguage('zh_CN2', '/auth/locale')" onFocus="this.blur()"></a> </div>
+      <div class="title"><span class="choose_language"></span><img class="choose_img" id="switchLanImg" src="/media/stylesheet/nsfocus_2012/images/login/login_tip_2.gif" alt=""/></div>
+    </div>
+    <div class="line" ></div>
+  </div>
+  -->
+</div>
+
+	<script type="text/javascript" src="/media/js/encrypt.js"></script>
+  <script type="text/javascript">
+   function submitForm(){
+        var username = UI.G('username').value,password= UI.G('password').value;
+        UI.G('password').value = jQuery.base64.encode(password);
+        document.getElementById("loginForm").submit();
+   }
+   function submitFormEncrypt(){
+        var password= UI.G('password').value;
+        UI.G('password').value = encrypt(password);
+        document.getElementById("loginForm").submit();
+				// UI.G('password').value = ""
+   }
+  </script>
+
+</body></html>

@@ -1,0 +1,17 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe -h 192.168.193.11
+
+[*] 服务插件: smtp, ldap, ms17010, rdp, kafka ... 等24个
+[*] 192.168.193.11:25     smtp     [Product:Postfix smtpd] Banner:(220 metasploitable.localdomain ESMTP Postfix (Ubuntu))
+[*] 192.168.193.11:5900   vnc      [Product:VNC] Banner:(RFB 003.003)
+[*] 192.168.193.11:22     ssh      [Product:OpenSSH ||Version:4.7p1 Debian 8ubuntu1] Banner:(SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1)
+[*] 192.168.193.11:1099   java-rmi [Product:GNU Classpath grmiregistry] Banner:(N localhost K)
+[*] 192.168.193.11:2049   rpcbind  Banner:(r)
+[*] 192.168.193.11:8180   http     [Version:1.1] Banner:(HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Type: text/html;charset=ISO-88...)
+[*] 扫描完成，发现 22 个开放端口
+[-] 扫描失败率过高: 59.1% (78/132失败)
+[-] 可能原因: 线程数过高导致资源耗尽
+[-] 建议: 降低线程数(当前600)到50-100，或增加系统ulimit
+[!] MySQL 192.168.193.11:3306 root:
+[!] FTP 192.168.193.11:21 匿名访问 - anonymous:anonymous
+[+] http://192.168.193.11          code:200 len:891   title:Metasploitable2 - Linux server:Apache/2.2.8 (Ubuntu) DAV/2 [apache-http apache/2.2.8 php/5.2.4]
+[*] 扫描任务完成，耗时 6m30.57s，已扫描 16 个目标

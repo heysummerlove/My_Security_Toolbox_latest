@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>附表3 设备检测问题统计表</title>
+    <style>
+        :root {
+            --bg: #f3f7fb;
+            --panel: rgba(255, 255, 255, 0.96);
+            --border: #d8e4ee;
+            --text: #173249;
+            --muted: #6a8094;
+            --accent: #0f8f88;
+            --accent-strong: #0b6d68;
+            --danger: #c0392b;
+            --warning: #cf7d10;
+            --success: #1f8a4d;
+            --shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(15, 143, 136, 0.12), transparent 24%),
+                linear-gradient(135deg, #eff4f8 0%, #e7eef6 100%);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1680px;
+            margin: 0 auto;
+            display: grid;
+            gap: 18px;
+        }
+
+        .hero, .panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.78);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero {
+            padding: 24px 28px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 1.62rem;
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .actions, .filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 16px;
+            font-size: 0.94rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.16s ease;
+        }
+
+        button:hover { transform: translateY(-1px); }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #fff;
+        }
+
+        .secondary-btn {
+            background: #eef5fb;
+            color: #214761;
+            border: 1px solid var(--border);
+        }
+
+        .panel { padding: 22px 24px; }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .toolbar h2 {
+            margin: 0 0 4px;
+            font-size: 1.1rem;
+        }
+
+        .toolbar p, .hint {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .message {
+            display: none;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .message.show { display: block; }
+        .message.success { background: #edf9f1; color: var(--success); border: 1px solid rgba(31, 138, 77, 0.14); }
+        .message.error { background: #fff1ef; color: var(--danger); border: 1px solid rgba(192, 57, 43, 0.14); }
+        .message.warning { background: #fff8eb; color: var(--warning); border: 1px solid rgba(207, 125, 16, 0.14); }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text);
+            outline: none;
+            font-size: 0.92rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(15, 143, 136, 0.12);
+        }
+
+        textarea {
+            min-height: 72px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .filter-row input,
+        .filter-row select {
+            max-width: 260px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 0.88rem;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f6fafc;
+            color: #23475f;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        td textarea { min-height: 64px; }
+
+        .table-wrap {
+            overflow: auto;
+            max-height: 760px;
+            border: 1px solid #edf2f7;
+            border-radius: 16px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            padding: 7px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #274a63;
+            cursor: pointer;
+            font-size: 0.82rem;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 18px;
+            color: var(--muted);
+        }
+
+        @media (max-width: 1180px) {
+            body { padding: 16px; }
+            .hero { flex-direction: column; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div>
+                <h1>附表3 设备检测问题统计表</h1>
+                <p>支持按设备编号关联附表1设备台账，记录检测项目、问题类型、严重等级、整改建议和整改状态，并可按严重等级筛选导出 Excel。</p>
+            </div>
+            <div class="actions">
+                <button id="add-row-btn" class="secondary-btn" type="button">新增一行</button>
+                <button id="export-btn" class="primary-btn" type="button">导出 Excel</button>
+            </div>
+        </section>
+
+        <div id="message" class="message"></div>
+
+        <section class="panel">
+            <div class="toolbar">
+                <div>
+                    <h2>筛选与联动</h2>
+                    <p>设备编号必须来自附表1；问题编号自动生成；支持按严重等级快速筛选问题项。</p>
+                </div>
+            </div>
+            <div class="filter-row">
+                <input id="keyword" type="text" placeholder="搜索问题编号 / 设备编号 / 检测项目 / 整改建议">
+                <select id="severity-filter">
+                    <option value="">全部严重等级</option>
+                    <option value="高">高</option>
+                    <option value="中">中</option>
+                    <option value="低">低</option>
+                </select>
+                <button id="search-btn" class="secondary-btn" type="button">查询</button>
+                <button id="refresh-btn" class="secondary-btn" type="button">刷新</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="toolbar">
+                <div>
+                    <h2>问题统计台账</h2>
+                    <p>字段包括设备编号、问题编号、检测项目、问题类型、严重等级、整改建议、整改状态。</p>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="min-width:160px;">设备编号</th>
+                            <th style="min-width:150px;">问题编号</th>
+                            <th style="min-width:220px;">检测项目</th>
+                            <th style="min-width:140px;">问题类型</th>
+                            <th style="min-width:110px;">严重等级</th>
+                            <th style="min-width:260px;">整改建议</th>
+                            <th style="min-width:140px;">整改状态</th>
+                            <th style="min-width:120px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr><td colspan="8" class="empty">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div id="pagination-text" class="hint">-</div>
+                <div class="pagination-controls">
+                    <button id="prev-btn" class="secondary-btn" type="button">上一页</button>
+                    <button id="next-btn" class="secondary-btn" type="button">下一页</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>

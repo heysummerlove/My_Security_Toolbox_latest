@@ -1,0 +1,26 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\runtime\python.exe -u -c "import os, sys; sys.path.insert(0, os.getcwd()); from app.adapters.nsfocus_auto import download_latest_report_only; path = download_latest_report_only(sys.argv[1] if len(sys.argv) > 1 else ''); print(path or '')" manual_report_fetch_v2
+
+[*] 准备下载最近输出的 Web 漏扫报表
+[*] 正在连接扫描器: https://192.168.193.10/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_110843.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_110843.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_controls_20260509_110843.txt
+[*] 已填充输入框: input[name='username']
+[*] 已填充输入框: input[name='password']
+[*] 已点击元素: input.submit
+[+] 登录后页面已就绪: 检测到 mainFrame
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_110916.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_110916.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_controls_20260509_110916.txt
+[+] 登录成功
+[*] 打开报表列表页面: https://192.168.193.10/report/list/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_20260509_110922.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_20260509_110922.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_controls_20260509_110922.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_frame_20260509_110922.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_frame_url_20260509_110922.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_07_open_report_list_frame_controls_20260509_110922.txt
+[*] 准备下载最近报表: https://192.168.193.10/report/download/id/31/type/html/
+[+] 最近报表已下载: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_reports\manual_report_fetch_v2_20260509_110923_36_数控立式机床扫描【192.168.1.2】_2026_04_28_html.zip
+E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_reports\manual_report_fetch_v2_20260509_110923_36_数控立式机床扫描【192.168.1.2】_2026_04_28_html.zip
+E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_reports\manual_report_fetch_v2_20260509_110923_36_数控立式机床扫描【192.168.1.2】_2026_04_28_html.zip

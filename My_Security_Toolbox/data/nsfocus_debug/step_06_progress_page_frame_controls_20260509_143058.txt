@@ -1,0 +1,8 @@
+[Buttons]
+任务进度
+测试评估报告2(ID: 39)进度信息
+
+[Inputs]
+INPUT type=button name= id= placeholder= value=暂停
+INPUT type=button name= id= placeholder= value=停止
+INPUT type=button name= id= placeholder= value=返回

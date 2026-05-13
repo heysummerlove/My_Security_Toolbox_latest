@@ -1,0 +1,469 @@
+<!DOCTYPE html><html style="height: 100%; overflow: hidden;"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>NSFOCUS ICSScan</title>
+<link rel="shortcut icon" href="/media/stylesheet/nsfocus_2012/favicon.ico" type="image/x-icon">
+<link type="text/css" rel="stylesheet" href="/media/stylesheet/nsfocus_2012/page.css">
+<link rel="stylesheet" href="/media/stylesheet/nsfocus_2012/frame_left.css" type="text/css">
+<script type="text/javascript" src="/media/js/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/media/js/prototype.js"></script>
+<script type="text/javascript" src="/media/js/cavy.js"></script>
+<script type="text/javascript" src="/media/js/ui.js"></script> 
+<script type="text/javascript" src="/media/js/json2.js"></script>
+<link type="text/css" rel="stylesheet" href="/media/stylesheet/nsfocus_2012/msg.css">
+<link href="/media/stylesheet/nsfocus_2012/form.css" type="text/css" rel="stylesheet">
+<!--cavy对话框样式用-->
+<style>
+.click_link a:hover{
+color:red;
+}
+</style>
+<script type="text/javascript">
+function change_language(o)
+{
+  var li = UI.parent(o);
+  var now = UI.GT(UI.G('language'),'b')[0];
+  if(o.className =='cn'){ now.className = 'en_CS';}
+  if(o.className =='en'){ now.className = 'en_US';}
+  if(o.className =='cn2'){ now.className = 'zh_TW';}
+  
+  UI.each(UI.children(UI.parent(li)),function(on){
+    on.style.display='block';
+    UI.children(on)[0].display='block';
+  });
+  li.style.display='none';
+  UI.children(li)[0].display='none';
+
+}
+  function adjust_menu(){
+     //var menulist = document.getElementById("con_left");
+     //var h  = document.documentElement.clientHeight;
+     //menulist.style.height = h-42-23+'px';
+     
+  }
+  function adjust_ifr(){
+    var ifr = document.getElementById('mainFrame');
+    var h  = document.documentElement.clientHeight;
+    ifr.style.height = h-42-23+'px';
+  }
+  window.onload=function(){
+    window.onresize = function(){
+      adjust_menu();
+      adjust_ifr();
+    };
+  }
+</script>
+<script>
+function deepCopy(destination, source){
+    for (var property in source) {
+        var copy = source[property];
+        if ( destination === copy ) continue;
+        if ( typeof copy === "object" ){
+            destination[property] = deepCopy(destination[property] || {}, copy);
+        }else{
+            destination[property] = copy;
+        }
+    }
+    return destination;
+}
+</script>
+<script>
+    /**
+    prototype.js中增加了array的toJSON方法，JSON.stringify转化成json字符串时把嵌套的数组转成了字符串
+    迭代JSON.parse对json串的嵌套的数组转成json对象
+    **/
+    var loginarray=new Array();
+    function set_loginarray(jsonstr){
+    	var obj = JSON.parse(jsonstr,function(key,value){
+    	    if (value && typeof value === "string"){
+    		    try{
+    		    return JSON.parse(value);
+    			}catch(e){}
+    		}
+    		return value;
+    	});
+    	loginarray.push(obj);
+    };
+    function get_loginarray(){
+    	return JSON.stringify(loginarray);
+    };
+    function clear_loginarray(){
+		loginarray=[];
+    };
+    function grep_loginarray(ip){
+    	var tmp = jQuery.extend(true,[],loginarray);
+		loginarray=jQuery.grep(tmp, function(cur,i){
+			return cur.ip_range!=ip;
+		});
+    };
+    function get_one_login(ipstr){
+    	var flag={};
+		loginarray.each(function(a){
+	    	if (a.ip_range==ipstr){
+	    		flag = jQuery.extend(true,{},a);
+	    	};
+		});
+		
+		return flag;
+    };
+    function get_arrayip(){
+    	var arrayip=new Array();
+		loginarray.each(function(e){
+	    	arrayip.push(e.ip_range);
+		});
+		return arrayip;
+    };
+    function get_login_length(){
+    	return loginarray.length;
+    };
+</script>
+<script>
+var protocalarray=new Array();
+function set_protocalarray(obj){
+	protocalarray.push(obj);
+};
+function grep_protocalarray(target){
+	protocalarray=jQuery.grep(protocalarray, function(cur,i){
+		return cur.target!=target;
+	});
+};
+function grep_one_protocal(target){
+	var flag="";
+	protocalarray.each(function(a){
+    	if (a.target==target){
+    		flag=a;
+    	};
+	});
+	return flag;
+};
+function clear_protocalarray(){
+	protocalarray=[];
+};
+</script>
+</head>
+<body style="overflow:hidden;height:100%;">
+<div class="header">
+  <div class="top">
+  
+  
+  <img src="/media/stylesheet/nsfocus_2012/images/logo/logo_icsscan.png" class="logo">
+  
+  
+     <div class="tools" id="tool">
+      <ul>
+        <li><img class="user" src="/media/stylesheet/nsfocus_2012/images/blank.gif">您好，<a style="text-decoration:underline" href="" onclick="edit(2);return false">admin</a></li>
+        <li><img class="topseparator" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></li>
+        <li class="lag">
+        		<a href="javascript:void(0);" onclick="return false;" title="语言" style="margin-left:15px;">简体中文</a>
+        </li>
+        <li><img class="topseparator" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></li>
+        <li><img class="update" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a href="#" onclick="redirect_update();">升级</a></li>
+        <li><img class="about" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a href="" onclick="dialog.show({title:'关于',url:'/about/',width:550,height:450,resize:false});return false;">关于</a></li>
+        <li><img class="topseparator" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></li>
+        <li><a href="javascript:if (confirm('确定退出？')) window.location='/accounts/logout/'"><img class="exit" src="/media/stylesheet/nsfocus_2012/images/blank.gif">退出</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    <script>
+    adjust_menu();
+ 	</script>
+  <div class="main" id="main">
+        <iframe src="https://192.168.193.10/dashboard/show/" width="100%" height="100%" frameborder="0" style="overflow: hidden; height: 655px; width: 1090px;" name="mainFrame" id="mainFrame" allowtransparency="true"></iframe>
+  </div>
+  <div class="menuleft" id="menuleft">
+         <div class="leftmenu" id="leftmenu" style="overflow: hidden; height: 659px;"><div class="leftmenu_body"><div class="menutitle hide" id="menutitle0" onclick="menu.selectmenu(this)"> <img class="ico_right" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><span></span></div><div class="submenu nochild" style="display:block" id="sub0"> <img id="topimg" class="topimg active_top" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a id="two00" class="aline menuselect" target="mainFrame" href="/dashboard/show/" onclick="menu.closeall('all');menu.selectmenu(this);">仪表盘</a><a id="two01" class="aline" target="mainFrame" href="/warning/list/" onclick="menu.closeall('all');menu.selectmenu(this);">告警平台</a><a id="two02" class="aline" target="mainFrame" href="/assets/index/" onclick="menu.closeall('all');menu.selectmenu(this);">资产管理</a><a id="two03" class="aline" target="mainFrame" href="/report/fuzzing/archievement/view" onclick="menu.closeall('all');menu.selectmenu(this);">漏洞收藏</a><img id="endimg" class="endimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></div><div class="menutitle hide" id="menutitle1" onclick="menu.selectmenu(this)"> <img class="ico_right" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><span></span></div><div class="submenu nochild" style="display:block" id="sub1"> <img id="topimg" class="topimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a id="two10" class="aline" target="mainFrame" href="/task/" onclick="menu.closeall('all');menu.selectmenu(this);">新建任务</a><a id="two11" class="aline" target="mainFrame" href="/list/" onclick="menu.closeall('all');menu.selectmenu(this);">任务列表</a><a id="two12" class="aline" target="mainFrame" href="/report/" onclick="menu.closeall('all');menu.selectmenu(this);">报表输出</a><img id="endimg" class="endimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></div><div class="menuline"></div><div class=" menutitle" id="menutitle2" onclick="menu.selectmenu(this)"> <img class="ico_right" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><span>认证管理</span></div><div class=" submenu" style="display: none;" id="sub2"> <img id="topimg" class="topimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a id="two20" class="aline" target="mainFrame" href="/authinfo/index/new/" onclick="menu.selectmenu(this);">认证管理</a><img id="endimg" class="endimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></div><div class="menuline"></div><div class=" menutitle" id="menutitle3" onclick="menu.selectmenu(this)"> <img class="ico_right" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><span>模板管理</span></div><div class=" submenu" style="display: none;" id="sub3"> <img id="topimg" class="topimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a id="two30" class="aline" target="mainFrame" href="/template/protocol/" onclick="menu.selectmenu(this);">协议模板</a><a id="two31" class="aline" target="mainFrame" href="/template/index/" onclick="menu.selectmenu(this);">漏洞模板</a><a id="two32" class="aline" target="mainFrame" href="/template/tbase/tpl/" onclick="menu.selectmenu(this);">配置模板</a><a id="two33" class="aline" target="mainFrame" href="/template/status/" onclick="menu.selectmenu(this);">状态模板</a><a id="two34" class="aline" target="mainFrame" href="/template/report/" onclick="menu.selectmenu(this);">报表模板</a><a id="two35" class="aline" target="mainFrame" href="/template/passwd_dic/" onclick="menu.selectmenu(this);">密码字典</a><a id="two36" class="aline" target="mainFrame" href="/template/port_list/" onclick="menu.selectmenu(this);">端口列表</a><a id="two37" class="aline" target="mainFrame" href="/template/offlinetool/" onclick="menu.selectmenu(this);">离线检查工具</a><a id="two38" class="aline" target="mainFrame" href="/active/" onclick="menu.selectmenu(this);">ActiveX</a><img id="endimg" class="endimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></div><div class="menuline"></div><div class=" menutitle" id="menutitle4" onclick="menu.selectmenu(this)"> <img class="ico_right" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><span>系统管理</span></div><div class=" submenu" style="display: none;" id="sub4"> <img id="topimg" class="topimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a id="two40" class="aline" target="mainFrame" href="/system/status/" onclick="menu.selectmenu(this);">状态</a><a id="two41" class="aline" target="mainFrame" href="/system/config/" onclick="menu.selectmenu(this);">配置</a><a id="two42" class="aline" target="mainFrame" href="/system/service/" onclick="menu.selectmenu(this);">服务</a><a id="two43" class="aline" target="mainFrame" href="/accounts/list/" onclick="menu.selectmenu(this);">用户</a><a id="two44" class="aline" target="mainFrame" href="/system/tools/" onclick="menu.selectmenu(this);">常用工具</a><img id="endimg" class="endimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></div><div class="menuline"></div><div class=" menutitle" id="menutitle5" onclick="menu.selectmenu(this)"> <img class="ico_right" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><span>安全中心</span></div><div class=" submenu" style="display: none;" id="sub5"> <img id="topimg" class="topimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"><a id="two50" class="aline" target="mainFrame" href="/npai_conf/" onclick="menu.selectmenu(this);">配置</a><img id="endimg" class="endimg" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></div><div class="menuline"></div></div><a class="bar"></a></div>
+  </div>
+<div id="foot" class="footer">
+  <div class="left">
+    <ul>
+     <span id="cert_status"></span>
+      <li> <img class="cpu" src="/media/stylesheet/nsfocus_2012/images/blank.gif"></li><li></li><li><span>CPU-
+        <label id="sys_cpuusage">0.25%</label>
+        , MEM-
+        <label id="sys_memusage">5%</label>
+        , DISK-
+        <label id="sys_diskusage">21%</label>
+        </span> </li>
+      <li class="separator" style="margin: 0px 10px;"></li>   
+      <li>
+      <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" style="background-image:url('/media/images/foot_sys_version.gif');background-repeat:no-repeat;background-position:center;">
+      </li>
+      
+	      
+	   	  <li><span>[系统版本 V6.0R00F04SP08]</span></li>
+	   	  
+   	  
+   	  <span id="tasknum" style="display:none;">
+      <li class="separator" style="margin: 0px 10px;"></li>   
+      <li>
+      <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" style="background-image:url('/media/images/foot_scan_num.gif');background-repeat:no-repeat;background-position:center;">
+      </li>  
+      <li><a href="#" onclick="is_tasknum();return false;"><span id="num_cont">[共有0个任务正在进行]</span></a></li>
+      </span>
+      
+      <li class="separator" style="margin: 0px 10px;"></li>   
+      <li>
+      <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" style="background-image:url('/media/images/foot_report.gif');background-repeat:no-repeat;background-position:center;">
+      </li>  
+      <li><a href="#" onclick="is_down_report();return false;"><span>[下载最近输出的报表]</span></a></li>
+      
+      
+      
+      	
+	      <li class="separator" style="margin: 0px 10px;"></li>   
+	      <li>
+	      <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" style="background-image:url('/media/images/foot_ico_licence.gif');background-repeat:no-repeat;background-position:center;">
+	      </li>  
+	      <li><a href="#" onclick="operate_lic()"><span>[证书导入/导出］</span></a></li>
+      	
+      
+    </ul>
+  </div>
+  <div class="right">
+    <ul>
+      <li class="separator" style="margin: 0px 10px;"></li>
+      <li><img src="/media/stylesheet/nsfocus_2012/images/blank.gif" style="background-image:url('/media/images/foot_time.gif');background-repeat:no-repeat;background-position:center;"></li><li><span id="sys_time">14:01 2026-05-09</span></li>
+    </ul>
+  </div>
+</div>
+<script type="text/javascript">
+var _cookie = "left_menustatue_"+UI.GT(document,'title')[0].innerHTML.replace(/\W/g,"");
+UI.cookie(_cookie,"",-1);
+adjust_ifr();
+var menuobj = [];
+
+menuobj.push({name:'',data:[['仪表盘','/dashboard/show/'],['告警平台','/warning/list/'],['资产管理','/assets/index/'],['漏洞收藏','/report/fuzzing/archievement/view']]});	
+
+
+
+menuobj.push({name:'',data:[['新建任务','/task/'],['任务列表','/list/'],['报表输出','/report/']]});	
+
+
+menuobj.push({name:'认证管理',close:true,url:'/authinfo/',data:[['认证管理','/authinfo/index/new/']]},{name:'模板管理',close:true,url:'/template/',data:[['协议模板','/template/protocol/'],['漏洞模板','/template/index/'],['配置模板','/template/tbase/tpl/'],['状态模板','/template/status/'],['报表模板','/template/report/'],['密码字典','/template/passwd_dic/'],['端口列表','/template/port_list/'],['离线检查工具','/template/offlinetool/'],['ActiveX','/active/']]},{name:'系统管理',close:true,url:'/system/',data:[['状态','/system/status/'],['配置','/system/config/'],['服务','/system/service/'],['用户','/accounts/list/'],['常用工具','/system/tools/']]},{name:'安全中心',close:true,url:'/npai_conf/',data:[['配置','/npai_conf/']]});
+
+var menu = new UI.Menu_left({name:'menu',id:'leftmenu',target:'mainFrame',url:'frame_in1.html',data:menuobj});       
+//激活弹出层控件
+var dialog = new UI.Dialog({name:'dialog'});
+var dialog2 = new UI.Dialog({name:'dialog2'});
+var dialog3 = new UI.Dialog({name:'dialog3'});
+var dialog_info = new UI.Dialog({name:'dialog_info'});
+UI.DropMenu({id:'language',menu:'language_list',type:["click","mouseover"],hover:'over',multi:true});
+//控制页面加载后显示的模块
+jQuery(document).ready(function(){
+  //menu.menu_reset()
+
+  getInfo();
+  get_task_num();
+//  interv_info = setInterval("getInfo()",52000);
+ // interv_task = setInterval("get_task_num()",52000);
+//检查是否修改初始密码
+  jQuery.ajax({
+    url:'/accounts/need_modify_password/',
+  type:'get',
+  dataType:'json',
+  success: function(response){
+    if(response.op == 'success')
+    {}
+    else if (response.op == 'error')
+    {
+        alert(response.msg);
+    	edit_need(response.user_id)
+    }
+  },
+  error: function(){
+  }
+    });
+  jQuery(".separator").css('margin','0 10px 0 10px');
+});
+//获取日志审计阈值警告
+//激活警告对话框 tipWarn.show({html:""})显示或者更新消息;tipWarn.hide();隐藏
+  if("2"=="4"){
+	  var tipWarn = new UI.Warning();
+	  
+  }
+  if("False"=="True" && "2"=="263"){
+	  var tipWarn = new UI.Warning();
+	  
+  }
+
+
+
+ //证书是否过期，30天的界限
+
+if("True"=="False" ){
+	if("10"!="0"){
+		var tipWarn = new UI.Warning();
+		var audit_warning = "您的证书已过期"+"10"+"天，请更换新证书";
+		tipWarn.show({html:audit_warning,width:"300",height:"200",icon:'warning'})
+		}
+}else{
+	if("10"!="0"){
+	var tipWarn = new UI.Warning();
+	var audit_warning = "您的证书还有"+"10"+"天过期";
+	tipWarn.show({html:audit_warning,width:"300",height:"200",icon:'warning'})
+	}
+}
+//判断Web应用扫描模块期限
+if("yes" =="yes"){
+	if("True"=="False" ){
+		if("10"!="0"){
+			var tipWarn = new UI.Warning();
+			var audit_warning = "您的Web应用扫描模块已过期"+"10"+"天，请更换新证书";
+			tipWarn.show({html:audit_warning,width:"300",height:"200",icon:'warning'})
+			}
+	}else{
+		if("10"!="0"){
+		var tipWarn = new UI.Warning();
+		var audit_warning = "您的Web应用扫描模块还可使用"+"10"+"天";
+		tipWarn.show({html:audit_warning,width:"300",height:"200",icon:'warning'})
+		}
+	}
+}
+
+
+
+//硬盘告警
+  var tipWarn_disk = new UI.Warning();
+   
+//点击页面姓名时编辑自身信息
+function edit(userid) {
+  var url = '/accounts/edit/' + userid +"/no/"+"no/";
+  dialog.show({
+    title : "编辑",
+    url : url,
+    width : 520,
+    height : 470
+  });
+  return false;
+
+} 
+//密码为初始密码或者超过密码周期后编辑
+function edit_need(userid) {
+	  var url = '/accounts/edit/' + userid +"/no/"+"yes/";
+	  dialog.show({
+	    title : "编辑",
+	    url : url,
+	    width : 520,
+	    height : 470,
+	    close:false
+	  });
+	  return false;
+
+	} 
+function operate_lic(){
+	top.dialog.show({title:"证书导入/导出",url:'/accounts/lic_operate/',size:'medium',height:280,resize:false});
+};
+function is_tasknum(){
+	top.menu.select_by_path(['',"任务列表",'/list/getScaning/status/3']);
+};
+function is_down_report(){
+	top.menu.select_by_path(['',"报表输出",'/report/list/']);
+};
+function redirect_update(){
+	top.menu.select_by_path(["系统管理","服务",'/system/sys_upgrade/']);
+}
+//获取cpu，mem,disk的值
+var timeout_info;
+var timeout_num;
+
+function getInfo(){
+  jQuery.ajax({
+		type:'get',
+		data:"",
+		dataType : "json",
+		url:"/system/getInfo/",
+		success:function(data){
+		jQuery("#sys_cpuusage").stop(true,true).html(data.cpu);
+		jQuery("#sys_memusage").stop(true,true).html(data.mem);
+		jQuery("#sys_diskusage").stop(true,true).html(data.disk);
+		jQuery("#sys_time").stop(true,true).html(data.time);
+		showCertStatus(data.cert_status);
+  		},
+                complete:function(){
+                    timeout_info = setTimeout(getInfo, 30000);
+                   }
+                    
+	});
+};
+
+function showCertStatus(status){
+	showhtml = '';
+	if (status == 'online'){
+		showhtml = '<li><img src="/media/stylesheet/nsfocus_2012/images/blank.gif" class="engine online "><li><span>在线</span></li></li><li class="separator"></li>'
+	}else if(status == 'offline_step1'){
+		showhtml = '<li><img src="/media/stylesheet/nsfocus_2012/images/blank.gif" class="engine debug"><span>离线</span></li><li class="separator"></li>'
+	}else if(status == 'offline_step2'){
+		showhtml = '<li><img src="/media/stylesheet/nsfocus_2012/images/blank.gif" class="engine offline"><span>离线</span></li><li class="separator"></li>'
+	}
+	jQuery('#cert_status').empty()
+	jQuery('#cert_status').html(showhtml)
+}
+//在一定间隔内获取正在扫描的任务数
+function get_task_num(){
+	jQuery.ajax({
+		type:'get',
+		data:"",
+		url:"/system/get_task_num/",
+		success:function(data){
+			if(data =='0'){
+				jQuery("#tasknum").stop(true,true).hide();
+	  		}else{
+	  			jQuery("#tasknum").stop(true,true).show();
+	  			str = "[共有"+data+"个任务正在进行]"
+	  			jQuery("#num_cont").stop(true,true).html(str)
+	  	  	}
+		},
+                complete:function(){
+                    timeout_num = setTimeout(get_task_num, 60000);
+                    }
+                   
+  		
+	});
+}
+(function() {
+ var hidden = "hidden";
+
+ // Standards:
+ if (hidden in document)
+     document.addEventListener("visibilitychange", onchange);
+ else if ((hidden = "mozHidden") in document)
+     document.addEventListener("mozvisibilitychange", onchange);
+ else if ((hidden = "webkitHidden") in document)
+     document.addEventListener("webkitvisibilitychange", onchange);
+ else if ((hidden = "msHidden") in document)
+     document.addEventListener("msvisibilitychange", onchange);
+ // IE 9 and lower:
+ else if ('onfocusin' in document)
+    document.onfocusin = document.onfocusout = onchange;
+ // All others:
+ else
+    window.onpageshow = window.onpagehide 
+        = window.onfocus = window.onblur = onchange;
+
+ function onchange (evt) {
+         var v = 'visible', h = 'hidden',
+             evtMap = { 
+                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h 
+             };
+
+         evt = evt || window.event;
+         if (evt.type in evtMap)
+                 document.body.className = evtMap[evt.type];
+         else        
+                 document.body.className = this[hidden] ? "hidden" : "visible";
+        if (document.body.className == "hidden"){
+                clearTimeout(timeout_info);
+                clearTimeout(timeout_num);
+                }
+        else
+        {
+                timeout_num = get_task_num();
+                timeout_info = getInfo();
+                }
+//                window.clearInterval(interv_task);
+ }
+})();
+</script><div id="body_warnning" class="body_warnning" style="display: block; right: 16px; width: 300px; height: 200px;"><div class="warn_head"><a href="#" class="warn_close"></a></div><div class="warn_warpper i_warning"><div class="warn_content" style="height: 170px;">您的证书还有10天过期</div></div></div><div id="body_warnning" class="body_warnning" style="display: block; right: 16px; width: 300px; height: 200px;"><div class="warn_head"><a href="#" class="warn_close"></a></div><div class="warn_warpper i_warning"><div class="warn_content" style="height: 170px;">您的Web应用扫描模块还可使用10天</div></div></div><div id="body_warnning" class="body_warnning" style="display: none; right: -300px; width: 300px;"><div class="warn_head"><a href="#" class="warn_close"></a></div><div class="warn_warpper "><div class="warn_content" style="height:autopx"></div></div></div>
+
+</body></html>

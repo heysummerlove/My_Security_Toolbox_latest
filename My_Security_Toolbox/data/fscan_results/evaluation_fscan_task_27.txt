@@ -1,0 +1,45 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\fscan\fscan.exe -h 192.168.193.11 -nopg
+
+[*] 服务插件: oracle, mysql, neo4j, findnet, netbios ... 等24个
+[*] 192.168.193.11:5900   vnc      [Product:VNC] Banner:(RFB 003.003)
+[*] 192.168.193.11:3306   genetec-5400 [Product:Genetec Security Center] Banner:(> 5.0.51a-3ubuntu5 2 q6W38_Wv , l=+]sK^sJVPq)
+[*] 192.168.193.11:21     ftp      [Product:vsftpd ||Version:2.3.4] Banner:(220 (vsFTPd 2.3.4))
+[*] 192.168.193.11:22     ssh      [Product:OpenSSH ||Version:4.7p1 Debian 8ubuntu1] Banner:(SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1)
+[*] 192.168.193.11:25     smtp     [Product:Postfix smtpd] Banner:(220 metasploitable.localdomain ESMTP Postfix (Ubuntu))
+[*] 192.168.193.11:23     telnet   [Product:Linux telnetd] Banner:(# ')
+[*] 192.168.193.11:6667   irc      [Product:UnrealIRCd] Banner:(:irc.Metasploitable.LAN NOTICE AUTH :*** Looking up your hostname... :irc.Metasp...)
+[*] 192.168.193.11:514    shell    [Product:Netkit rshd] Banner:(getnameinfo: Temporary failure in name resolution)
+[*] 192.168.193.11:512    exec     [Product:netkit-rsh rexecd] Banner:(Where are you?)
+[*] 192.168.193.11:6000   X11      Banner:(- Client is not authorized to connect to Server!)
+[*] 192.168.193.11:2049   rpcbind  Banner:(r)
+[*] 192.168.193.11:1099   java-rmi [Product:GNU Classpath grmiregistry] Banner:(N localhost K)
+[*] 192.168.193.11:111    rpcbind  Banner:(r)
+[*] 192.168.193.11:53     domain   [Product:ISC BIND ||Version:9.4.2] Banner:(> version bind 9.4.2)
+[*] 192.168.193.11:513    http     [Product:Open Lighting Architecture daemon] Banner:(rlogind: Permission denied.)
+[*] 192.168.193.11:5432   postgresql [Product:PostgreSQL DB ||Version:8.3.0 - 8.3.7] Banner:(E SFATAL C0A000 Munsupported frontend protocol 65363.19778: server supports 1.0 ...)
+[*] 192.168.193.11:80     http     [Product:Open Lighting Architecture daemon] Banner:(HTTP/1.1 200 OK Date: Sat, 09 May 2026 03:50:10 GMT Server: Apache/2.2.8 (Ubuntu...)
+[*] 192.168.193.11:445    Banner:(SMBr H 2 A lC f :: metasploitable `( + 0 0 + 7 0 NONE)
+[*] 192.168.193.11:2121
+[*] 192.168.193.11:139    Banner:(SMBr H 2 A o f :: metasploitable `( + 0 0 + 7 0 NONE)
+[*] 扫描完成，发现 20 个开放端口
+[-] 扫描失败率过高: 58.3% (77/132失败)
+[-] 可能原因: 线程数过高导致资源耗尽
+[-] 建议: 降低线程数(当前600)到50-100，或增加系统ulimit
+[!] MySQL 192.168.193.11:3306 root:
+[+] SMBInfo 192.168.193.11:445 METASPLOITABLE SMBv1
+[+] SMBInfo 192.168.193.11:139 METASPLOITABLE SMBv1
+[*] POC加载完成: 总共388个，成功380个，失败8个
+[+] http://192.168.193.11          code:200 len:891   title:Metasploitable2 - Linux server:Apache/2.2.8 (Ubuntu) DAV/2 [apache-http apache/2.2.8 php/5.2.4]
+[!] FTP 192.168.193.11:21 匿名访问 - anonymous:anonymous
+[+] NetBios 192.168.193.11:139 metasploitable.localdomain Unix
+[-] 插件扫描错误 192.168.193.11:445 - 目标可能不支持SMBv1
+[-] 插件扫描错误 192.168.193.11:513 - Get "http://192.168.193.11:513": read tcp 192.168.193.1:52558->192.168.193.11:513: wsarecv: An existing connection was forcibly closed by the remote host.
+[-] 192.168.193.11:5900 vnc 未发现弱密码
+[-] 192.168.193.11:25 smtp 未发现弱密码
+[-] 192.168.193.11:22 ssh 未发现弱密码
+[-] 192.168.193.11:5432 postgresql 未发现弱密码
+[-] 192.168.193.11:445 smb 未发现弱密码
+[-] 192.168.193.11:139 smb 未发现弱密码
+[-] 192.168.193.11:23 telnet 未发现弱密码
+[-] 192.168.193.11:2121 ftp 未发现弱密码
+[*] 扫描任务完成，耗时 10m16.065s，已扫描 16 个目标

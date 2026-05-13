@@ -1,0 +1,153 @@
+[Buttons]
+Fuzzing任务
+评估任务
+口令猜测任务
+静态扫描任务
+Web应用扫描
+基本选项
+策略配置
+任务报表
+已选择所有可用用例
+报表模板管理
+
+[Inputs]
+INPUT type=hidden name=csrfmiddlewaretoken id= placeholder= value=Z7gq7x2AYXpkXcWGUwYuT2SpR2W1jsy7
+INPUT type=hidden name=csrfmiddlewaretoken id= placeholder= value=Z7gq7x2AYXpkXcWGUwYuT2SpR2W1jsy7
+INPUT type=hidden name=vul_or_pwd id=vul_or_pwd placeholder= value=vul
+INPUT type=hidden name=seniorstr id=seniorstr placeholder= value=
+SELECT type= name= id= placeholder= value=-1
+INPUT type=radio name=insertWay id=netway placeholder= value=0
+SELECT type= name=protocols id=protocols placeholder= value=1
+SELECT type= name=serial_protocols id=serial_protocols placeholder= value=1002
+INPUT type=radio name=target id=ipradio placeholder= value=ip
+INPUT type=radio name=target id=macradio placeholder= value=mac
+TEXTAREA type= name=ipList id=ipList placeholder= value=http://192.168.193.11/
+INPUT type=radio name=target id=slaveradio placeholder= value=slave
+INPUT type=radio name=target id=subradio placeholder= value=sub
+INPUT type=text name=slave_station_address id=slave_station_address placeholder= value=
+INPUT type=text name=substation id=substation placeholder= value=
+SELECT type= name=cause_length id=cause_length placeholder= value=1
+SELECT type= name=common_address_length id=common_address_length placeholder= value=1
+SELECT type= name=info_obj_length id=info_obj_length placeholder= value=2
+SELECT type= name=protocol id=protocol placeholder= value=RS232
+SELECT type= name=baud_rate id=baud_rate placeholder= value=9600
+SELECT type= name=byte_size id=byte_size placeholder= value=8
+SELECT type= name=parity id=parity placeholder= value=E
+SELECT type= name=stop_bits id=stop_bits placeholder= value=1
+INPUT type=text name=name id=name placeholder= value=扫描【】
+SELECT type= name=exec id=exec placeholder= value=immediate
+INPUT type=text name=exec_timing_date id=exec_timing_date placeholder= value=2026-05-08 15:57:08
+INPUT type=text name=exec_everyday_time id=exec_everyday_time placeholder= value=
+SELECT type= name=exec_everyweek_day id= placeholder= value=1
+INPUT type=text name=exec_everyweek_time id=exec_everyweek_time placeholder= value=00:00
+SELECT type= name=exec_emonthdate_day id= placeholder= value=1
+INPUT type=text name=exec_emonthdate_time id=exec_emonthdate_time placeholder= value=00:00
+SELECT type= name=exec_emonthweek_pre id= placeholder= value=1
+SELECT type= name=exec_emonthweek_day id= placeholder= value=1
+INPUT type=text name=exec_emonthweek_time id=exec_emonthweek_time placeholder= value=00:00
+SELECT type= name= id= placeholder= value=1
+INPUT type=text name= id= placeholder= value=00:00
+SELECT type= name= id= placeholder= value=1
+INPUT type=text name= id= placeholder= value=星期一
+INPUT type=checkbox name=weekmulti2 id= placeholder= value=1
+INPUT type=button name= id= placeholder= value=全选
+INPUT type=button name= id= placeholder= value=反选
+INPUT type=text name= id= placeholder= value=00:00
+SELECT type= name= id= placeholder= value=1
+INPUT type=text name= id= placeholder= value=1日
+INPUT type=checkbox name=daymulti3 id= placeholder= value=1
+INPUT type=checkbox name=daymulti3 id= placeholder= value=2
+INPUT type=checkbox name=daymulti3 id= placeholder= value=3
+INPUT type=checkbox name=daymulti3 id= placeholder= value=4
+INPUT type=checkbox name=daymulti3 id= placeholder= value=5
+INPUT type=checkbox name=daymulti3 id= placeholder= value=6
+INPUT type=checkbox name=daymulti3 id= placeholder= value=7
+INPUT type=checkbox name=daymulti3 id= placeholder= value=8
+INPUT type=checkbox name=daymulti3 id= placeholder= value=9
+INPUT type=checkbox name=daymulti3 id= placeholder= value=10
+INPUT type=checkbox name=daymulti3 id= placeholder= value=11
+INPUT type=checkbox name=daymulti3 id= placeholder= value=12
+INPUT type=checkbox name=daymulti3 id= placeholder= value=13
+INPUT type=checkbox name=daymulti3 id= placeholder= value=14
+INPUT type=checkbox name=daymulti3 id= placeholder= value=15
+INPUT type=checkbox name=daymulti3 id= placeholder= value=16
+INPUT type=checkbox name=daymulti3 id= placeholder= value=17
+INPUT type=checkbox name=daymulti3 id= placeholder= value=18
+INPUT type=checkbox name=daymulti3 id= placeholder= value=19
+INPUT type=checkbox name=daymulti3 id= placeholder= value=20
+INPUT type=checkbox name=daymulti3 id= placeholder= value=21
+INPUT type=checkbox name=daymulti3 id= placeholder= value=22
+INPUT type=checkbox name=daymulti3 id= placeholder= value=23
+INPUT type=checkbox name=daymulti3 id= placeholder= value=24
+INPUT type=checkbox name=daymulti3 id= placeholder= value=25
+INPUT type=checkbox name=daymulti3 id= placeholder= value=26
+INPUT type=checkbox name=daymulti3 id= placeholder= value=27
+INPUT type=checkbox name=daymulti3 id= placeholder= value=28
+INPUT type=checkbox name=daymulti3 id= placeholder= value=29
+INPUT type=checkbox name=daymulti3 id= placeholder= value=30
+INPUT type=checkbox name=daymulti3 id= placeholder= value=31
+INPUT type=button name= id= placeholder= value=全选
+INPUT type=button name= id= placeholder= value=反选
+INPUT type=text name= id= placeholder= value=00:00
+SELECT type= name= id= placeholder= value=1
+INPUT type=text name= id= placeholder= value=第1个
+INPUT type=checkbox name=permulti4 id= placeholder= value=1
+INPUT type=checkbox name=permulti4 id= placeholder= value=2
+INPUT type=checkbox name=permulti4 id= placeholder= value=3
+INPUT type=checkbox name=permulti4 id= placeholder= value=4
+INPUT type=button name= id= placeholder= value=全选
+INPUT type=button name= id= placeholder= value=反选
+INPUT type=text name= id= placeholder= value=星期一
+INPUT type=checkbox name=weekmulti4 id= placeholder= value=1
+INPUT type=button name= id= placeholder= value=全选
+INPUT type=button name= id= placeholder= value=反选
+INPUT type=text name= id= placeholder= value=00:00
+INPUT type=checkbox name=check_known_vuls id= placeholder= value=1
+INPUT type=text name=exec_range id=exec_range placeholder= value=
+SELECT type= name=scan_pri id=scan_pri placeholder= value=2
+TEXTAREA type= name=taskdesc id=taskdesc placeholder= value=
+INPUT type=radio name=policy_scan id= placeholder= value=s
+SELECT type= name=proto_cases[] id=proto_cases placeholder= value=1
+INPUT type=text name= id= placeholder= value=
+INPUT type=checkbox name= id= placeholder= value=on
+INPUT type=checkbox name= id= placeholder= value=1
+INPUT type=checkbox name= id= placeholder= value=2
+INPUT type=checkbox name= id= placeholder= value=3
+INPUT type=checkbox name= id= placeholder= value=4
+INPUT type=checkbox name= id= placeholder= value=5
+INPUT type=checkbox name= id= placeholder= value=6
+INPUT type=checkbox name= id= placeholder= value=7
+INPUT type=checkbox name= id= placeholder= value=8
+INPUT type=checkbox name= id= placeholder= value=9
+INPUT type=checkbox name= id= placeholder= value=10
+INPUT type=checkbox name= id= placeholder= value=11
+INPUT type=checkbox name= id= placeholder= value=12
+INPUT type=checkbox name= id= placeholder= value=13
+INPUT type=checkbox name= id= placeholder= value=14
+INPUT type=checkbox name= id= placeholder= value=15
+INPUT type=checkbox name= id= placeholder= value=16
+INPUT type=checkbox name=keepalive id= placeholder= value=1
+INPUT type=text name=src_addr id= placeholder= value=0
+INPUT type=text name=dst_addr id= placeholder= value=0
+INPUT type=radio name=policy_analyze id= placeholder= value=11
+INPUT type=checkbox name=icmp id= placeholder= value=1
+INPUT type=input name=icmp_timeout id= placeholder= value=1
+INPUT type=checkbox name=arp id= placeholder= value=1
+INPUT type=input name=arp_timeout id= placeholder= value=1
+INPUT type=checkbox name=tcp id= placeholder= value=1
+INPUT type=input name=tcp_timeout id= placeholder= value=1
+INPUT type=text name=tcp_ports id= placeholder= value=502
+INPUT type=checkbox name=tcpdump id= placeholder= value=1
+INPUT type=text name=fuzzConnectRetryTimes id= placeholder= value=10
+INPUT type=text name=fuzzConnectRetryNums id= placeholder= value=12
+INPUT type=text name=scan_pkt_rate id= placeholder= value=1
+INPUT type=text name=monitor_pkt_rate id= placeholder= value=1
+INPUT type=checkbox name=report_type_html id=report_type_html placeholder= value=html
+INPUT type=checkbox name=report_content_sum id=report_content_sum placeholder= value=sum
+SELECT type= name=report_tpl_sum id= placeholder= value=10007
+INPUT type=checkbox name=report_ifcreate id=report_ifcreate placeholder= value=yes
+INPUT type=checkbox name=send_ftp id=send_ftp placeholder= value=yes
+INPUT type=checkbox name=report_ifsent id=report_ifsent placeholder= value=yes
+INPUT type=checkbox name=report_ifsent_type id=report_ifsent_type placeholder= value=html
+TEXTAREA type= name=report_ifsent_email id=report_ifsent_email placeholder= value=
+INPUT type=button name= id=submitButton placeholder= value=确定

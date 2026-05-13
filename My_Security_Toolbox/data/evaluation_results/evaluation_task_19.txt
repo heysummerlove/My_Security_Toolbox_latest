@@ -1,0 +1,164 @@
+综合评估报告
+========================================================================
+任务ID: 19
+任务名称: 测试报告输出
+评估目标: 192.168.193.11
+成功阶段: 4/4
+失败阶段: 0
+
+1. 基础连通性检测
+------------------------------------------------------------------------
+阶段标识: basic-ping
+执行状态: COMPLETED
+阶段摘要: COMPLETED: ping finished successfully | Reply from 192.168.193.11: bytes=32 time=1ms TTL=64
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\basic_results\evaluation_basic_task_19.txt
+输出摘录:
+Pinging 192.168.193.11 with 32 bytes of data:
+Reply from 192.168.193.11: bytes=32 time=1ms TTL=64
+Reply from 192.168.193.11: bytes=32 time<1ms TTL=64
+Reply from 192.168.193.11: bytes=32 time<1ms TTL=64
+Reply from 192.168.193.11: bytes=32 time<1ms TTL=64
+Ping statistics for 192.168.193.11:
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+Minimum = 0ms, Maximum = 1ms, Average = 0ms
+
+2. Nmap 端口扫描
+------------------------------------------------------------------------
+阶段标识: nmap
+执行状态: COMPLETED
+阶段摘要: COMPLETED: found 18 open ports
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\nmap_results\evaluation_nmap_task_19.txt
+输出摘录:
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-05-09 10:39 +0800
+Nmap scan report for 192.168.193.11
+Host is up (0.0019s latency).
+Not shown: 82 closed tcp ports (reset)
+PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+23/tcp   open  telnet      Linux telnetd
+25/tcp   open  smtp        Postfix smtpd
+53/tcp   open  domain      ISC BIND 9.4.2
+80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+111/tcp  open  rpcbind     2 (RPC #100000)
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+513/tcp  open  login?
+514/tcp  open  shell       Netkit rshd
+2049/tcp open  nfs         2-4 (RPC #100003)
+2121/tcp open  ftp         ProFTPD 1.3.1
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+5900/tcp open  vnc         VNC (protocol 3.3)
+6000/tcp open  X11         (access denied)
+8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)
+MAC Address: 00:0C:29:88:21:90 (VMware)
+Service Info: Host:  metasploitable.localdomain; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 12.14 seconds
+
+3. Fscan 综合漏扫
+------------------------------------------------------------------------
+阶段标识: fscan
+执行状态: COMPLETED
+阶段摘要: COMPLETED: found 8 notable lines
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\fscan_results\evaluation_fscan_task_19.txt
+输出摘录:
+[*] 服务插件: cassandra, elasticsearch, ssh, redis, oracle ... 等24个
+[*] 192.168.193.11:3306   genetec-5400 [Product:Genetec Security Center] Banner:(> 5.0.51a-3ubuntu5 QXE2j@@^ , :F1_n,/DI!gc)
+[*] 192.168.193.11:21     ftp      [Product:vsftpd ||Version:2.3.4] Banner:(220 (vsFTPd 2.3.4))
+[*] 192.168.193.11:5900   vnc      [Product:VNC] Banner:(RFB 003.003)
+[*] 192.168.193.11:25     smtp     [Product:Postfix smtpd] Banner:(220 metasploitable.localdomain ESMTP Postfix (Ubuntu))
+[*] 192.168.193.11:22     ssh      [Product:OpenSSH ||Version:4.7p1 Debian 8ubuntu1] Banner:(SSH-2.0-OpenSSH_4.7p1 Debian-8ubuntu1)
+[*] 192.168.193.11:23     telnet   [Product:Linux telnetd] Banner:(# ')
+[*] 192.168.193.11:514    shell    [Product:Netkit rshd] Banner:(getnameinfo: Temporary failure in name resolution)
+[*] 192.168.193.11:512    exec     [Product:netkit-rsh rexecd] Banner:(Where are you?)
+[*] 192.168.193.11:6667   irc      [Product:UnrealIRCd] Banner:(:irc.Metasploitable.LAN NOTICE AUTH :*** Looking up your hostname... :irc.Metasp...)
+[*] 192.168.193.11:1099   java-rmi [Product:GNU Classpath grmiregistry] Banner:(N localhost K)
+[*] 192.168.193.11:2049   rpcbind  Banner:(r)
+[*] 192.168.193.11:5432   postgresql [Product:PostgreSQL DB ||Version:8.3.0 - 8.3.7] Banner:(E SFATAL C0A000 Munsupported frontend protocol 65363.19778: server supports 1.0 ...)
+[*] 192.168.193.11:53     domain   [Product:ISC BIND ||Version:9.4.2] Banner:(> version bind 9.4.2)
+[*] 192.168.193.11:513    http     [Product:Open Lighting Architecture daemon] Banner:(rlogind: Permission denied.)
+[*] 192.168.193.11:80     http     [Product:Open Lighting Architecture daemon] Banner:(HTTP/1.1 200 OK Date: Sat, 09 May 2026 02:38:40 GMT Server: Apache/2.2.8 (Ubuntu...)
+[*] 192.168.193.11:111    rpcbind  Banner:(r)
+[*] 192.168.193.11:6000   X11      Banner:(- Client is not authorized to connect to Server!)
+[*] 192.168.193.11:8009   ajp13    [Product:Apache Jserv] Banner:(AB)
+[*] 192.168.193.11:8180   http     [Version:1.1] Banner:(HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Type: text/html;charset=ISO-88...)
+[*] 192.168.193.11:2121
+[*] 192.168.193.11:445    Banner:(SMBr H 2 A \ :: metasploitable `( + 0 0 + 7 0 NONE)
+[*] 192.168.193.11:139    Banner:(SMBr H 2 A ?Q \ :: metasploitable `( + 0 0 + 7 0 NONE)
+[*] 扫描完成，发现 22 个开放端口
+[-] 扫描失败率过高: 59.1% (78/132失败)
+[-] 可能原因: 线程数过高导致资源耗尽
+[-] 建议: 降低线程数(当前600)到50-100，或增加系统ulimit
+[+] SMBInfo 192.168.193.11:445 METASPLOITABLE SMBv1
+[+] SMBInfo 192.168.193.11:139 METASPLOITABLE SMBv1
+[!] MySQL 192.168.193.11:3306 root:
+[+] NetBios 192.168.193.11:139 metasploitable.localdomain Unix
+[*] POC加载完成: 总共388个，成功380个，失败8个
+[+] http://192.168.193.11          code:200 len:891   title:Metasploitable2 - Linux server:Apache/2.2.8 (Ubuntu) DAV/2 [apache-http apache/2.2.8 php/5.2.4]
+[!] FTP 192.168.193.11:21 匿名访问 - anonymous:anonymous
+[-] 插件扫描错误 192.168.193.11:513 - Get "http://192.168.193.11:513": read tcp 192.168.193.1:9061->192.168.193.11:513: wsarecv: An existing connection was forcibly closed by the remote host.
+[!] PostgreSQL 192.168.193.11:5432 postgres:postgres
+[-] 插件扫描错误 192.168.193.11:445 - 目标可能不支持SMBv1
+[+] http://192.168.193.11:8180     code:200 len:8692  title:Apache Tomcat/5.5    server:Apache-Coyote/1.1 [apache-tomcat tomcat_jk_connector apache-http servlet/2.4 xml/1.0 tomcat/5.5 tomcat/.]
+[-] 192.168.193.11:5900 vnc 未发现弱密码
+[-] 192.168.193.11:22 ssh 未发现弱密码
+[-] 192.168.193.11:445 smb 未发现弱密码
+[-] 192.168.193.11:139 smb 未发现弱密码
+[-] 192.168.193.11:23 telnet 未发现弱密码
+[-] 192.168.193.11:25 smtp 未发现弱密码
+[-] 192.168.193.11:2121 ftp 未发现弱密码
+[*] 扫描任务完成，耗时 6m27.636s，已扫描 18 个目标
+
+4. Web 漏扫下发
+------------------------------------------------------------------------
+阶段标识: nsfocus
+执行状态: COMPLETED
+阶段摘要: COMPLETED: nsfocus task was submitted
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_results\evaluation_nsfocus_task_19.txt
+输出摘录:
+[*] 准备下发 Web 漏扫任务，目标: 192.168.193.11
+[*] 正在连接扫描器: https://192.168.193.10/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_104559.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_104559.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_controls_20260509_104559.txt
+[*] 已填充输入框: input[name='username']
+[*] 已填充输入框: input[name='password']
+[*] 已点击元素: input.submit
+[+] 登录后页面已就绪: 检测到 mainFrame
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_104633.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_104633.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_controls_20260509_104636.txt
+[+] 登录成功
+[*] 直接打开 Web 扫描任务页面: https://192.168.193.10/task/index/8
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_104643.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_104643.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_controls_20260509_104646.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_20260509_104646.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_url_20260509_104646.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_controls_20260509_104646.txt
+[*] 已填充输入框: textarea#task_target
+[*] 已触发 Web 目标校验并尝试启用提交按钮
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_104650.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_104650.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_controls_20260509_104652.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_20260509_104652.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_url_20260509_104652.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_controls_20260509_104652.txt
+[*] 已填充输入框: input#task_name
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_104652.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_104652.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_controls_20260509_104654.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_20260509_104654.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_url_20260509_104654.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_controls_20260509_104654.txt
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_104655.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_104655.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_controls_20260509_104656.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_20260509_104656.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_url_20260509
+
+... (output truncated) ...
+

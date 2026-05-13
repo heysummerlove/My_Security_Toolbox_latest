@@ -1,0 +1,55 @@
+[Buttons]
+报表输出
+报表列表
+<
+2
+>
+<
+2
+>
+
+[Inputs]
+INPUT type=text name=report_name id= placeholder= value=
+INPUT type=checkbox name=report_type id=html placeholder= value=html
+INPUT type=checkbox name=report_type id=doc placeholder= value=doc
+INPUT type=checkbox name=report_type id=xls placeholder= value=xls
+INPUT type=checkbox name=report_type id=pdf placeholder= value=pdf
+INPUT type= name=start_time id=start_time placeholder= value=
+INPUT type= name=end_time id=end_time placeholder= value=
+INPUT type=hidden name=csrfmiddlewaretoken id= placeholder= value=J49Kf1rTcao3LGZ7bWIcyadezmSMdePy
+INPUT type=button name= id= placeholder= value=查询
+INPUT type=button name= id= placeholder= value=重置
+SELECT type= name=page_size id=page_size placeholder= value=25
+INPUT type=button name= id= placeholder= value=删除
+INPUT type=button name= id=report_clear placeholder= value=清空
+INPUT type=checkbox name= id=check_all placeholder= value=on
+SELECT type= name=data_area id=data_area placeholder= value=0
+SELECT type= name=report_content id=report_content placeholder= value=
+INPUT type=checkbox name=report_id id= placeholder= value=31
+INPUT type=checkbox name=report_id id= placeholder= value=30
+INPUT type=checkbox name=report_id id= placeholder= value=29
+INPUT type=checkbox name=report_id id= placeholder= value=28
+INPUT type=checkbox name=report_id id= placeholder= value=27
+INPUT type=checkbox name=report_id id= placeholder= value=26
+INPUT type=checkbox name=report_id id= placeholder= value=24
+INPUT type=checkbox name=report_id id= placeholder= value=23
+INPUT type=checkbox name=report_id id= placeholder= value=22
+INPUT type=checkbox name=report_id id= placeholder= value=21
+INPUT type=checkbox name=report_id id= placeholder= value=20
+INPUT type=checkbox name=report_id id= placeholder= value=19
+INPUT type=checkbox name=report_id id= placeholder= value=18
+INPUT type=checkbox name=report_id id= placeholder= value=17
+INPUT type=checkbox name=report_id id= placeholder= value=16
+INPUT type=checkbox name=report_id id= placeholder= value=15
+INPUT type=checkbox name=report_id id= placeholder= value=14
+INPUT type=checkbox name=report_id id= placeholder= value=13
+INPUT type=checkbox name=report_id id= placeholder= value=12
+INPUT type=checkbox name=report_id id= placeholder= value=11
+INPUT type=checkbox name=report_id id= placeholder= value=10
+INPUT type=checkbox name=report_id id= placeholder= value=9
+INPUT type=checkbox name=report_id id= placeholder= value=8
+INPUT type=checkbox name=report_id id= placeholder= value=7
+INPUT type=checkbox name=report_id id= placeholder= value=6
+SELECT type= name=page_size id=page_size placeholder= value=25
+INPUT type=button name= id= placeholder= value=删除
+INPUT type=button name= id=report_clear placeholder= value=清空

@@ -1,0 +1,25 @@
+Comprehensive Evaluation Report
+Target: 127.0.0.1
+Task ID: 16
+Task Name: report_smoke_test
+
+[basic-ping]
+status: COMPLETED
+summary: COMPLETED: ping finished successfully | Reply from 127.0.0.1: bytes=32 time<1ms TTL=128
+result_path: E:\My_Security_Toolbox\My_Security_Toolbox\data\basic_results\evaluation_basic_task_16.txt
+
+[nmap]
+status: COMPLETED
+summary: COMPLETED: found 4 open ports
+result_path: E:\My_Security_Toolbox\My_Security_Toolbox\data\nmap_results\evaluation_nmap_task_16.txt
+
+[fscan]
+status: ERROR
+summary: ERROR: evaluation/fscan exited with code 2
+result_path: E:\My_Security_Toolbox\My_Security_Toolbox\data\fscan_results\evaluation_fscan_task_16.txt
+
+[nsfocus]
+status: ERROR
+summary: ERROR: evaluation/nsfocus exited with code 1
+result_path: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_results\evaluation_nsfocus_task_16.txt
+

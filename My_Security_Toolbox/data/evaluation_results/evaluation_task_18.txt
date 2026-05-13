@@ -1,0 +1,143 @@
+综合评估报告
+========================================================================
+任务ID: 18
+任务名称: report_smoke_test_v3
+评估目标: 127.0.0.1
+成功阶段: 4/4
+失败阶段: 0
+
+1. 基础连通性检测
+------------------------------------------------------------------------
+阶段标识: basic-ping
+执行状态: COMPLETED
+阶段摘要: COMPLETED: ping finished successfully | 来自 127.0.0.1 的回复: 字节=32 时间<1ms TTL=128
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\basic_results\evaluation_basic_task_18.txt
+输出摘录:
+正在 Ping 127.0.0.1 具有 32 字节的数据:
+来自 127.0.0.1 的回复: 字节=32 时间<1ms TTL=128
+来自 127.0.0.1 的回复: 字节=32 时间<1ms TTL=128
+来自 127.0.0.1 的回复: 字节=32 时间<1ms TTL=128
+来自 127.0.0.1 的回复: 字节=32 时间<1ms TTL=128
+127.0.0.1 的 Ping 统计信息:
+数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，
+往返行程的估计时间(以毫秒为单位):
+最短 = 0ms，最长 = 0ms，平均 = 0ms
+
+2. Nmap 端口扫描
+------------------------------------------------------------------------
+阶段标识: nmap
+执行状态: COMPLETED
+阶段摘要: COMPLETED: found 4 open ports
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\nmap_results\evaluation_nmap_task_18.txt
+输出摘录:
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-05-09 10:33 +0800
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.000014s latency).
+Not shown: 96 closed tcp ports (reset)
+PORT      STATE SERVICE       VERSION
+135/tcp   open  msrpc         Microsoft Windows RPC
+445/tcp   open  microsoft-ds?
+8080/tcp  open  http          Uvicorn
+10000/tcp open  tcpwrapped
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.44 seconds
+
+3. Fscan 综合漏扫
+------------------------------------------------------------------------
+阶段标识: fscan
+执行状态: COMPLETED
+阶段摘要: COMPLETED: found 5 notable lines
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\fscan_results\evaluation_fscan_task_18.txt
+输出摘录:
+[*] 服务插件: cassandra, memcached, smb, mysql, postgresql ... 等24个
+[*] 127.0.0.1:902         ssl/vmware-auth [Product:VMware Authentication Daemon ||Version:1.10] Banner:(220 VMware Authentication Daemon Version 1.10: SSL Required, ServerDaemonProtoco...)
+[*] 127.0.0.1:10000
+[*] 127.0.0.1:135         msrpc    [Product:Microsoft Windows RPC] Banner:(@)
+[*] 127.0.0.1:8080        http     [Product:Open Lighting Architecture daemon] Banner:(HTTP/1.1 404 Not Found date: Sat, 09 May 2026 02:33:21 GMT server: uvicorn conte...)
+[*] 127.0.0.1:445         microsoft-ds [Product:Microsoft Windows SMB2] Banner:(SMB@ A G / 8AL v Xm mk[4\ * `( + 0 0 + 7 + 7)
+[*] 扫描完成，发现 5 个开放端口
+[+] NetInfo 127.0.0.1:135 [Ludwig]
+[+] NetInfo 127.0.0.1:135   -> 192.168.43.4
+[+] NetInfo 127.0.0.1:135   -> 192.168.193.1
+[+] NetInfo 127.0.0.1:135   -> 192.168.88.1
+[-] 插件扫描错误 127.0.0.1:445 - 目标可能不支持SMBv1
+[+] SMBInfo 127.0.0.1:445 [Windows 11 (Build 26100)] LUDWIG SMBv2
+[-] 插件扫描错误 127.0.0.1:902 - Get "https://127.0.0.1:902": tls: first record does not look like a TLS handshake
+[*] http://127.0.0.1:8080          code:404 len:22    title:None                 server:uvicorn
+smb2: 2026/05/09 10:33:24 error: connection error: read tcp 127.0.0.1:42445->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:26 error: connection error: read tcp 127.0.0.1:42453->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25643->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25651->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25645->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25647->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25661->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25648->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25650->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25657->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25646->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25653->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25654->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25649->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25656->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25659->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25644->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25658->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25655->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25660->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25652->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:28 error: connection error: read tcp 127.0.0.1:25662->127.0.0.1:445: use of closed network connection
+smb2: 2026/05/09 10:33:30 error: connection error: read tcp 127.0.0.1:25679->127.0.0.1:445: use of clo
+
+... (output truncated) ...
+
+4. Web 漏扫下发
+------------------------------------------------------------------------
+阶段标识: nsfocus
+执行状态: COMPLETED
+阶段摘要: COMPLETED: nsfocus task was submitted
+结果文件: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_results\evaluation_nsfocus_task_18.txt
+输出摘录:
+[*] 准备下发 Web 漏扫任务，目标: 127.0.0.1
+[*] 正在连接扫描器: https://192.168.193.10/
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_103421.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_20260509_103421.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_01_open_login_controls_20260509_103421.txt
+[*] 已填充输入框: input[name='username']
+[*] 已填充输入框: input[name='password']
+[*] 已点击元素: input.submit
+[+] 登录后页面已就绪: 检测到 mainFrame
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_103455.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_20260509_103455.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_02_after_login_controls_20260509_103458.txt
+[+] 登录成功
+[*] 直接打开 Web 扫描任务页面: https://192.168.193.10/task/index/8
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_103505.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_20260509_103505.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_controls_20260509_103508.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_20260509_103508.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_url_20260509_103508.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_03_open_task_entry_frame_controls_20260509_103508.txt
+[*] 已填充输入框: textarea#task_target
+[*] 已触发 Web 目标校验并尝试启用提交按钮
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_103512.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_20260509_103512.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_controls_20260509_103515.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_20260509_103515.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_url_20260509_103515.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_target_frame_controls_20260509_103515.txt
+[*] 已填充输入框: input#task_name
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_103515.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_20260509_103515.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_controls_20260509_103517.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_20260509_103517.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_url_20260509_103517.txt
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_04_fill_task_name_frame_controls_20260509_103517.txt
+[*] 调试截图已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_103517.png
+[*] 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_20260509_103517.html
+[*] 页面控件清单已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_controls_20260509_103519.txt
+[*] frame 页面快照已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_20260509_103520.html
+[*] frame 当前地址已保存: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\step_05_enable_report_options_frame_url_20260509_1035
+
+... (output truncated) ...
+

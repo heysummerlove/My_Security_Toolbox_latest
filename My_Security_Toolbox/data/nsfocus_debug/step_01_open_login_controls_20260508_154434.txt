@@ -1,0 +1,8 @@
+[Buttons]
+用户许可协议
+
+[Inputs]
+INPUT type=text name=username id=username placeholder= value=
+INPUT type=password name=password id=password placeholder= value=
+INPUT type=button name= id= placeholder= value=登 录
+INPUT type=hidden name=csrfmiddlewaretoken id= placeholder= value=35uBoJJsgWEdpD6Px5RYRNsgJFZyVxl1

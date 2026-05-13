@@ -1,0 +1,962 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>报表列表</title>
+<link href="/media/stylesheet/nsfocus_2012/pane.css" rel="stylesheet" type="text/css">
+<link href="/media/js/vex/vex.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/media/js/vex/vex-theme-default.css">
+<link href="/media/stylesheet/nsfocus_2012/nsfocus_rsasv6.css" type="text/css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="/media/stylesheet/nsfocus_2014/tab.css">
+<script type="text/javascript" src="/media/js/prototype.js"></script>
+<script type="text/javascript" src="/media/js/cavy.js"></script>
+<script type="text/javascript" src="/media/js/ui.js"></script>
+<script type="text/javascript" src="/media/js/common.js"></script>
+<script type="text/javascript" src="/media/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="/media/js/datepicker/WdatePicker.js"></script><link href="/media/js/datepicker/skin/WdatePicker.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/media/js/rsas_v6.js"></script>
+<script type="text/javascript" src="/media/js/vex/vex.combined.js"></script>
+<script>
+    var dialog = null;
+    if (top.dialog){
+        dialog = top.dialog;
+    }else{
+        dialog = new UI.Dialog({name:'dialog'});
+    }
+</script>
+<script type="text/javascript" src="/media/js/page.js"></script>
+<script type="text/javascript" src="/media/js/jquery/easyui.js"></script>
+<script type="text/javascript">
+    function change_export_area(value){
+        var all =           new Option("所有内容",'');
+        var summary =       new Option("综述报表",'summary');
+        var host =          new Option("主机报表",'host');
+        var websummary =    new Option("Web综述报表",'websummary');
+        var site =          new Option("站点报表",'site');
+        var assets_node =   new Option("资产节点报表",'assets_node');
+        var assets_host =   new Option("资产主机报表",'assets_host');
+        var fuzzing = new Option("Fuzzing综述报表",'fuzzing');
+        var staticsummary = new Option("静态扫描综述报表",'staticsummary');
+        jQuery('#report_content').empty();
+        if(value == '1'){
+            jQuery('#report_content')[0].options.add(all);
+            jQuery('#report_content')[0].options.add(summary);
+            jQuery('#report_content')[0].options.add(host);
+        }else if(value == '2'){
+            jQuery('#report_content')[0].options.add(all);
+            jQuery('#report_content')[0].options.add(websummary);
+            jQuery('#report_content')[0].options.add(site);
+        }else if(value == '3'){
+            jQuery('#report_content')[0].options.add(all);
+            jQuery('#report_content')[0].options.add(assets_node);
+            jQuery('#report_content')[0].options.add(assets_host);
+        }else if(value == '4'){
+            jQuery('#report_content')[0].options.add(all);
+            jQuery('#report_content')[0].options.add(fuzzing);
+        }else if(value == '5'){
+            jQuery('#report_content')[0].options.add(all);
+            jQuery('#report_content')[0].options.add(staticsummary);
+        }else{
+            jQuery('#report_content')[0].options.add(all);
+            jQuery('#report_content')[0].options.add(summary);
+            jQuery('#report_content')[0].options.add(host);
+            jQuery('#report_content')[0].options.add(websummary);
+            jQuery('#report_content')[0].options.add(site);
+            jQuery('#report_content')[0].options.add(assets_node);
+            jQuery('#report_content')[0].options.add(assets_host);
+        }
+        jQuery("#report_content").eq(0).attr('selected', 'true');
+        get_report_list(1);
+    }
+    function _validate_end_time(){
+        var start_time = jQuery('#start_time').val();
+        var end_time = jQuery('#end_time').val();
+        if (start_time && end_time){
+            var s = Date.parse(start_time.replace(/\-/g,"/"));
+            var e = Date.parse(end_time.replace(/\-/g,"/"));
+            if (s - e > 0){
+                return false;
+            }
+        }
+        return true;
+    }
+    function _validate(){
+        if(!_validate_end_time()){
+            add_error(jQuery('#end_time'),"请输入正确时间范围");
+            return false;
+        }else{
+            clear_error(jQuery('#end_time'));
+        }
+        return true;
+    }
+    function get_report_list(page,page_size_obj){
+        if (!_validate()){
+            return false;
+        }
+        var post_data = jQuery('#query_form').serializeArray();
+        var report_content = jQuery('#report_content').val();
+        var data_area = jQuery('#data_area').val()
+        var page_size = jQuery('#page_size').val();
+        if (!page_size){
+            page_size = 25;
+            //console.log(page_size);
+        }
+        if (page_size_obj){
+            page_size = jQuery(page_size_obj).val()
+        }
+        post_data.push({name:'page_size',value:page_size});
+        post_data.push({name:'report_content',value:report_content});
+        post_data.push({name:'data_area',value:data_area});
+        jQuery.ajax({
+            url:"/report/list/get_report_list/page/"+page,
+            type:'post',
+            data:post_data,
+            success:function(data){
+                jQuery('#report_list_content').html(data)
+            }
+        });
+    }
+    function clear_form(){
+        jQuery('#query_form')[0].reset();
+        get_report_list(1);
+    }
+
+    function add_error(obj,msg){
+        obj.addClass('tip_error')
+        var error_td = jQuery(obj.parent().next())
+        error_td.html("<span class='error'>"+msg+"</span>")
+    }
+
+    function clear_error(obj){
+        obj.removeClass('tip_error')
+        var error_td = jQuery(obj.parent().next())
+        error_td.html("")
+    }
+</script>
+<style>
+/* html td 自动换行*/
+table.cmn_table th,table.cmn_table td{table-layout:fixed;word-break:break-all;word-wrap:break-all;}
+</style></head>
+<body class="main">
+<table id="taskSummaryTable" cellspacing="0" cellpadding="0" width="100%" height="100%">
+  <tbody><tr>
+    <td>
+    <div class="cmn_tab"><table><tbody><tr>
+<td class="tab_unselected"><a href="/report">报表输出</a></td>
+<td class="tab_selected"><a href="/report/list">报表列表</a></td>
+</tr></tbody></table>
+<div class="tools right">
+  <a id="tools_help" target="_blank" href="/manual/HELP/wwhelp/wwhimpl/js/html/wwhelp.htm#href=ReportManagement_ReportOutput_ReportList.html">
+      <img src="/media/stylesheet/nsfocus_2012/images/icon/help.gif">
+  </a>
+</div></div>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" height="100%">
+      <table style="width:100%;height:100%;">
+        <tbody><tr>
+          <td valign="top">
+            <div class="b_cont" style="height: 593px; padding-right: 8px;">
+            <div class="content"><div id="pane-0-content">
+<div class="top_box">
+  <h1 onclick="show_search('cont_1',this);"> <img class="ico search" src="/media/stylesheet/nsfocus_2012/images/blank.gif" align="absmiddle">查询 <img class="ico dot_down" src="/media/stylesheet/nsfocus_2012/images/blank.gif" align="absmiddle">
+  </h1>
+  <h2 class="cont" id="cont_1" style="display:none;">
+    <form method="post" action="" class="cmn_form" id="query_form" name="query_form">
+      <table>
+        <tbody><tr>
+          <th>报表名称</th>
+          <td><input name="report_name" type="text" class="text" style="width: 160px;"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>报表格式</th>
+          <td>
+              <input type="checkbox" id="html" name="report_type" value="html" class="checkbox" style="">
+              <label for="html" class="cmn_label">
+              <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML"> HTML
+              </label>
+              <input type="checkbox" id="doc" name="report_type" value="doc" class="checkbox" style="">
+              <label for="doc" class="cmn_label">
+              <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC"> Word
+              </label>
+              <input type="checkbox" id="xls" name="report_type" value="xls" class="checkbox" style="">
+              <label for="xls" class="cmn_label">
+              <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS"> Excel
+              </label>
+              <input type="checkbox" id="pdf" name="report_type" value="pdf" class="checkbox" style="">
+              <label for="pdf" class="cmn_label">
+              <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF"> PDF
+              </label>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>生成时间</th>
+          <td>
+              <input class="Wdate" id="start_time" name="start_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" value="" style="">
+              -
+              <input class="Wdate" id="end_time" name="end_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" value="" style="">
+          </td>
+          <td></td>
+        </tr>
+      </tbody></table>
+      <div class="clear">
+        <input type="hidden" name="csrfmiddlewaretoken" value="9QsyRvUVCQAeBQSYEu4jUnvkOFHsWs8y" style="">
+        <input type="button" value="查询" onclick="get_report_list(1)" class="cmn_btn" style="">
+        <input type="button" value="重置" onclick="clear_form()" class="cmn_btn" style="">
+      </div>
+    </form>
+  </h2>
+</div>
+</div>
+<div id="report_list_content" name="report_list_content">
+<div class="table_barnner" style="margin-top:4px;">
+    <span class="cmn_page"> 
+    <select id="page_size" name="page_size" onchange="get_report_list(1,this)">
+        <option selected="selected">25</option>
+        <option>50</option>
+        <option>100</option>
+    </select>
+    /页，共30条
+    </span>
+    <span id="setpage_top" class="table_setpage"><div id="setpage_top"><a href="javascript:void(0)" onclick="gotopage(0)"> &lt; </a><span class="current">1</span><a href="javascript:void(0)" onclick="gotopage(2)">2</a><a href="javascript:void(0)" onclick="gotopage(2)"> &gt; </a></div></span> 
+    <script type="text/javascript">
+        Pagination("setpage_top",1,2.0,6,3,function(page){
+            get_report_list(page);
+        });//调用分页控件
+    </script>
+    <div style="float:right;">
+        <input disabled="" type="button" value="删除" onclick="multi_delete()" class="cmn_btn multi_delete" style="margin-right: 0px;">
+        <input id="report_clear" type="button" value="清空" onclick="report_clear()" class="cmn_btn" style="margin-right: 0px;">
+    </div>
+</div>
+<table class="cmn_table">
+  <thead>
+  <tr class="first_title">
+    <th class="short"><input id="check_all" type="checkbox" style=""></th>
+    <th width="35px">序号</th>
+    <th>报表名称</th>
+    <th width="85px">
+    <select style="width:84px;" name="data_area" id="data_area" onchange="change_export_area(this.value)">
+        <option value="0" selected="selected">所有类型</option>
+        <option value="1">普通任务</option><option value="2">Web扫描任务</option><option value="3">资产</option>
+        
+        <option value="4">Fuzzing扫描任务</option>
+        
+        
+        <option value="5">静态扫描任务</option>
+        
+    </select>
+    </th>
+    <th width="80px">
+    <select style="width:84px;" name="report_content" id="report_content" onchange="get_report_list(1)">
+        <option value="">所有内容</option><option value="summary">综述报表</option>
+        <option value="host">主机报表</option><option value="websummary">Web综述报表</option>
+        <option value="site">站点报表</option><option value="assets_node">资产节点报表</option>
+        <option value="assets_host">资产主机报表</option><option value="fuzzing">Fuzzing综述报表</option><option value="staticsummary">静态扫描综述报表</option>
+    </select>
+    <script>jQuery('#report_content').val('');</script>
+    </th>
+    <th width="100px">报表格式</th>
+    <th width="140px">生成时间</th>
+    <th width="150px">进度</th>
+    <th width="30px">操作</th>
+  </tr>
+  </thead>
+  <tbody><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="31" style=""></td>
+    <td>31</td>
+    <td>36_数控立式机床扫描【192.168.1.2】_2026_04_28</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/31/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/31/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/31/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/31/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-28 16:46:21</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(31)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="30" style=""></td>
+    <td>30</td>
+    <td>35_数控小平面磨床扫描【192.168.88.99】_2026_04_28</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/30/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/30/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/30/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/30/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-28 10:14:16</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(30)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="29" style=""></td>
+    <td>29</td>
+    <td>34_螺纹磨床扫描【192.168.214.241】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+</td>
+    <td><a href="/report/download/id/29/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-27 16:43:41</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(29)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="28" style=""></td>
+    <td>28</td>
+    <td>34_螺纹磨床扫描【192.168.214.241】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+</td>
+    <td><a href="/report/download/id/28/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a></td>
+    <td>2026-04-27 16:42:45</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(28)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="27" style=""></td>
+    <td>27</td>
+    <td>34_螺纹磨床扫描【192.168.214.241】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+</td>
+    <td><a href="/report/download/id/27/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a></td>
+    <td>2026-04-27 16:42:25</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(27)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="26" style=""></td>
+    <td>26</td>
+    <td>34_螺纹磨床扫描【192.168.214.241】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+</td>
+    <td><a href="/report/download/id/26/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a></td>
+    <td>2026-04-27 16:42:05</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(26)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="24" style=""></td>
+    <td>24</td>
+    <td>34_螺纹磨床扫描【192.168.214.241】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+</td>
+    <td><a href="/report/download/id/24/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a></td>
+    <td>2026-04-27 16:40:55</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(24)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="23" style=""></td>
+    <td>23</td>
+    <td>33_扫描【169.254.6.129】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/23/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/23/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/23/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/23/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-27 11:59:05</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(23)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="22" style=""></td>
+    <td>22</td>
+    <td>31_五轴精密数控磨床扫描【169.254.6.128】_2026_04_27</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/22/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/22/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/22/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/22/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-27 11:48:08</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(22)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="21" style=""></td>
+    <td>21</td>
+    <td>30_齿轮测量仪扫描【192.6.1.2;192.6.1.4】_2026_04_24</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/21/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/21/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/21/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/21/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-24 17:31:56</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(21)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="20" style=""></td>
+    <td>20</td>
+    <td>29_等离子喷涂扫描【192.168.101.1;192.168._____2026_04_24</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/20/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/20/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/20/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/20/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-24 12:04:21</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(20)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="19" style=""></td>
+    <td>19</td>
+    <td>27_等离子喷涂扫描【192.168.101.1;192.168._____2026_04_24</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/19/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/19/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/19/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/19/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-24 11:48:51</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(19)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="18" style=""></td>
+    <td>18</td>
+    <td>26_等离子喷涂扫描【192.168.101.1_24】_2026_04_24</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/18/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/18/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/18/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/18/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-24 11:41:21</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(18)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="17" style=""></td>
+    <td>17</td>
+    <td>25_氮化炉关防火墙169.254.219.195_2026_04_24</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/17/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/17/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/17/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/17/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-24 10:50:38</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(17)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="16" style=""></td>
+    <td>16</td>
+    <td>24_可控气氛氮化炉扫描【169.254.219.195】_2026_04_24</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/16/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/16/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/16/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/16/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-24 09:50:53</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(16)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="15" style=""></td>
+    <td>15</td>
+    <td>23_可控气体渗碳炉扫描【192.168.1.2】_2026_04_23</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/15/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/15/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/15/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/15/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-23 17:16:35</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(15)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="14" style=""></td>
+    <td>14</td>
+    <td>21_可控气体渗碳炉扫描【192.168.1.2】_2026_04_23</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/14/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/14/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/14/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/14/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-23 17:05:54</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(14)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="13" style=""></td>
+    <td>13</td>
+    <td>20_等离子发射光谱仪扫描【192.168.1.1;192.168_____2026_04_23</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/13/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/13/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/13/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/13/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-23 14:57:34</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(13)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="12" style=""></td>
+    <td>12</td>
+    <td>19_扫描电子显微镜【192.168.50.1;192.168.5_____2026_04_23</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/12/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/12/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/12/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/12/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-23 10:13:01</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(12)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="11" style=""></td>
+    <td>11</td>
+    <td>17_扫描【192.168.50.1;192.168.50.10】_2026_04_23</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/11/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/11/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/11/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/11/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-23 09:55:17</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(11)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="10" style=""></td>
+    <td>10</td>
+    <td>16_扫描【169.254.108.32】_2026_04_22</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/10/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/10/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/10/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/10/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-22 15:19:49</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(10)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="9" style=""></td>
+    <td>9</td>
+    <td>14_扫描【169.254.108.*;!169.254.108._____2026_04_22</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/9/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/9/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/9/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/9/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-22 12:43:04</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(9)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="8" style=""></td>
+    <td>8</td>
+    <td>13_便携式火花直读光谱仪【169.254.1.1_16;!169_____2026_04_22</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/8/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/8/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/8/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/8/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-22 11:24:19</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(8)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="odd">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="7" style=""></td>
+    <td>7</td>
+    <td>12_扫描【169.254.107.65】_2026_04_22</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/7/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/7/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/7/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/7/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-22 10:22:43</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(7)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr><tr class="even">
+    <td class="short"><input class="check_i report_id" type="checkbox" name="report_id" value="6" style=""></td>
+    <td>6</td>
+    <td>10_扫描【192.168.1.1_24;!192.168.1.2_____2026_04_20</td>
+    <td>普通任务</td>
+    <td style="white-space:pre"> 综述报表
+ 主机报表
+</td>
+    <td><a href="/report/download/id/6/type/html/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/html.gif" title="HTML">
+    </a><a href="/report/download/id/6/type/doc/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/word.gif" title="DOC">
+    </a><a href="/report/download/id/6/type/xls/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/execl.gif" title="XLS">
+    </a><a href="/report/download/id/6/type/pdf/">
+    <img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/pdf.gif" title="PDF">
+    </a></td>
+    <td>2026-04-20 16:39:40</td>
+    <td>
+    <span class="cmn_progress">
+        <img src="/media/stylesheet/nsfocus_2012/images/blank.gif" width="100%">
+    </span>100%</td>
+    <td>
+    <a onclick="single_delete(6)" title="删除"><img style="cursor:pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/delete.gif"></a>
+    </td>
+  </tr></tbody>
+</table>
+<div class="table_barnner" style="margin-top:4px;">
+    <span class="cmn_page"> 
+    <select id="page_size" name="page_size" onchange="get_report_list(1,this)">
+        <option selected="selected">25</option>
+        <option>50</option>
+        <option>100</option>
+    </select>
+    /页，共30条
+    </span>
+    <span id="setpage_bottom" class="table_setpage"><div id="setpage_bottom"><a href="javascript:void(0)" onclick="gotopage(0)"> &lt; </a><span class="current">1</span><a href="javascript:void(0)" onclick="gotopage(2)">2</a><a href="javascript:void(0)" onclick="gotopage(2)"> &gt; </a></div></span> 
+    <script type="text/javascript">
+        Pagination("setpage_bottom",1,2.0,6,3,function(page){
+            get_report_list(page);
+        });//调用分页控件
+    </script>
+    <div style="float:right;">
+        <input disabled="" type="button" value="删除" onclick="multi_delete()" class="cmn_btn multi_delete" style="margin-right: 0px;">
+        <input id="report_clear" type="button" value="清空" onclick="report_clear()" class="cmn_btn" style="margin-right: 0px;">
+    </div>
+</div>
+<script>
+    jQuery(function(){
+        jQuery.check_box({all:"check_all"});
+        function check_length(){
+            if(jQuery("input.report_id:checked").length > 0){
+                jQuery(".multi_delete").attr("disabled",false)
+            }else{
+                jQuery(".multi_delete").attr("disabled",true)
+            }
+        }
+        jQuery('#check_all').bind("click",check_length)
+        jQuery('#check_all').bind("click",marked_all)
+        jQuery('.report_id').each(function(index,o){jQuery(o).bind("click",check_length);});
+        jQuery('.report_id').each(function(index,o){jQuery(o).bind("click",o,marked);});
+    })
+    function marked(o){
+        UI.toggleClass(UI.parent(UI.parent(o.target)),'marked');
+    }
+    function marked_all(){
+        jQuery('.report_id').each(function(index,o){
+            if(o.checked){
+                UI.addClass(UI.parent(UI.parent(o)),'marked');
+            }else{
+                UI.removeClass(UI.parent(UI.parent(o)),'marked');
+            }
+        });
+    }
+    function multi_delete(){
+        checked_list = jQuery("input.report_id:checked")
+        if (checked_list.length == 0){
+            alert("请选择报表！");
+            return false;
+        }
+        id = jQuery.map(checked_list,function(e){return e.value;}).join(',')
+        if(window.confirm("确定要删除所选报表吗？")){
+            report_delete(id)
+        }
+    }
+    function single_delete(id){
+        if(window.confirm("确定要删除吗？")){
+            report_delete(id)
+        }
+    }
+    function report_delete(id){
+        jQuery.ajax({
+            type:'post',
+            data:{'csrfmiddlewaretoken': '9QsyRvUVCQAeBQSYEu4jUnvkOFHsWs8y'},
+            url:"/report/delete/id/"+id+"/",
+            success:function(data){
+                var res = eval(data);
+                if (res.result == 'success'){
+                    //to do ajax
+                    get_report_list(1)
+                    UI.Top_tips({text:'成功删除报表('+id+')',type:'success'})
+                }
+            }
+        });
+    }
+    function report_clear(){
+        if(window.confirm("确定要清空所有报表吗？")){
+            jQuery.ajax({
+                type:'post',
+                data:{'csrfmiddlewaretoken': '9QsyRvUVCQAeBQSYEu4jUnvkOFHsWs8y'},
+                url:"/report/deleteall/",
+                success:function(data){
+                    var res = eval(data);
+                    if (res.result == 'success'){
+                        //to do ajax
+                        get_report_list(1)
+                        UI.Top_tips({text:'成功清空所有报表',type:'success'})
+                    }
+                }
+            });
+        }
+    }
+</script></div>
+            </div>
+            </div>
+          </td>
+        </tr>
+      </tbody></table>
+    </td>
+  </tr>  
+</tbody></table>
+
+</body></html>

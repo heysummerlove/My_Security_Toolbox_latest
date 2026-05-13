@@ -1,0 +1,3638 @@
+<html><head>
+<title>新建任务</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="imagetoolbar" content="no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="/media/stylesheet/nsfocus_2012/nsfocus_rsasv6.css" type="text/css" rel="stylesheet">
+<link href="/media/stylesheet/nsfocus_2014/tab.css" type="text/css" rel="stylesheet">
+<link href="/media/stylesheet/nsfocus_2014/form.css" type="text/css" rel="stylesheet">
+<link href="/media/stylesheet/nsfocus_2014/pane.css" type="text/css" rel="stylesheet">
+<link href="/media/js/nform/jquery-nform.css" type="text/css" rel="stylesheet">
+<link href="/media/js/multiple-select/multiple-select.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="/media/js/prototype.js"></script>
+<script type="text/javascript" src="/media/js/ui.js"></script>
+<script type="text/javascript" src="/media/js/json2.js"></script>
+<script type="text/javascript" src="/media/js/datepicker/WdatePicker.js "></script><link href="/media/js/datepicker/skin/WdatePicker.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/media/js/common.js"></script>
+
+<script type="text/javascript" src="/media/js/jquery/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="/media/js/nform/jquery-nform.js"></script>
+<script type="text/javascript" src="/media/js/multiple-select/multiple-select.js"></script>
+
+<script type="text/javascript" src="/media/js/jquery/ajaxfileupload.js"></script>
+<script type="text/javascript" src="/media/js/rsas_v6.js"></script>
+<script type="text/javascript" src="/media/js/cavy.js"></script>
+
+
+
+<script type="text/javascript">
+	function taskIndexChange(obj, taskclass){
+		jQuery(obj).parent().siblings().attr('class','tab_unselected');
+		jQuery(obj).parent().attr('class','tab_selected');
+		jQuery(obj).blur();
+		
+		var type, 
+			Tasks = {'fuzzscan': '16', 'pwdscan': '4', 'staticscan': '32', 'webscan': '8', 'vulscan': '1'};
+
+		// if (taskclass=='pwdtask'){	
+		// 	var type='4';
+		// }else{
+		// 	if (taskclass=='webscan'){
+		// 		var type='8';
+		// 	}else{
+		// 		var type='2';
+		// 	}
+		// };
+
+		type = Tasks[taskclass];
+		
+		window.location.href = "/task/index/" + type;
+	}
+</script>
+<script type="text/javascript">
+function showTab(obj,target) {
+	jQuery(obj).parent().parent().siblings().children().attr('class','tab_unselected');
+	jQuery(obj).parent().attr('class','tab_selected');
+	jQuery(obj).blur();
+	//jQuery(target).show();
+	//jQuery(target).siblings().hide();
+	jQuery(target).attr("class","content");
+	jQuery(target).siblings().attr('class','content hide');
+	// var tpath='/manual/HELP/wwhelp/wwhimpl/js/html/wwhelp.htm#href=';
+	
+	// if (target=='#vul_base'){
+	// 	if (ICSScan=="BVS"){
+	// 		tpath=tpath+'NewTask.html';
+	// 	}else{
+	// 		tpath=tpath+'NewTask_AssessmentTask_BasicOption.html';
+	// 	}
+	// }else if (target=='#vul_report'){
+	// 	tpath=tpath+'NewTask_AssessmentTask_Report.html';
+	// //for webscan
+	// }else if (target=='#web_base'){
+	// 	tpath=tpath+'NewTask_WebTask_BasicOption.html';
+	// }else if (target=='#web_report'){
+	// 	tpath=tpath+'NewTask_WebTask_Report.html';
+	// }else if (target=='#web_senior'){
+	// 	tpath=tpath+'NewTask_WebTask_AdvancedOption.html';
+	// }else if(target == '#fuzz_base'){
+	// 	tpath=tpath+'NewTask_FuzzingTask.html';
+	// }else if(target == '#static_base'){
+	// 	tpath=tpath+'NewTask_StaticTask.html';
+	// }else{
+	// 	tpath=tpath+'NewTask_AssessmentTask_AdvancedOption.html';
+	// };
+	// jQuery('#tools_help').attr("href",tpath);
+
+}
+</script>
+<script>
+function checkItem(obj,target){
+	if (jQuery(obj).attr("checked")){
+		jQuery(target).attr("disabled",false);
+	}
+	else
+	{
+		jQuery(target).attr("disabled",true);
+	}
+}
+</script>
+<script>
+	if (document.all){
+
+		jQuery(window).unload(function(){
+			top.clear_loginarray();
+			top.clear_protocalarray();
+			});
+	}else{
+		window.onbeforeunload=function(){
+			top.clear_loginarray();
+			top.clear_protocalarray();
+		};
+	}
+</script>
+<script>
+	function setLoginCheck(data){
+		var data = jQuery('#addTaskForm').serializeArray();
+		var d_s=top.get_loginarray();
+		var taskjson='({ "name": "loginarray", "value":'+d_s+'})';
+		var taskeval=eval(taskjson);
+		data.push(taskeval);
+		jQuery.ajax({
+			type:"POST",
+			url:"/task/vul/base/targetlogin",
+			data:data,//{'data':d_s,"csrfmiddlewaretoken":'1BZcRhlOTc8xQtQunP1ObSuSyvQ4J5o5',"targets":targets},
+			success:function(msg){
+				//alert(msg);
+					jQuery("#login_table_div").html(msg);
+			}
+		});
+	}
+</script>
+<script>	
+	function setTaskName(tmp){
+		//if (tmp=="-1"){tmp="";};
+		tmp=tmp.replace(/(^\s*)|(\s*$)/g,'');
+		tmp=tmp.replace(/\n/g,';');
+		tmp=tmp.replace(/\r/g,';');
+		tmp=tmp.replace(/ /g,';');
+		tmp = tmp.replace(/\[/g,'');
+	    tmp = tmp.replace(/\]/g,'');
+	    tmp = tmp.replace(/,/g,';');
+	    tmp = tmp.replace(/http:\/\//gi,'');
+	    tmp = tmp.replace(/https:\/\//gi,'');
+	    tmp = tmp.replace(/ftp:\/\//gi,'');
+	    tmp = tmp.replace(/\//g,'_');
+		tmp=tmp.replace(/[;]+/g,';');
+		
+	    var taskName="";
+	    if (tmp.length<=32){
+	    	taskName=tmp;	
+	    }
+	    else
+	    {
+	    	taskName=tmp.substring(0,32)+'...';
+	    }
+		jQuery('#name').val('扫描【'+taskName+'】');
+		jQuery("#name_validate").hide();
+		jQuery("#name").removeClass('tip_error');
+		validateTaskName();
+	}
+
+	
+	function valTargets(){
+		var type=jQuery('[name=target]:radio:checked').val();
+		var tmp="";
+		var t_obj='#ipList';
+		var data = jQuery('#subTaskForm').serializeArray();
+		if (type=="ip"||type=='pwd'){
+			tmp=jQuery('#ipList').val();
+			tmpr=encodeURI(tmp);
+			var taskjson='({ "name": "ipList", "value":\"'+tmpr+'\"})';
+			var taskeval=eval(taskjson);
+			data.push(taskeval);
+			var url="/task/vul/base/validate/targets/ip";
+		}else if (type=="domain"){
+			t_obj='#domainList';
+			tmp=jQuery("#domainList").val();
+			tmpr=encodeURI(tmp);
+			var taskjson='({ "name": "domainList", "value":\"'+tmpr+'\"})';
+			var taskeval=eval(taskjson);
+			data.push(taskeval);
+			
+			if (jQuery("#is_vhost").attr("checked")){
+				var vflag="yes";
+			}else{
+				var vflag="no";
+			};
+			var vflagjson='({ "name": "vflag", "value":\"'+vflag+'\"})';
+			var vflageval=eval(vflagjson);
+			data.push(vflageval);
+			var url="/task/vul/base/validate/targets/domain";
+			
+		};
+		
+		jQuery.ajax({
+			type:"POST",
+			url:url,
+			data:data,
+			success:function(msg){
+				if (msg.length==1){
+					jQuery("#target_validate").hide();
+					jQuery(t_obj).removeClass('tip_error');
+					jQuery("#submitButton").attr("disabled",false);
+					if (type=="ip"){
+						setLoginCheck(data);
+					};
+					setTaskName(tmp);
+				}
+				else if(msg.length==2){
+					if (window.confirm("扫描目标中存在重复目标，确认去除重复？")){
+						jQuery.ajax({
+							type:"POST",
+							url:url+'/duplicate',
+							data:data,
+							success:function(msg){
+								//alert(msg);
+								jQuery(t_obj).val(msg);
+								//jQuery("#ipList").val(msg);
+								jQuery("#target_validate").hide();
+								jQuery(t_obj).removeClass('tip_error');
+								jQuery("#submitButton").attr("disabled",false);
+								tmp=jQuery(t_obj).val();
+								tmp=tmp.replace(/\n/g,';');
+								setTaskName(tmp);
+
+								if (type=="ip"){
+									setLoginCheck(data);
+								};
+							}
+						});
+					}
+					else
+					{
+						jQuery("#target_validate").text("扫描目标中存在重复目标");
+						jQuery("#target_validate").show();
+						jQuery(t_obj).addClass('tip_error');
+						jQuery("#submitButton").attr("disabled",true);
+					};
+				}
+				else
+				{
+					var obj=eval(msg);
+					var m=obj.context.fieldErrors.targets;
+					jQuery("#target_validate").text(""+m);
+					jQuery("#target_validate").show();
+					jQuery(t_obj).addClass('tip_error');
+					jQuery("#submitButton").attr("disabled",true);
+				}
+			}
+		});
+		
+		
+	};
+	function validateTaskName() {
+		var taskName = jQuery("#name").val();
+
+		var data = jQuery('#subTaskForm').serializeArray();
+		
+		var taskjson='({ "name": "taskname", "value":\"'+taskName+'\"})';
+		var taskeval=eval(taskjson);
+		data.push(taskeval);
+		jQuery.ajax({
+			type:"POST",
+			url:"/task/vul/base/validate/taskname/",
+			data:data,
+			success:function(msg){
+
+				if (msg.length==1){
+					jQuery("#name_validate").hide();
+					jQuery("#name").removeClass('tip_error');
+					if (jQuery("#target_validate").is(":hidden")){
+						jQuery("#submitButton").attr("disabled",false);
+					}
+					
+				}
+				else
+				{ 
+					var m=obj.context.fieldErrors.name;
+					jQuery("#name_validate").text(""+m);
+					jQuery("#name_validate").show();
+					jQuery("#name").addClass('tip_error');
+					jQuery("#submitButton").attr("disabled",true);
+				}
+			}
+		});
+	}
+</script>
+<script>
+	function liveCheck(obj,flag){
+		if(!jQuery(obj).attr("checked"))
+		{
+			if (flag=="edit"){
+				alert("警告！取消主机存活测试会极度降低扫描速度！");
+			};
+			jQuery("#live_icmp").attr("disabled",true);
+			jQuery("#live_udp").attr("disabled",true);
+			jQuery("#live_tcp").attr("disabled",true);
+			jQuery("#live_tcp_ports").attr("disabled",true);
+		}
+		else
+		{
+			jQuery("#live_icmp").attr("disabled",false);
+			jQuery("#live_udp").attr("disabled",false);
+			jQuery("#live_tcp").attr("disabled",false);
+			jQuery("#live_tcp_ports").attr("disabled",false);
+		} 
+ 	}
+	function liveTcpCheck(obj){
+		if(jQuery(obj).attr("checked"))
+		{
+			jQuery("#live_tcp_info").show();
+		}
+		else
+		{
+			jQuery("#live_tcp_info").hide();
+		}
+		
+	}
+	function validateTcpPorts(obj){
+		value=jQuery(obj).val();
+
+		jQuery.ajax({
+			type:"GET",
+			url:"/task/vul/senior/validate/tcpports/"+value,
+			success:function(msg){
+				if (msg.length==1){
+					jQuery('#live_tcp_ports_validate').hide();
+					jQuery('#live_tcp_ports').removeClass('tip_error');
+				}
+				else
+				{
+					var robj=eval(msg);
+					var m=robj.context.fieldErrors.live_tcp_ports;
+					//alert(m);
+					jQuery('#live_tcp_ports_validate').text(""+m);
+					jQuery('#live_tcp_ports_validate').show();
+					jQuery('#live_tcp_ports').addClass('tip_error');
+				}
+			},
+			error:function(msg){alert(msg)}
+		});
+		
+	}
+</script>
+<script>
+	function importTxtExcel(){
+		var tasktype=jQuery('[name=target]:radio:checked').val();
+		var target="#ipList";
+		var elemId='ip_import_txtexcel';
+		var filename=jQuery('#ip_import_txtexcel').val();
+		if (tasktype=="domain"){target="#domainList";elemId="domain_import_txt";filename=jQuery('#domain_import_txt').val();};
+		//alert("{'csrfmiddlewaretoken': '1BZcRhlOTc8xQtQunP1ObSuSyvQ4J5o5','filename':filename,'tasktype':tasktype}");
+		var vul_or_pwd=jQuery('#vul_or_pwd').val();
+		if (filename.length<1){
+			alert('请选择导入文件！');
+		}else{
+			jQuery.ajaxFileUpload({
+				url:"/task/vul/base/import",
+				secureuri: false,
+				fileElementId:elemId,
+				dataType:'text',
+				data: {'csrfmiddlewaretoken': '1BZcRhlOTc8xQtQunP1ObSuSyvQ4J5o5','filename':filename,'tasktype':tasktype,'vulorpwd':vul_or_pwd},
+				success:function(msg){
+					var ind=msg.indexOf('<table class="cmn_table">');
+					var indsub=msg.indexOf('<TABLE class=cmn_table>');
+
+					if (ind>-1||indsub>-1){
+						jQuery('#login_table_div').html(msg);
+					}else{
+						if (msg.substring(0,4)=='err:'){
+							alert(msg.substring(4,msg.length));
+						}else{
+							jQuery(target).val(msg);
+							valTargets();
+						};
+					};
+					jQuery('#target_textfield').val('');
+					jQuery('#target2_textfield').val('');
+				},
+				error:function(msg){
+					alert('导入失败！');
+				}
+				});
+		};
+		
+	}
+	
+	function treeImport(){
+		top.dialog.show({title:'从资产树导入！', url:'/task/vul/base/treeimport'});
+	}
+</script>
+
+<script>
+	function multiPlex(obj){
+		var value=jQuery(obj).val();
+		if (value=="-1"){}else{
+			if (window.confirm("加载已有任务配置将覆盖现有任务配置，确认复用？")){
+				var url='/task/vul/base/multiplex/'+value+'/';
+				window.location.href = url;
+			};
+		};
+		
+	}
+</script>
+<script>
+	function validateExecRange(){
+		var data = jQuery('#subTaskForm').serializeArray();
+		var tmp = jQuery('#exec_range').val();
+		var taskjson='({ "name": "exec_range", "value":\"'+tmp+'\"})';
+		var taskeval=eval(taskjson);
+		data.push(taskeval);
+		jQuery.ajax({
+			type:"POST",
+			url:"/task/vul/base/validate/execrange/",
+			data:data,
+			success:function(msg){
+				if (msg.length==1){
+					jQuery("#exec_range_validate").hide();
+					jQuery('#exec_range').removeClass('tip_error');
+				}
+				else
+				{
+					var obj=eval(msg);
+					var m=obj.context.fieldErrors.exec_range;
+					
+					jQuery("#exec_range_validate").text(""+m);
+					jQuery("#exec_range_validate").show();
+					jQuery('#exec_range').addClass('tip_error');
+				}
+			}
+		});
+	}
+</script>
+<!--webscan新建任务所需基本js函数-->
+<script type="text/javascript" language="javascript">
+
+/*加载任务时对修改任务目标时的任务名同步*/
+function replace_taskname(){
+    var taskname = "扫描["+jQuery("#task_target").val().replace(/(;|\n|,| ){1,}/g,",").substring(0,56)+"]";
+	jQuery('#task_name').val(taskname);
+}
+/*检查新建扫描目标*/
+function web_check_tasktarget(){
+	//发送ajax请求验证扫描目标
+	//输入的目标格式、是否包含不容许扫描的站点、站点是否全部不可达
+	//自动填充任务名称
+	jQuery("#error_tab").hide();
+	jQuery("#task_target_error").hide();
+	jQuery("#reachable_error").hide();
+	jQuery('#submitButton').attr('disabled','true')
+	var data = jQuery('#webtaskForm').serializeArray();
+	var pro_data=top.protocalarray;
+	var pro_data=JSON.stringify(pro_data);
+	var pro_data='({ "name": "protocalarray", "value":'+pro_data+'})';
+	var pro_data=eval(pro_data);
+	data.push(pro_data);
+	jQuery("#error_tab").show();
+	jQuery("#reachable_error").show();
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/web_validate_targets/",
+		data:data,
+		dataType:"json",
+		success:function(msg){
+			jQuery('#target_count').val(msg.count);
+			if(msg.status=="success"){
+				//验证站点的可达性
+				jQuery.ajax({
+					type:"POST",
+					url:"/task/web_is_reachable/",
+					data:data,
+					success:function(reachable){
+					jQuery("#reachable_error").hide();
+						var name = jQuery("#task_target").val().replace(/(;|\n|,| ){1,}/g,",");
+						if(name.length>56){
+							name = name.substring(0,56)+"...";
+						}else{
+							name = name.substring(0,56);
+						}
+						name = "扫描["+name+"]";
+						if(reachable=="true"){
+							jQuery("#error_tab").hide();
+							jQuery("#task_target_error").hide();
+							jQuery('#task_name').val(name);
+							set_protocal_auth(data);
+							jQuery('#submitButton').attr('disabled','')
+						}else{
+							jQuery("#error_tab").show();
+							jQuery("#task_target_error").show();
+							jQuery("#task_target_error").html(reachable);
+							jQuery('#task_name').val(name);
+							set_protocal_auth(data);
+							jQuery('#submitButton').attr('disabled','')
+						}
+						
+					}
+				});	
+			}else{
+				if (msg.msg =="lic"){
+					info = "试用证书购买的Web应用扫描模块已到使用期限，请更换证书"	
+				}else{
+					info = msg.msg
+				}
+				jQuery("#reachable_error").hide();
+				jQuery("#error_tab").show();
+				jQuery("#task_target_error").show();
+				jQuery("#task_target_error").html(info);
+
+				jQuery('#submitButton').attr('disabled','true')
+				}
+		}
+	});	
+}
+
+
+/*验证task_target后根据各站点设置协议认证*/
+function set_protocal_auth(data){
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/web_protocal_auth/",
+		data:data,
+		success:function(msg){
+			jQuery("#protocol_auth_div").html(msg);
+		}
+	});	
+}
+
+
+/*编辑单个站点的协议认证和登录扫描信息*/
+function editNode(target){
+	var flag="";
+	flag=top.grep_one_protocal(target);
+	black = flag.black_links;
+	black=encodeURI(black);
+	black=encodeTest(black);
+	white = flag.wihte_links;
+	white=encodeURI(white);
+	white=encodeTest(white);
+	var obj=JSON.stringify(flag);
+	obj=encodeURI(obj);
+	obj=encodeTest(obj);
+	target = encodeTest(target);
+	top.dialog.show({title:"配置", url:'/task/web_edit_node/'+obj+"?tar="+target+"&white="+white+"&black="+black, width:500,height:500});
+	
+};
+
+/*替换字符*/
+function encodeTest(tmp){
+	tmp=tmp.replace(/#/g,'%23');
+	tmp=tmp.replace(/\$/g,'%24');
+	tmp=tmp.replace(/&/g,'%26');
+	tmp=tmp.replace(/:/g,'%3A');
+	tmp=tmp.replace(/;/g,'%3B');
+	tmp=tmp.replace(/\?/g,'%3F');
+	tmp=tmp.replace(/@/g,'%40');
+	tmp=tmp.replace(/=/g,'%3D');
+
+	return tmp;
+}
+
+/*删除登录协议认证配置信息*/
+function deleNode(obj,target){
+	if (window.confirm("确认删除？")){
+		var p=jQuery(obj).parent().parent().parent();
+		jQuery(obj).parent().parent().remove();
+		if (p.children().length==2){
+			jQuery("#check_table_nodata_tr").show();
+		};
+		
+		top.grep_protocalarray(target);
+	}
+}
+/*扫描时间段的验证*/
+function check_exec_range(){
+	cron_range = jQuery("#cron_range").val();
+}
+/*任务执行方式切换*/
+function change_exec_type(obj){
+		var exectype=jQuery(obj).val();
+		jQuery(obj).parent().siblings().hide();
+		if (exectype!='senior'){
+			jQuery('#exec_senior_div').hide();
+		};
+		var execdiv="#exec_"+exectype+"_div";
+		jQuery(execdiv).show();
+}
+
+/*关于执行方式处时间格式各种验证*/
+function timeCheck(obj,divobj){
+	var value=jQuery(obj).val();
+	value=jQuery.trim(value);
+	msg="";
+	reg=/^[01][0-9]:[0-5][0-9]|^2[0-3]:[0-5][0-9]/;
+	if (!reg.test(value)){
+		msg="格式错误";
+	};
+	if (msg==""){
+		jQuery(divobj).hide();
+		jQuery(obj).removeClass('tip_error');
+	}else{
+		jQuery(divobj).html(msg);
+		jQuery(divobj).show();
+		jQuery(obj).addClass('tip_error');
+	}
+}
+
+/*填写任务信息提交任务下发*/
+
+function webscan_submit(){
+	var data = jQuery('#webtaskForm').serializeArray();
+	var s=jQuery('#exec').val();
+	if (s=='senior'){
+		var retstr=testT();
+		var rjson='({ "name": "seniorstr", "value":\"'+retstr+'\"})';
+		var reval=eval(rjson);
+		data.push(reval);
+	};
+	var pro_data=top.protocalarray;
+	var pro_data=JSON.stringify(pro_data);
+	//alert(loginarrayjson);
+	var pro_data='({ "name": "protocalarray", "value":'+pro_data+'})';
+	var pro_data=eval(pro_data);
+	data.push(pro_data);
+	jQuery.ajax({
+		type:'POST',
+		data:data,
+		url:"/task/web_newtask/",
+		success:status
+	});
+}
+/*扫描任务提交后的验证提示*/
+function status(data){
+	var flagindex=data.indexOf("msg:");
+	if(flagindex==0){
+		data=data.substring(4,data.length);
+		dataflag=data.substring(0,4);
+		if(dataflag =="err:"){
+			alert(data.substring(4,data.length));
+		}else if(dataflag =="lic:"){
+			alert("试用证书购买的Web应用扫描模块已到使用期限，请更换证书后继续使用！")
+			window.location="/task/index/8";
+		}else if(dataflag =="ctl:"){
+			alert("定时任务时间不在webscan模块授权时间内，请更换证书后继续使用！")
+			window.location="/task/index/8";
+		}else{
+			window.location="/list/getProcess/id/"+data.substring(4,data.length)+"/action/no";
+		}
+	}else{
+		var obj=eval(data);
+		alert("请检查任务参数！");
+		base_validate(obj);
+		report_validate(obj);
+		senior_validate(obj);
+	}
+}
+
+//新建任务基本选项验证显示
+function base_validate(obj){
+	if(obj.context.fieldErrors.task_target){
+		jQuery("#task_target_error").show();
+		jQuery("#task_target_error").html(String(obj.context.fieldErrors.task_target))
+	}else{
+		jQuery("#task_target_error").hide();
+	}
+	if(obj.context.fieldErrors.task_name){
+		jQuery("#task_name_error").show();
+		jQuery("#task_name_error").html(String(obj.context.fieldErrors.task_name))
+	}else{
+		jQuery("#task_name_error").hide();
+	}
+	if(obj.context.fieldErrors.dispatchLevel){
+		jQuery("#dispatchLevel_error").show();
+		jQuery("#dispatchLevel_error").html(String(obj.context.fieldErrors.dispatchLevel))
+	}else{
+		jQuery("#dispatchLevel_error").hide();
+	}
+	if(obj.context.fieldErrors.senior_added){
+		jQuery("#exec_senior_added_validate").show();
+		jQuery("#exec_senior_added_validate").html(String(obj.context.fieldErrors.senior_added))
+	}else{
+		jQuery("#exec_senior_added_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_everyday_time){
+		jQuery("#exec_everyday_time_validate").show();
+		jQuery("#exec_everyday_time_validate").html(String(obj.context.fieldErrors.exec_everyday_time))
+	}else{
+		jQuery("#exec_everyday_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_everyweek_time){
+		jQuery("#exec_everyweek_time_validate").show();
+		jQuery("#exec_everyweek_time_validate").html(String(obj.context.fieldErrors.exec_everyweek_time))
+	}else{
+		jQuery("#exec_everyweek_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_emonthdate_time){
+		jQuery("#exec_emonthdate_time_validate").show();
+		jQuery("#exec_emonthdate_time_validate").html(String(obj.context.fieldErrors.exec_emonthdate_time))
+	}else{
+		jQuery("#exec_emonthdate_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.exec_emonthweek_time){
+		jQuery("#exec_emonthweek_time_validate").show();
+		jQuery("#exec_emonthweek_time_validate").html(String(obj.context.fieldErrors.exec_emonthweek_time))
+	}else{
+		jQuery("#exec_emonthweek_time_validate").hide();
+	}
+	if(obj.context.fieldErrors.cron_range){
+		jQuery("#crontime_range_validate").show();
+		jQuery("#crontime_range_validate").html(String(obj.context.fieldErrors.cron_range))
+	}else{
+		jQuery("#crontime_range_validate").hide();
+	}
+	if(obj.context.fieldErrors.tpl){
+		jQuery("#tpl_validate").show();
+		jQuery("#tpl_validate").html(String(obj.context.fieldErrors.tpl))
+	}else{
+		jQuery("#tpl_validate").hide();
+	}
+	if(obj.context.fieldErrors.dispatchLevel){
+		jQuery("#dispatchLevel_error").show();
+		jQuery("#dispatchLevel_error").html(String(obj.context.fieldErrors.dispatchLevel))
+	}else{
+		jQuery("#dispatchLevel_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_conf){
+		jQuery("#proxy_conf_error").show();
+		jQuery("#proxy_conf_error").html(String(obj.context.fieldErrors.proxy_conf))
+	}else{
+		jQuery("#proxy_conf_error").hide();
+	}
+	if(obj.context.fieldErrors.target_description){
+		jQuery("#target_description_error").show();
+		jQuery("#target_description_error").html(String(obj.context.fieldErrors.target_description))
+	}else{
+		jQuery("#target_description_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_type){
+		jQuery("#proxy_type_error").show();
+		jQuery("#proxy_type_error").html(String(obj.context.fieldErrors.proxy_type))
+	}else{
+		jQuery("#proxy_type_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_auth){
+		jQuery("#proxy_auth_error").show();
+		jQuery("#proxy_auth_error").html(String(obj.context.fieldErrors.proxy_auth))
+	}else{
+		jQuery("#proxy_auth_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_server){
+		jQuery("#proxy_server_error").show();
+		jQuery("#proxy_server_error").html(String(obj.context.fieldErrors.proxy_server))
+	}else{
+		jQuery("#proxy_server_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_port){
+		jQuery("#proxy_port_error").show();
+		jQuery("#proxy_port_error").html(String(obj.context.fieldErrors.proxy_port))
+	}else{
+		jQuery("#proxy_port_error").hide();
+	}
+	if(obj.context.fieldErrors.proxy_name){
+		jQuery("#proxy_name_error").show();
+		jQuery("#proxy_name_error").html(String(obj.context.fieldErrors.proxy_name))
+	}else{
+		jQuery("#proxy_name_error").hide();
+	}
+	if(obj.context.fieldErrors.subdomains){
+		jQuery("#subdomains_error").show();
+		jQuery("#subdomains_error").html(String(obj.context.fieldErrors.subdomains))
+	}else{
+		jQuery("#subdomains_error").hide();
+	}
+	if(obj.context.fieldErrors.auto_export){
+    	jQuery("#auto_export_validate").text(String(obj.context.fieldErrors.auto_export));
+		jQuery("#auto_export_validate").show();
+		jQuery('#auto_export').addClass('tip_error');
+    }
+}
+//新建任务任务报表验证显示
+function report_validate(obj){
+	if(obj.context.fieldErrors.report_type){
+		jQuery("#report_type_error").show();
+		jQuery("#report_type_error").html(String(obj.context.fieldErrors.report_type))
+	}else{
+		jQuery("#report_type_error").hide();
+	}
+	if(obj.context.fieldErrors.sum_report_tpl){
+		jQuery("#sum_report_tpl_error").show();
+		jQuery("#sum_report_tpl_error").html(String(obj.context.fieldErrors.sum_report_tpl))
+	}else{
+		jQuery("#sum_report_tpl_error").hide();
+	}
+	if(obj.context.fieldErrors.site_report_tpl){
+		jQuery("#site_report_tpl_error").show();
+		jQuery("#site_report_tpl_error").html(String(obj.context.fieldErrors.site_report_tpl))
+	}else{
+		jQuery("#site_report_tpl_error").hide();
+	}
+	if(obj.context.fieldErrors.sendReport_type){
+		jQuery("#sendReport_type_error").show();
+		jQuery("#sendReport_type_error").html(String(obj.context.fieldErrors.sendReport_type))
+	}else{
+		jQuery("#sendReport_type_error").hide();
+	}
+	if(obj.context.fieldErrors.email_address){
+		jQuery("#email_address_error").show();
+		jQuery("#email_address_error").html(String(obj.context.fieldErrors.email_address))
+	}else{
+		jQuery("#email_address_error").hide();
+	}
+	
+}
+
+//新建任务高级选项验证显示
+function senior_validate(obj){
+	if(obj.context.fieldErrors.plugin_threads){
+		jQuery("#plugin_threads_error").show();
+		jQuery("#plugin_threads_error").html(String(obj.context.fieldErrors.plugin_threads))
+	}else{
+		jQuery("#plugin_threads_error").hide();
+	}
+	if(obj.context.fieldErrors.webscan_timeout){
+		jQuery("#webscan_timeout_error").show();
+		jQuery("#webscan_timeout_error").html(String(obj.context.fieldErrors.webscan_timeout))
+	}else{
+		jQuery("#webscan_timeout_error").hide();
+	}
+	if(obj.context.fieldErrors.user_agent){
+		jQuery("#user_agent_error").show();
+		jQuery("#user_agent_error").html(String(obj.context.fieldErrors.user_agent))
+	}else{
+		jQuery("#user_agent_error").hide();
+	}
+	if(obj.context.fieldErrors.dir_limit){
+		jQuery("#dir_limit_error").show();
+		jQuery("#dir_limit_error").html(String(obj.context.fieldErrors.dir_limit))
+	}else{
+		jQuery("#dir_limit_error").hide();
+	}
+	if(obj.context.fieldErrors.filetype_to_check_backup){
+		jQuery("#filetype_to_check_backup_error").show();
+		jQuery("#filetype_to_check_backup_error").html(String(obj.context.fieldErrors.filetype_to_check_backup))
+	}else{
+		jQuery("#filetype_to_check_backup_error").hide();
+	}
+	if(obj.context.fieldErrors.backup_filetype){
+		jQuery("#backup_filetype_error").show();
+		jQuery("#backup_filetype_error").html(String(obj.context.fieldErrors.backup_filetype))
+	}else{
+		jQuery("#backup_filetype_error").hide();
+	}
+	if(obj.context.fieldErrors.dir_files_limit){
+		jQuery("#dir_files_limit_error").show();
+		jQuery("#dir_files_limit_error").html(String(obj.context.fieldErrors.dir_files_limit))
+	}else{
+		jQuery("#dir_files_limit_error").hide();
+	}
+	if(obj.context.fieldErrors.dir_depth_limit){
+		jQuery("#dir_depth_limit_error").show();
+		jQuery("#dir_depth_limit_error").html(String(obj.context.fieldErrors.dir_depth_limit))
+	}else{
+		jQuery("#dir_depth_limit_error").hide();
+	}
+	if(obj.context.fieldErrors.scan_link_limit){
+		jQuery("#scan_link_limit_error").show();
+		jQuery("#scan_link_limit_error").html(String(obj.context.fieldErrors.scan_link_limit))
+	}else{
+		jQuery("#scan_link_limit_error").hide();
+	}
+}
+
+/*检测报表类型*/
+function web_checkType(obj){
+	//当点击选择某种报表类型，动态添加可发送报表类型种类
+	if (jQuery(obj).attr("checked")){
+		var nowval=jQuery("#sendReport_type").val();
+		jQuery("#sendReport_type").children().remove();
+		jQuery(obj).parent().children('input:checkbox:checked').each(function(){
+			if (nowval==jQuery(this).val()){
+				jQuery("#sendReport_type").append("<option value='"+jQuery(this).val()+"' selected>"+jQuery(this).val()+"</option>");
+			}else{
+				jQuery("#sendReport_type").append("<option value='"+jQuery(this).val()+"'>"+jQuery(this).val()+"</option>");
+			};
+		});
+	}else{
+	//提醒必须选择一种报表类型
+		var tlen=jQuery(obj).siblings('input:checkbox:checked').length;
+		if (tlen==0){
+			alert('报表类型至少选择1种！');
+			jQuery(obj).attr("checked",true);
+		}else{
+			jQuery("#sendReport_type option[value='"+jQuery(obj).val()+"']").remove();
+		}
+	}
+}
+
+/*检测报表内容*/
+function web_checktpl(obj,target){
+	if (jQuery(obj).attr("checked")){
+		jQuery(target).show();
+	}
+	else
+	{
+		if (target=='#report_tpl_sum_tr'||target=='#report_tpl_host_tr'){
+			var tlen=jQuery(obj).siblings('input:checkbox:checked').length;
+			if (tlen==0){
+				alert('报表内容至少选择1种！');
+				jQuery(obj).attr("checked",true);
+			}else{
+				jQuery(target).hide();
+			};
+		}else{
+			jQuery(target).hide();
+		};
+	}	
+}
+
+
+/*任务报表发送邮箱验证*/
+function validate_emails(){
+	var data = jQuery('#webtaskForm').serializeArray();
+	var tmp=jQuery('#email_address').val();
+	tmp=tmp.replace(/\n/g,';');
+	var taskjson='({ "name": "emails", "value":\"'+tmp+'\"})';
+	var taskeval=eval(taskjson);
+	data.push(taskeval);
+	
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/vul/report/validate/emails/",
+		data:data,
+		success:function(msg){
+		if(msg.length ==1){
+			jQuery("#email_address_error").hide();
+		}else{
+			var obj=eval(msg);
+			var m=obj.context.fieldErrors.report_ifsent_email;
+			jQuery("#email_address_error").show();
+			jQuery("#email_address_error").html(String(m))
+		}
+		}
+		
+	});
+}
+
+
+/*web扫描任务参数导入*/
+function web_importTxtExcel(){
+		jQuery.ajaxFileUpload({
+	           url:'/task/web_importTarget/', //你处理上传文件的服务端
+	           secureuri:false,
+	           fileElementId:'webscan_import_txtexcel',
+	           dataType: 'json',
+	           data:{'csrfmiddlewaretoken':jQuery('#csrfmiddlewaretoken').val()},
+	           success: function (data, status){
+					if(data.error)
+					{
+						alert(data.error);
+					}else{
+						vuls = data.msg.replace(/(;|\n|,| ){1,}/g,"\n")
+						jQuery('#task_target').html(vuls);
+						web_check_tasktarget()
+					}
+				},
+			   error: function (data, status, e)
+					{
+						//alert(e)
+					}
+
+		})
+	return false;
+}
+
+/*web扫描任务的加载参数*/
+function web_multiPlex(obj){
+	var value=jQuery(obj).val();
+	
+	if (value=="-1"){}else{
+		if (window.confirm("加载已有任务配置将覆盖现有任务配置，确认复用？")){
+			//var url='/task/vul/base/multiplex/'+value;
+			//alert(url);
+			//window.location.href = url;
+			var url = '/task/web_multiplex/'+value+"?flag=reload";
+			window.location.href = url;
+		};
+	};
+	
+}
+
+/*自动生成报表与ftp和发送表报的逻辑判断*/
+function check_autoexport(){
+	if(jQuery("#auto_export").attr("checked")==true){
+		jQuery('#sendReport_ftp').attr('disabled','');
+		jQuery('#sendReport_email').attr('disabled','');
+	}else{
+		jQuery('#sendReport_ftp').attr('disabled','true');
+		jQuery('#sendReport_email').attr('disabled','true');
+		jQuery('#sendReport_ftp').attr('checked','');
+		jQuery('#sendReport_email').attr('checked','');
+		jQuery('#sendReport_email_table').hide();
+	}			
+}
+
+/*测试代理连通性*/
+function testProxy(){
+	var data = jQuery('#webtaskForm').serializeArray();
+	jQuery('#test_proxy_msg').show();
+	jQuery("#proxy_conf_error").hide();
+	jQuery("#proxy_test_result").hide();
+	jQuery("#proxy_server_error").hide();
+	jQuery("#proxy_port_error").hide();
+	jQuery("#proxy_name_error").hide();
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/web_testproxy/",
+		data:data,
+		success:function(msg){
+			switch(msg){
+			case "success":
+				jQuery('#test_proxy_msg').hide();
+				jQuery("#proxy_test_result").show();
+				break;
+			case "notargets":
+				jQuery('#test_proxy_msg').hide();
+				alert("请填写完成的扫描目标！")
+				break;
+			case "unreached":
+				jQuery('#test_proxy_msg').hide();
+				jQuery("#proxy_conf_error").show();
+				jQuery("#proxy_conf_error").html("无法连通，请检查扫描目标/代理类型/服务器地址/端口/用户名/密码配置是否正确，或者确认代理是否可用")
+				break;
+			default :
+				jQuery('#test_proxy_msg').hide();
+				var obj=eval(msg);
+				if(obj.context.fieldErrors.proxy_type){
+					jQuery("#proxy_type_error").show();
+					jQuery("#proxy_type_error").html(String(obj.context.fieldErrors.proxy_type))
+				}else{
+					jQuery("#proxy_type_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_auth){
+					jQuery("#proxy_auth_error").show();
+					jQuery("#proxy_auth_error").html(String(obj.context.fieldErrors.proxy_auth))
+				}else{
+					jQuery("#proxy_auth_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_server){
+					jQuery("#proxy_server_error").show();
+					jQuery("#proxy_server_error").html(String(obj.context.fieldErrors.proxy_server))
+				}else{
+					jQuery("#proxy_server_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_port){
+					jQuery("#proxy_port_error").show();
+					jQuery("#proxy_port_error").html(String(obj.context.fieldErrors.proxy_port))
+				}else{
+					jQuery("#proxy_port_error").hide();
+				}
+				if(obj.context.fieldErrors.proxy_name){
+					jQuery("#proxy_name_error").show();
+					jQuery("#proxy_name_error").html(String(obj.context.fieldErrors.proxy_name))
+				}else{
+					jQuery("#proxy_name_error").hide();
+				}
+			}
+			
+		}
+	});
+}
+function test_ftpConfig(){
+	if(jQuery("#sendReport_ftp").attr("checked")==true){
+		jQuery.ajax({
+			type:"GET",
+			url:"/task/test_ftpconf/",
+			data:"",
+			success:function(msg){
+				if(msg=="fail"){
+					alert("请先配置FTP相关配置项")
+					jQuery("#sendReport_ftp").attr("checked","");
+				}
+			}
+		});	
+	}
+}
+//判断扫描范围的js判断
+function if_show_subdomain_config()
+{
+	if((jQuery('[name=scan_method]').val()==0)&&(jQuery('#target_count').val()<=1)){
+		jQuery('#if_show_subdomain').show()
+	}else{
+		jQuery('#if_show_subdomain').hide()
+	}
+}
+//子域名选项的js判断
+function subdomain_scan(ob){
+	if(jQuery(ob).val() == '1'||jQuery(ob).val() == '2')
+		jQuery('#div1').show();
+	else{
+		jQuery('#div1').hide();
+	}
+}
+//判断子域名
+function checksubdomain(){
+	
+}
+</script>
+</head>
+
+
+<body>
+<div class="cmn_tab">
+<table>
+	<tbody>
+		<tr>
+			<!--add fuzz task-->
+			
+			<td class="tab_selected">
+				<a style="cursor:pointer" onclick="taskIndexChange(this,'fuzzscan')">Fuzzing任务</a>
+			</td>
+			
+
+			
+				<td class="tab_unselected">
+					<a style="cursor:pointer" onclick="taskIndexChange(this,'vulscan')">评估任务</a>
+				</td>
+			
+			
+				
+				<td class="tab_unselected">
+					<a style="cursor:pointer" onclick="taskIndexChange(this,'pwdscan')">口令猜测任务</a>
+				</td>
+				
+			
+			
+			<td class="tab_unselected">
+				<a style="cursor:pointer" onclick="taskIndexChange(this,'staticscan')">静态扫描任务</a>
+			</td>
+			
+			
+				<td class="tab_unselected">
+					<a style="cursor:pointer" onclick="taskIndexChange(this,'webscan')">Web应用扫描</a>
+				</td>
+			
+		</tr>
+	</tbody>
+</table>
+	<div class="tools">
+	
+		
+			
+				<a id="tools_help" target="_blank" href="/manual/HELP/wwhelp/wwhimpl/js/html/wwhelp.htm#href=NewTask_FuzzingTask.html">
+			
+		
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/help.gif">
+		</a> 
+	
+	</div>
+</div>
+<div class="b_cont" style="height: 593px; padding-right: 0px;">
+	
+	
+
+	<div id="task_content" class="content">
+		<form enctype="multipart/form-data" class="cmn_form" name="subTaskForm" id="subTaskForm" method="POST" action="">
+			<input type="hidden" value="1BZcRhlOTc8xQtQunP1ObSuSyvQ4J5o5" name="csrfmiddlewaretoken" style="">
+		</form>
+		
+	        <script>
+/// **
+function vulTaskSubmit(){
+    jQuery("#submitButton").attr('disabled',true);
+
+    // var data = jQuery('#addTaskForm').serializeArray();
+
+    // var loginarrayjson = top.get_loginarray();
+    // var loginjson = '({ "name": "loginarray", "value":'+loginarrayjson+'})';
+    // var logineval=eval(loginjson);
+    // var gloable_pwd_obj = JSON.parse(globle_pwd_jsonstr);
+    // if(gloable_pwd_obj && typeof gloable_pwd_obj === 'string'){
+    //     gloable_pwd_obj = JSON.parse(gloable_pwd_obj);
+    // }
+    // jQuery.each(gloable_pwd_obj,function(i,v){
+    //     data.push(v);
+    // });
+    // data.push(logineval);
+
+    // var s = jQuery('#exec').val();
+    if ('senior' === jQuery('#exec').val()){
+        var retstr = testT();
+        if (retstr) {
+            jQuery("#seniorstr").val(retstr);
+        }
+    };
+
+    jQuery("#addTaskForm").nform('submit');
+    // var t_obj='#ipList';
+    // var type=jQuery('[name=target]:radio:checked').val();
+    // if (type=="domain"){
+    //     t_obj='#domainList';
+    // };
+    // jQuery.ajax({
+    //     type:'POST', 
+    //     data:data,
+    //     url:"/task/vul/tasksubmit",
+    //     success:function(msg){
+    //         var flagindex=msg.indexOf("msg:");
+
+    //         //var flagindex=msg.indexOf("<div name='testflag' style='display:none'></div>");
+    //         if (flagindex==0){
+    //             msg=msg.substring(4,msg.length);
+    //             msgflag=msg.substring(0,4);
+    //             if (msgflag=='max:'){
+    //                 window.location="/task/index/3";
+    //             }else if (msgflag=='err:'){
+    //                 alert(msg.substring(4,msg.length));
+    //             }else if (msgflag=='dsu:'){
+    //                 //location.href = '/list/';
+    //                 //top.menu.select_by_path(['','任务列表','/list/']);
+    //                 window.location="/list/getProcess/id/"+msg.substring(4,msg.length)+"/action/no";
+    //             }else if (msgflag=='dis:'){
+    //                 alert(msg.substring(4,msg.length));
+    //             }else{
+    //                 window.location="/list/getProcess/id/"+msg.substring(4,msg.length)+"/action/no";
+    //             };
+    //             //window.location="/task/status";
+    //             //jQuery('#task_content').html(msg);
+    //             //window.location="";
+    //         }
+    //         else
+    //         {
+    //             jQuery("#submitButton").attr('disabled',false);
+    //             alert("请检查输入信息");
+    //             var obj=eval(msg);
+    //             var m=obj.context.fieldErrors.targets;
+                
+    //             if (obj.context.fieldErrors.targets){
+    //                 jQuery("#target_validate").text(""+obj.context.fieldErrors.targets);
+    //                 jQuery("#target_validate").show();
+    //                 jQuery(t_obj).addClass('tip_error');
+    //                 jQuery("#submitButton").attr("disabled",true);
+    //             };
+                
+    //             if (obj.context.fieldErrors.name){
+
+    //                 jQuery("#name_validate").text(""+obj.context.fieldErrors.name);
+    //                 jQuery("#name_validate").show();
+    //                 jQuery("#name").addClass('tip_error');
+    //             };
+
+    //             if (obj.context.fieldErrors.timing){
+    //                 jQuery("#exec_timing_validate").text(""+obj.context.fieldErrors.timing);
+    //                 jQuery("#exec_timing_validate").show();
+    //                 jQuery("#exec_timing_date").addClass('tip_error');
+    //             };
+                
+    //             if (obj.context.fieldErrors.report_ifsent_email){
+    
+    //                 jQuery("#report_ifsent_email_validate").text(""+obj.context.fieldErrors.report_ifsent_email);
+    //                 jQuery("#report_ifsent_email_validate").show();
+    //                 jQuery('#report_ifsent_email').addClass('tip_error');
+    //             };
+                
+    //             if (obj.context.fieldErrors.port_strategy_userports){
+    
+    //                 jQuery("#port_strategy_userports_validate").text(""+obj.context.fieldErrors.port_strategy_userports);
+    //                 jQuery("#port_strategy_userports_validate").show();
+    //                 jQuery('#port_strategy_userports').addClass('tip_error');
+    //             };
+                
+    //             if (obj.context.fieldErrors.live_tcp_ports){
+
+    //                 jQuery("#live_tcp_ports_validate").text(""+obj.context.fieldErrors.live_tcp_ports);
+    //                 jQuery("#live_tcp_ports_validate").show();
+    //                 jQuery('#live_tcp_ports').addClass('tip_error');
+    //             };
+                
+    //             if (obj.context.fieldErrors.senior_added){
+    //                 jQuery('#exec_senior_added_validate').text(""+obj.context.fieldErrors.senior_added);
+    //                 jQuery('#exec_senior_added_validate').show();
+    //             };
+                
+                
+    //             if (obj.context.fieldErrors.taskType){
+    //                 alert(obj.context.fieldErrors.taskType);
+    //                 //jQuery("#task_type_validate").text(obj.context.fieldErrors.taskType);
+    //                 //jQuery("#task_type_validate").show();
+    //             };
+    //             if (obj.context.fieldErrors.logincheck){
+    //                 alert(obj.context.fieldErrors.logincheck);
+    //                 //jQuery("#task_type_validate").text(obj.context.fieldErrors.taskType);
+    //                 //jQuery("#task_type_validate").show();
+    //             };
+                
+                
+    //             if (obj.context.fieldErrors.exec_everyday_time){
+    //                 jQuery("#exec_everyday_time_validate").text(""+obj.context.fieldErrors.exec_everyday_time);
+    //                 jQuery("#exec_everyday_time_validate").show();
+    //                 jQuery('#exec_everyday_time').addClass('tip_error');
+    //             };
+    //             if (obj.context.fieldErrors.exec_everyweek_time){
+    //                 jQuery("#exec_everyweek_time_validate").text(""+obj.context.fieldErrors.exec_everyweek_time);
+    //                 jQuery("#exec_everyweek_time_validate").show();
+    //                 jQuery('#exec_everyweek_time').addClass('tip_error');
+    //             };
+    //             if (obj.context.fieldErrors.exec_emonthdate_time){
+    //                 jQuery("#exec_emonthdate_time_validate").text(""+obj.context.fieldErrors.exec_emonthdate_time);
+    //                 jQuery("#exec_emonthdate_time_validate").show();
+    //                 jQuery('#exec_emonthdate_time').addClass('tip_error');
+    //             };
+    //             if (obj.context.fieldErrors.exec_emonthweek_time){
+    //                 jQuery("#exec_emonthweek_time_validate").text(""+obj.context.fieldErrors.exec_emonthweek_time);
+    //                 jQuery("#exec_emonthweek_time_validate").show();
+    //                 jQuery('#exec_emonthweek_time').addClass('tip_error');
+    //             };
+                
+                
+    //             if (obj.context.fieldErrors.socket_timeout){
+    //                 jQuery("#socket_timeout_validate").text(""+obj.context.fieldErrors.socket_timeout);
+    //                 jQuery("#socket_timeout_validate").show();
+    //                 jQuery('#timeout_read').addClass('tip_error');
+                    
+    //             };
+    //             if (obj.context.fieldErrors.plugin_timeout){
+    //                 jQuery("#plugin_timeout_validate").text(""+obj.context.fieldErrors.plugin_timeout);
+    //                 jQuery("#plugin_timeout_validate").show();
+    //                 jQuery('#timeout_plugins').addClass('tip_error');
+    //             };
+    
+    //             //alert(tmpstr);
+    //             var pwdflag=false;
+    //             if (obj.context.fieldErrors.pwd_interval){
+    //                 pwdflag=true;
+    //                 jQuery("#pwd_interval_validate").text(""+obj.context.fieldErrors.pwd_interval);
+    //                 jQuery("#pwd_interval_validate").show();
+    //                 jQuery('#pwd_interval').addClass('tip_error');
+    //             };
+    //             if (obj.context.fieldErrors.pwd_timeout){
+    //                 pwdflag=true;
+    //                 jQuery("#pwd_timeout_validate").text(""+obj.context.fieldErrors.pwd_timeout);
+    //                 jQuery("#pwd_timeout_validate").show();
+    //                 jQuery('#pwd_timeout').addClass('tip_error');
+    //             };
+                
+    //             if (obj.context.fieldErrors.exec_range){
+    //                 jQuery("#exec_range_validate").text(""+obj.context.fieldErrors.exec_range);
+    //                 jQuery("#exec_range_validate").show();
+    //                 jQuery('#exec_range').addClass('tip_error');
+    //             };
+                
+    //             if (pwdflag){
+    //                 jQuery("#pwdguess_validate").show();
+    //             };
+    //             if(obj.context.fieldErrors.report_ifcreate){
+    //                 jQuery("#report_ifcreate_validate").text(""+obj.context.fieldErrors.report_ifcreate);
+    //                 jQuery("#report_ifcreate_validate").show();
+    //                 jQuery('#report_ifcreate').addClass('tip_error');
+    //             }
+    //         }
+
+    //     }
+    // })
+    
+}
+
+(function($){
+    var get_task_process_url = "/list/getProcess/"
+    $(document).ready(function(){
+        //targetSelect();
+        execChangeDiv('#exec');
+        //validateTaskName();
+        liveCheck('#live','new');
+        liveTcpCheck('#live_tcp');
+        cboxCheck('#report_content_sum','#report_tpl_sum_tr');
+        cboxCheck('#report_content_host','#report_tpl_host_tr');
+        cboxCheck('#report_ifsent','#report_ifsent_table');
+        cboxCheck('#isguesspwd','#guess_href_span');
+
+        /// to init form
+        $("#addTaskForm").attr("action", "/task/fuzz/add");
+
+        $("#addTaskForm").nform({
+            onSuccess: function(data){
+                console.log(data);
+                alert("任务创建成功");
+                document.location.href = "/list/getProcess/id/" + data.task_id + "/action/no";
+            },
+            onComplete: function(){
+                jQuery("#submitButton").prop('disabled', false);
+            },
+            afterError: function(ctx){
+                if (ctx.fieldErrors || ctx.fieldErrors.length || ctx.actionErrors.length){
+                    alert("任务创建失败，请检查各项输入。");
+                }
+            }
+        });
+    });
+})(jQuery);
+
+</script>
+
+<form class="cmn_form nform" name="addTaskForm" id="addTaskForm" method="POST" action="/task/fuzz/add">
+    <input type="hidden" value="1BZcRhlOTc8xQtQunP1ObSuSyvQ4J5o5" name="csrfmiddlewaretoken" style="">
+    <input type="hidden" value="vul" name="vul_or_pwd" id="vul_or_pwd" style="">
+    <input type="hidden" value="" name="seniorstr" id="seniorstr" style="">
+
+    
+    
+    
+
+    
+
+    <table width="100%" height="auto" cellspacing="0" cellpadding="0" class="inner vertical">
+        <tbody><tr>
+            <td style=" width:75px;height:100%;" class="tab_cell">
+                <div style="float:none" class="cmn_tab">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="tab_selected"><a onclick="showTab(this,'#fuzz_base')" href="###">基本选项</a></td>
+                            </tr>
+                            <tr>
+                                <td class="tab_unselected"><a onclick="showTab(this,'#fuzz_policy')" href="###">策略配置</a></td>
+                            </tr>
+                            <tr>
+                                <td class="tab_unselected"><a onclick="showTab(this,'#fuzz_report')" href="###">任务报表</a></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                                
+            </td>
+            <td width="100%" class="tab_cell">
+                <table class="tab_border">
+                    <tbody><tr><td class="nopadding tab_cell">
+                        <div id="fuzz_base" class="content" style="margin-top: 0px">
+                            <!--the code derive from assess task-->
+<style type="text/css">
+.text_comment,.textResize {
+    vertical-align: top;
+}
+
+input[name=target] {
+    display: none;
+}
+.container {
+    position: relative;
+    margin: 4px 0;
+    background-color: coral;
+    /*background: linear-gradient(45deg, #FF8E8E, #F5A94C, #E0C15B);*/
+    background: linear-gradient(45deg, #FFFEFE, #FFFFFF, #FFFFFF);
+    overflow: visible;
+    max-width: 500px;
+    height: 20px;
+}
+
+.loadding {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+   width: 400px;
+}
+.loadding .loading-text {
+    color: #999999;
+    background-color: none !important;
+}
+.dot {
+  width: 0;
+  height: 0;
+  border: 5px solid #E0C15B;
+  /*border-radius: 100%;*/
+  float: left;
+  margin: 0 5px;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+  -webkit-animation: fx 1000ms ease infinite 0ms;
+          animation: fx 1000ms ease infinite 0ms;
+}
+.dot:nth-child(2) {
+  -webkit-animation: fx 1000ms ease infinite 300ms;
+          animation: fx 1000ms ease infinite 300ms;
+}
+.dot:nth-child(3) {
+  -webkit-animation: fx 1000ms ease infinite 600ms;
+          animation: fx 1000ms ease infinite 600ms;
+}
+@-webkit-keyframes fx {
+  50% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fx {
+  50% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.serial-para{
+    width: 150px;
+}
+</style>
+<script> 
+/** from rsas */
+
+function exportLoginCheck(){
+    if (top.get_login_length()<1){
+        alert("没有可导出的目标");
+    }else{
+        var data = jQuery('#subTaskForm').serializeArray();
+        var loginarrayjson=top.get_loginarray();
+        var loginjson='({ "name": "loginarray", "value":'+loginarrayjson+'})';
+        var logineval=eval(loginjson);
+        data.push(logineval);
+
+        jQuery.ajax({
+            type:'POST',
+            data:data,
+            async:false,
+            url:"/task/vul/base/export/logincheck",
+            success:function(msg){
+                var urlpath=encodeURI(msg);
+                var url="/task/vul/base/exportsub/"+urlpath;
+                window.open(url);
+            }
+        })
+    };
+}
+
+/** from rsas */
+function uploadLoginCheck(){
+    var filename=jQuery('#uploadlogincheck').val();
+    if (filename.length<1){
+        alert('请选择导入文件！');
+    }else{
+        jQuery.ajaxFileUpload({
+            url:"/task/vul/base/upload/logincheck/",
+            secureuri: false,
+            fileElementId:'uploadlogincheck',
+            dataType:'text',
+            data: {'csrfmiddlewaretoken': '1BZcRhlOTc8xQtQunP1ObSuSyvQ4J5o5','importname':filename},
+            success:function(msg){
+                var flag=msg.substring(0,4);
+                if (flag=='err:'){
+                    alert(msg.substring(4,msg.length));
+                }else{
+                    jQuery("#auth_textfield").val('');
+                    jQuery("#login_table_div").html(msg);
+                };
+            },
+            error:function(msg){
+                alert('导入失败！');
+            }
+        });
+    };
+    
+}
+
+/** from rsas */
+function timeCheck(obj,divobj){
+    var value=jQuery(obj).val();
+    value=jQuery.trim(value);
+    msg="";
+    reg=/^[01][0-9]:[0-5][0-9]|^2[0-3]:[0-5][0-9]/;
+
+    if (!reg.test(value)){
+        msg="格式错误";
+    };
+    
+    if (msg==""){
+        jQuery(divobj).hide();
+        jQuery(obj).removeClass('tip_error');
+    }
+    else
+    {
+        jQuery(divobj).html(msg);
+        jQuery(divobj).show();
+        jQuery(obj).addClass('tip_error');
+    }
+    
+}
+
+/** from rsas */
+function execChangeDivOld(obj){
+    var exectype=jQuery(obj).val();
+    jQuery(obj).parent().siblings().hide();
+    var execdiv="#exec_"+exectype+"_div";
+    jQuery(execdiv).show();
+}
+function execChangeDiv(obj){
+    var exectype=jQuery(obj).val();
+    jQuery(obj).parent().siblings().hide();
+    if (exectype!='senior'){
+        jQuery('#exec_senior_div').hide();
+    };
+    var execdiv="#exec_"+exectype+"_div";
+    jQuery(execdiv).show();
+}
+
+/** from rsas 
+    ICS: add mac target
+*/    
+function targetSelect(){
+    var target=jQuery('[name=target]:radio:checked').val(),
+        insertWay = jQuery('[name=insertWay]:radio:checked').val();
+        
+    if(insertWay == '0'){
+        // 以太网
+        if (target=='ip'){
+            jQuery('#target_mac_div').hide();
+            jQuery('#target_ip_div').show();
+            jQuery("#login_ifuse").attr("disabled",false);
+            if (jQuery("#login_ifuse").attr("checked")){
+                jQuery("#login_ifuse_div").show();
+            };
+            //valTargets();
+        }
+        else if (target=='mac'){   
+            jQuery('#target_ip_div').hide();
+            jQuery("#target_validate").hide();
+            jQuery('#target_mac_div').show();
+            jQuery("#login_ifuse").attr("disabled",true);
+            jQuery("#login_ifuse_div").hide();
+            if (jQuery("#tpl option[value='-1']").length>0){
+                jQuery("#tpl option[value='-1']").remove();
+            };
+
+            jQuery.ajax({
+                url: '/task/fuzz/protocol/mac-list',
+                success: function(data){
+                    jQuery('#mac_list_table').html(data);
+                },
+                beforeSend: function(xhr){
+                    jQuery('#mac_list_table').html('');
+                    jQuery('.container').show();
+                },
+                complete: function(){
+                    jQuery('.container').hide(); 
+                }
+            })
+
+            jQuery("#submitButton").attr("disabled",false);
+            // valTargets();
+
+            // mac only used to profinet
+            // jQuery('#protocols').val('4').trigger('change');
+
+        }
+    }else{
+        // 串口
+        if(target =='slave'){
+            jQuery('#iec101').hide();
+            jQuery('#rtu').show();
+        }else{
+            jQuery('#rtu').hide();
+            jQuery('#iec101').show();
+        }
+    }
+    
+}
+
+function encodeTest(tmp){
+    tmp=tmp.replace(/#/g,'%23');
+    tmp=tmp.replace(/\$/g,'%24');
+    tmp=tmp.replace(/&/g,'%26');
+    tmp=tmp.replace(/:/g,'%3A');
+    tmp=tmp.replace(/;/g,'%3B');
+    tmp=tmp.replace(/\?/g,'%3F');
+    tmp=tmp.replace(/@/g,'%40');
+    tmp=tmp.replace(/=/g,'%3D');
+    return tmp;
+}
+
+var globle_pwd_jsonstr = '[{"name": "pwd_smb", "value": "yes"}, {"name": "pwd_type_smb", "value": "c"}, {"name": "pwd_user_smb", "value": "smb_user.default"}, {"name": "pwd_pass_smb", "value": "smb_pass.default"}, {"name": "pwd_telnet", "value": "yes"}, {"name": "pwd_type_telnet", "value": "c"}, {"name": "pwd_user_telnet", "value": "telnet_user.default"}, {"name": "pwd_pass_telnet", "value": "telnet_pass.default"}, {"name": "pwd_ssh", "value": "yes"}, {"name": "pwd_type_ssh", "value": "c"}, {"name": "pwd_user_ssh", "value": "ssh_user.default"}, {"name": "pwd_pass_ssh", "value": "ssh_pass.default"}, {"name": "pwd_timeout", "value": "5"}, {"name": "pwd_timeout_time", "value": "120"}, {"name": "pwd_interval", "value": "0"}, {"name": "pwd_num", "value": "0"}, {"name": "pwd_threadnum", "value": "5"}]';
+
+
+
+function addHost(){
+    top.dialog.show({title:'添加', url:'/task/vul/base/host', size:'big'});
+};
+
+function editHost(ipstr){
+    var flag="";
+    flag=top.get_one_login(ipstr);
+    var obj=JSON.stringify(flag);
+    //obj=encodeURIComponent(obj);
+    //obj=encodeTest(obj);
+    obj=encodeURI(obj);
+    obj=encodeTest(obj);
+    top.dialog.show({title:"编辑", url:'/task/vul/base/edithost/'+obj, size:'big'});
+    
+};
+
+function seniorExec(){
+    top.dialog.show({title:"高级配置", url:'/task/vul/base/seniorexec', size:'big'});
+}
+
+function delHost(obj,ipstr){
+
+    if (window.confirm("确认删除？")){
+        var p=jQuery(obj).parent().parent().parent();
+        jQuery(obj).parent().parent().remove();
+        if (p.children().length==2){
+            jQuery("#check_table_nodata_tr").show();
+        };
+        top.grep_loginarray(ipstr);
+    }
+}
+
+function targetsImport(){
+    var value=jQuery("[name=target]").val();
+    top.dialog.show({title:"导入扫描目标", url:'/task/vul/base/targetsimport/'+value, size:'big'});
+}
+
+function valTiming(obj){
+    var value=jQuery(obj).val();
+    
+    jQuery.ajax({
+        type:"GET",
+        url:"/task/vul/base/validate/timing/"+value,
+        success:function(msg){
+            //alert(msg);
+            if (msg.length==1){
+                jQuery("#exec_timing_validate").hide();
+                jQuery("#exec_timing_date").removeClass('tip_error');
+            }
+            else
+            {
+                var obj=eval(msg);
+                var m=obj.context.fieldErrors.timing;
+                jQuery("#exec_timing_validate").text(""+m);
+                jQuery("#exec_timing_validate").show();
+                jQuery("#exec_timing_date").addClass('tip_error');
+            }
+        }
+    });
+}
+
+var MAC_SPLITER = /\n|\r|\s+|;|、/g,
+    MAC_PATTERN = /[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}/;
+
+function validate_mac(){
+    var mac_text = jQuery("input").val(),
+        mac_list = mac_text.split(MAC_SPLITER);
+
+    if (mac_list.length)
+        mac_list = mac_list.filter(function(v){ return v? true:false});
+
+    error_macs = mac_list.filter(function(_mac_){ return !MAC_PATTERN.test(_mac_)});
+
+    if (error_macs.length){ /// true means mac list has error
+        jQuery("#target_validate").text("MAC列表中存在错误");
+        jQuery("#target_validate").show();
+        jQuery('#mac_list').addClass('tip_error');
+        jQuery("#submitButton").attr("disabled",true);
+    } else {
+        jQuery("#target_validate").text("");
+        jQuery("#target_validate").hide();
+        jQuery('#mac_list').removeClass('tip_error');
+        jQuery("#submitButton").attr("disabled",false);
+    }
+}
+function validate_address(){
+    var slave_address = jQuery("#slave_station_address").val(),
+        sub_address = jQuery("#substation").val(),
+        proto_id = jQuery("#serial_protocols").val(),
+        address_pattern = /^(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5]))))$/;
+        if(proto_id == '1001'){
+            // rtu 子站
+            if(address_pattern.test(slave_address)){
+                jQuery("#slave_station_address_validate").text("");
+                jQuery("#slave_station_address_validate").hide();
+                set_serial_name();
+                
+            }else{
+                jQuery("#slave_station_address_validate").text("子站地址范围0~255");
+                jQuery("#slave_station_address_validate").show();
+                jQuery("#submitButton").attr("disabled",true);
+            }
+        }else if(proto_id == '1002'){
+            // 101 链路
+            if(address_pattern.test(sub_address)){
+                jQuery("#substation_validate").text("");
+                jQuery("#substation_validate").hide();
+                set_serial_name();
+                
+            }else{
+                jQuery("#substation_validate").text("链路地址范围0~255");
+                jQuery("#substation_validate").show();
+                jQuery("#submitButton").attr("disabled",true);
+            }
+
+        }
+        
+}
+function set_serial_name(){
+    var name_el = jQuery("#name"),
+        insert_type = jQuery('input[name=insertWay]:checked').val(),
+        proto_val = jQuery('#serial_protocols').val();
+        
+    if(insert_type == "1"){
+        if(proto_val == '1001'){
+            var proto_address = jQuery("#slave_station_address").val();
+            if(proto_address > 0){
+                name_el.val("扫描【子站地址"+proto_address+"】");
+            }
+        }else{
+            var proto_address = jQuery("#substation").val();
+            if(proto_address > 0){
+                name_el.val("扫描【链路地址"+proto_address+"】");
+            }
+        }
+    }
+    validateTaskName();
+}
+
+
+/** init */
+(function($){
+    /// bind event
+    $(document).ready(function(){
+        function refresh_proto_case(proto_id,option_el,key){
+            var url = "/task/fuzz/protocol/case",
+                        data = {'key': key},
+                        proto_cases_el = $("#proto_cases");
+
+                    if (/^\w+$/g.test(key)) {  // selected an valid specified protocol
+                        $.ajax({
+                            url  : url,
+                            data : data,
+                            type : "GET",
+                            dataType : "json",
+                            success  : function(data, status, xhr){
+                                var opts = [];
+
+                                proto_cases_el.html('');
+                                for (var i in data){
+                                  opts.push('<option value="' + data[i].id + '">' + data[i].desc[0] + '</option>');
+                                }
+
+                                proto_cases_el.append(opts.join("\n"));
+                                proto_cases_el.multipleSelect("refresh");
+                                proto_cases_el.multipleSelect("checkAll");
+                            }
+                        })
+                    } else {    // selected auto match
+                        proto_cases_el.html('');
+                        proto_cases_el.multipleSelect("refresh");
+                    }
+        }
+        
+        $('[name="insertWay"]:radio').bind('click',function(){
+            if(this.value == '0'){
+                // 以太网
+                $("#serial_parainfo").hide();
+                $("#net_protocol").show();
+                $("#serise_protocol").hide();
+                $("#net_target").show();
+                $("#serise_target").hide();
+                $("#protocols").trigger('change');
+                var proto_id = $('#protocols').val(),
+                    option_el = $("#protocols option[value=" + proto_id + "]"),
+                    case_key  = option_el.attr('data-key');
+                refresh_proto_case(proto_id,option_el,case_key);
+                
+                $("#protocols").bind('change', function(){
+                    var proto_id = this.value,
+                        option_el = $("#protocols option[value=" + proto_id + "]"),
+                        case_key  = option_el.attr('data-key');
+                   var fill_proto_port = function(proto_id){
+                        var port = option_el.attr('data-port'),
+                            tcp_ports_el = $("input[name=tcp_ports]");
+
+                        /^\d+$/g.test(proto_id) ? tcp_ports_el.val(port) : tcp_ports_el.val('');
+                    }, 
+
+                    /// show or hide custom items base on protocol id
+                    fit_custom_items = function(proto_id){
+                        // $(".cus").hide
+                        $(".cus_" + proto_id).show()
+
+                        if (proto_id == '2')
+                            $(".cus_" + proto_id + " input[name=keepalive]").removeAttr('checked');
+                    },
+
+                    /// fit targets: profinet need mac target.
+                    fit_target_option = function(proto_id){
+                            $(".target-radio-label").hide();
+                            if (proto_id == 4 ){ // profinet, hard code is bad?
+                                $("#mac_target_label").show();
+                                $("#macradio")[0].checked = true;
+                                $("#macradio").trigger('click');
+                            } else {
+                                $("#ip_target_label").show();
+                                $("#ipradio")[0].checked = true;
+                                $("#ipradio").trigger('click');
+                            }
+                        
+
+                    },
+                    /// hide monitor if protocol is profinet
+                    switch_monitor = function(proto_id){
+                        (proto_id === '4') ? $('.monitor-row').hide() : $('.monitor-row').show();
+                    }
+
+                // refresh protocol case list
+                refresh_proto_case(proto_id,option_el,case_key);
+                fill_proto_port(proto_id);
+                fit_custom_items(proto_id);
+                switch_monitor(proto_id);
+                fit_target_option(proto_id); 
+                
+            })
+            }else{
+                // 串口
+                $("#serial_parainfo").show();
+                $("#net_protocol").hide();
+                $("#serise_protocol").show();
+                $("#net_target").hide();
+                $("#serise_target").show();
+                
+                $("#substation").bind('blur',function(){
+                            validate_address();
+                            
+                        });
+                $("#subradio")[0].checked = true;
+                $("#subradio").trigger('click');
+                $('.monitor-row').attr('style','display:none');
+                var proto_id = $('#serial_protocols').val(),
+                        option_el = $("#serial_protocols option[value=" + proto_id + "]"),
+                        case_key  = option_el.attr('data-key');
+                refresh_proto_case(proto_id,option_el,case_key);
+                $("#parity").find("option[value='N']").prop('selected',true);
+                $("#serial_protocols").trigger('change');
+                $("#serial_protocols").bind("change",function(){
+                    $(".target-radio-label").hide();
+                    if(this.value == '1001'){
+                        //rtu
+
+                        $("#slave_station_address").bind('blur',function(){
+                            validate_address();
+
+                        });
+                        $("#slave_target_label").show();
+                        $("#slaveradio")[0].checked = true;
+                        $("#slaveradio").trigger('click');
+                        $("#parity").find("option[selected = 'selected']").removeAttr('selected');
+                        $('#parity').find("option[value='E']").prop('selected',true);
+                        console.log('rtu'+$('#parity').val());
+                    }else{
+                        // 101
+                        $("#substation").bind('blur',function(){
+                            validate_address();
+                        });
+                        $("#sub_target_label").show();
+                        $("#subradio")[0].checked = true;
+                        $("#subradio").trigger('click');
+                        $("#parity").find("option[selected = 'selected']").removeAttr('selected');
+                        $("#parity").find("option[value='N']").prop('selected',true);
+                        console.log($('#parity').val());
+                    }
+                   var proto_id = this.value,
+                    option_el = $("#serial_protocols option[value=" + proto_id + "]"),
+                    case_key  = option_el.attr('data-key');
+
+                    refresh_proto_case(proto_id,option_el,case_key);
+
+
+            });
+            }
+        });
+        // $('#netway').trigger('click');
+        /// validate targets when textarea loss focus
+        $("#protocols").trigger('change');
+        $("#ipList").bind('blur', function(){
+            valTargets();
+        })
+
+        $("#mac_list").bind('blur', function(){
+            validate_mac();
+        });
+        console.log($('input[name=insertWay]:checked').val());
+        if($('input[name=insertWay]:checked').val() == '1'){
+            $('.monitor-row').attr('style','display:none');
+            var proto_id = $('#serial_protocols').val(),
+                        option_el = $("#serial_protocols option[value=" + proto_id + "]"),
+                        case_key  = option_el.attr('data-key');
+            refresh_proto_case(proto_id,option_el,case_key);
+            $('#seriseway').trigger('click');
+            $("#serial_protocols").trigger('change')
+        } else{
+            var proto_id = $('#protocols').val(),
+                        option_el = $("#protocols option[value=" + proto_id + "]"),
+                        case_key  = option_el.attr('data-key');
+            refresh_proto_case(proto_id,option_el,case_key);
+            $('#netway').trigger('click');
+            $("#protocols").trigger('change');
+            
+        }
+        
+    })
+    
+})(jQuery)
+</script>
+<div style="float:right;display:block;clear:both;">
+    加载已有任务配置&nbsp;
+    <select class="text" style="width:240px" onchange="multiPlex(this)">
+        <option value="-1">请选择</option>
+        
+    </select>
+</div>&nbsp;
+<table width="100%" height="98%" cellpadding="0" cellspacing="0" border="0">
+    <!--protocols type-->
+    <tbody><tr>
+        <th>接入方式<span class="cmn_must">*</span></th>
+        <td>
+            
+                <span style="margin-top:5px;"><input type="radio" id="netway" name="insertWay" checked="checked" value="0" style=""></span>以太网
+            
+        </td>
+    </tr>
+    <!-- choose protocols to scan -->
+    <tr class="odd">
+        <th>协议选择<span class="cmn_must">*</span></th>
+        <td id="net_protocol">
+            <div id="protocol_validate" class="error_top" style="display:none"></div>
+            <select name="protocols" id="protocols" style="width:365px">
+                <!--<option value="auto">自动匹配</option>-->
+                
+                    <option value="1" data-port="502" data-key="ModbusTCPCaseDict"> 
+                        ModbusTCP </option>
+                
+                    <option value="3" data-port="102" data-key="S7CaseDict"> 
+                        S7 </option>
+                
+                    <option value="2" data-port="2404" data-key="IEC104CaseDict"> 
+                        IEC104 </option>
+                
+                    <option value="5" data-port="102" data-key="IEC61850MMSCaseDict"> 
+                        IEC61850MMS </option>
+                
+                    <option value="4" data-port="" data-key="ProfinetIOCaseDict"> 
+                        ProfinetIO </option>
+                
+                    <option value="6" data-port="20000" data-key="DNP3CaseDict"> 
+                        DNP3 </option>
+                
+            </select>
+
+            
+        </td>
+        <td id="serise_protocol" style="display:none">
+            <div id="protocol_validate" class="error_top" style="display:none"></div>
+            <select name="serial_protocols" id="serial_protocols" style="width:365px">
+                <!--<option value="auto">自动匹配</option>-->
+                
+                    <option value="1002" data-port="" data-key="IEC101CaseDict"> 
+                        IEC101 </option>
+                
+                    <option value="1001" data-port="" data-key="ModbusRTUCaseDict"> 
+                        ModbusRTU </option>
+                
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th width="15%" valign="top">扫描目标<span class="cmn_must">*</span></th>
+        <td style="padding-bottom: 0px;" id="net_target">
+            <div style="padding-bottom: 8px;">
+                <label class="target-radio-label" id="ip_target_label" style="display: inline;">
+                    <input type="radio" name="target" value="ip" checked="" readonly="" id="ipradio" onclick="targetSelect()" style=""> 单IP
+                </label>                
+                <label class="target-radio-label" id="mac_target_label" style="display: none;">
+                    <input type="radio" name="target" value="mac" readonly="" id="macradio" onclick="targetSelect()" style=""> 
+                        MAC
+                </label>
+            </div>
+            <div id="target_validate" class="error_top" style="display:none;"></div>
+
+            <!-- input destination ip -->
+            <div id="target_ip_div" style="display: block">
+                <textarea style="width: 365px;" rows="5" id="ipList" name="ipList" class="textResize" onchange="valTargets()"></textarea>
+                    <span class="text_comment">单个IP，格式：A.B.C.D</span>
+            </div>
+
+            <!-- input destination mac -->
+            <div id="target_mac_div" style="display: none">
+                <!--<textarea style="width:365px;display: none" rows="5" id="mac_list" name="mac_list" class="textResize" 
+                    onchange="valTargets()"
+                    ></textarea>-->
+                    
+                <!-- <span class="cmn_must" style="vertical-align:top">*</span>  -->
+                <div id="mac_list_table">
+                </div>
+                <!-- loading ...-->
+                <div class="container">
+                    <div class="loadding">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="loading-text">正为您搜索Profinet设备...</div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td id="serise_target" style="display:none">
+            <div style="padding-bottom: 8px;">
+                <label class="target-radio-label" id="slave_target_label" style="display: none;">
+                    <input type="radio" name="target" value="slave" checked="" readonly="" id="slaveradio" onclick="targetSelect()" style="">
+                </label>                
+                <label class="target-radio-label" id="sub_target_label" style="display: none;">
+                    <input type="radio" name="target" value="sub" readonly="" id="subradio" onclick="targetSelect()" style="">
+
+                </label>
+            </div>
+            <div id="target_validate" class="error_top" style="display:none"></div>
+            <div id="rtu" style="display:none">
+                <div id="slave_station_address_validate" class="error_top" style="display:none"></div>
+                <label>子站地址
+                    <input id="slave_station_address" name="slave_station_address" type="text" class="text" value="" style="">
+                </label>
+                <span class="text_comment">子站地址0~255</span>
+            </div>
+            <div id="iec101" style="display:none">
+                <table>
+                    <tbody><tr>
+                        <th width="15%" valign="top">链路地址</th>
+                        <td>
+                            <div id="substation_validate" class="error_top" style="display:none"></div>
+                            <input id="substation" name="substation" type="text" class="text serial-para" value="" style="">
+                          
+                            <span class="text_comment">链路地址0~255</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="15%" valign="top">发送原因字段长度</th>
+                        <td>
+                            <div id="cause_length_validate" class="error_top" style="display:none"></div>
+                            <!--<input id="cause_length" name="cause_length" type="number" class="text" value="1"> -->
+                            <select id="cause_length" name="cause_length" class="serial-para">
+                                
+                                <option value="1" selected="">1</option>
+                                
+                                <option value="2">2</option>
+                                
+                            </select>
+                            <span class="text_comment">发送原因字段长度1~2</span> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="15%" valign="top">公共地址字段长度</th>
+                        <td>
+                           <div id="common_address_length_validate" class="error_top" style="display:none"></div>
+                            <!--<input id="common_address_length" name="common_address_length" type="number" class="text" value="1">-->
+                            <select id="common_address_length" name="common_address_length" class="serial-para">
+                                
+                                <option value="1" selected="">1</option>
+                                
+                                <option value="2">2</option>
+                                
+                            </select>
+                            <span class="text_comment">公共地址字段长度1~2</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="15%" valign="top">信息对象地址长度</th>
+                        <td>
+                            <div id="info_obj_length_validate" class="error_top" style="display:none"></div>
+                            <!--<input id="info_obj_length" name="info_obj_length" type="number" class="text" value="2">-->
+                            <select id="info_obj_length" name="info_obj_length" class="serial-para">
+                                
+                                <option value="1">1</option>
+                                
+                                <option value="2" selected="">2</option>
+                                
+                                <option value="3">3</option>
+                                
+                            </select>
+                            <span class="text_comment">信息对象地址长度1~3</span>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </div>       
+        </td>
+    </tr>
+    
+    <tr class="odd" style="display:none" id="serial_parainfo">
+        <th>串口通信参数<span class="cmn_must">*</span></th>
+        <td>
+            <table class="cmn_table">
+                <thead>
+                    <tr class="first_title">
+                        <td>串口类型</td>
+                        <td>波特率</td>
+                        <td>数据位</td>
+                        <td>奇偶校验</td>
+                        <td>停止位</td>
+                    </tr>
+                    
+                </thead>
+                <tbody><tr>
+                    <td>
+                    <div id="protocol_validate" class="error_top" style="display:none"></div>
+                        <select id="protocol" name="protocol" class="serial-para">
+                        
+                        
+                        <option value="RS232">RS232</option>
+                        
+                        <option value="RS485">RS485</option>
+                        
+                        <option value="RS422">RS422</option>
+                        
+                        </select>
+                    </td>
+                    <td>
+                    <div id="baud_rate_validate" class="error_top" style="display:none"></div>
+                        <select id="baud_rate" name="baud_rate" class="serial-para">
+                       
+                        
+                        <option value="110">110</option>
+                        
+                        <option value="2400">2400</option>
+                        
+                        <option value="4800">4800</option>
+                        
+                        <option value="9600" selected="">9600</option>
+                        
+                        <option value="19200">19200</option>
+                        
+                        <option value="38400">38400</option>
+                        
+                        <option value="57600">57600</option>
+                        
+                        <option value="115200">115200</option>
+                        
+                        <option value="230400">230400</option>
+                        
+                        <option value="460800">460800</option>
+                        
+                        <option value="921600">921600</option>
+                        
+                        </select>
+                    </td>
+                    <td>
+                    <div id="byte_size_validate" class="error_top" style="display:none"></div>
+                        <select id="byte_size" name="byte_size" class="serial-para">
+                            
+                            <option value="5">5</option>
+                            
+                            <option value="6">6</option>
+                            
+                            <option value="7">7</option>
+                            
+                            <option value="8" selected="">8</option>
+                                               
+                        </select>
+                    </td>
+                    <td>
+                    <div id="parity_validate" class="error_top" style="display:none"></div>
+                        <select id="parity" name="parity" class="serial-para">
+                            
+                            <option value="E">偶校验</option>
+                            
+                            <option value="O">奇校验</option>
+                            
+                            <option value="N">无校验</option>
+                            
+                        </select>
+                    </td>
+                    <td>
+                        <div id="stop_bits_validate" class="error_top" style="display:none"></div>
+                        <select id="stop_bits" name="stop_bits" class="serial-para">
+                            
+                            <option value="1" selected="">1</option>
+                            
+                            <option value="2">2</option>
+                            
+                            <option value="1.5">1.5</option>
+                            
+                        </select>
+                    </td>
+                </tr>
+            </tbody></table>
+        </td>
+    </tr>
+    <tr class="odd">
+        <th>任务名称<span class="cmn_must">*</span></th>
+        <td>
+            <div id="name_validate" class="error_top" style="display:none"></div>
+            <input type="text" class="text" style="width: 365px;" name="name" id="name" maxlength="256" value="扫描【】" onchange="validateTaskName()">
+                <span class="text_comment">长度小于256个字符。</span> 
+        </td>
+    </tr>
+    <tr class="odd" style="display: none">
+        <th>执行方式</th>
+        <td>
+            <div style="float:left">
+                <select id="exec" name="exec" onchange="execChangeDiv(this)" style="width:365px">
+                    
+                    <option value="immediate" selected="">立即执行</option>
+                    
+                    <option value="timing">定时执行</option>
+                    <option value="everyday">每天一次</option>
+                    <option value="everyweek">每周一次</option>
+                    <option value="emonthdate">每月一次（按日期）</option>
+                    <option value="emonthweek">每月一次（按星期）</option>
+                    <option value="senior">高级配置</option>
+                </select>
+            </div>
+            <div id="exec_immediate_div" style=""></div>
+            <div id="exec_timing_div" style="display:none">
+                &nbsp;
+                <input type="text" name="exec_timing_date" id="exec_timing_date" onchange="valTiming(this)" class="Wdate text" style="width: 160px !important;" value="2026-05-08 15:45:44" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowToday:false})">
+                <span id="exec_timing_validate" class="new_line error" style="display:none"></span>
+            </div>
+
+            <div id="exec_everyday_div" style="display:none">
+                &nbsp;
+                <input type="text" name="exec_everyday_time" id="exec_everyday_time" class="cmn_form" size="5" maxlength="5" onmouseout="timeCheck(this,'#exec_everyday_time_validate')" style="">
+                <span id="exec_everyday_time_validate" class="new_line error" style="display:none"></span>
+                <span class="text_comment">例：14:23</span>
+            </div>
+            <div id="exec_everyweek_div" style="display:none">
+                &nbsp;
+                <select class="text" name="exec_everyweek_day">
+                    <option value="1" selected="">星期一</option>
+                    
+                </select>
+                &nbsp;
+                <input type="text" name="exec_everyweek_time" id="exec_everyweek_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_everyweek_time_validate')" onmouseout="timeCheck(this,'#exec_everyweek_time_validate')" style="">
+                <span id="exec_everyweek_time_validate" class="new_line error" style="display:none"></span>
+                <span class="text_comment">例：14:23</span>
+            </div>
+            <div id="exec_emonthdate_div" style="display:none">
+                &nbsp;
+                <select class="text" name="exec_emonthdate_day">
+                    <option value="1" selected="">1</option>
+                    
+                </select>
+                &nbsp;
+                <input type="text" name="exec_emonthdate_time" id="exec_emonthdate_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_emonthdate_time_validate')" onmouseout="timeCheck(this,'#exec_emonthdate_time_validate')" style="">
+                <span id="exec_emonthdate_time_validate" class="new_line error" style="display:none"></span>
+                <span class="text_comment">例：14:23</span>
+            </div>
+            <div id="exec_emonthweek_div" style="display:none">
+                &nbsp;
+                第
+                <select class="text" name="exec_emonthweek_pre">
+                    <option value="1" selected="">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                个
+                &nbsp;
+                <select class="text" name="exec_emonthweek_day">
+                    <option value="1" selected="">星期一</option>
+                    
+                </select>
+                &nbsp;
+                <input type="text" name="exec_emonthweek_time" id="exec_emonthweek_time" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_emonthweek_time_validate')" onmouseout="timeCheck(this,'#exec_emonthweek_time_validate')" style="">
+                <span id="exec_emonthweek_time_validate" class="new_line error" style="display:none"></span>
+                <span class="text_comment">例：14:23</span>
+            </div>
+        </td>
+    </tr>
+    <tr class="odd" id="exec_senior_div" style="display:none">
+        <th></th>
+        <td style="padding: 0px 8px;">
+            <div>
+                				<table width="auto" height="auto" cellspacing="0" cellpadding="0">
+					<tbody><tr>
+						<td style="vertical-align:text-top; padding:0">
+							<fieldset>
+								<legend>添加周期时间</legend>
+								<table width="345px"><tbody id="toadd_senior_time">
+									<tr>
+										<td>
+											每
+											<select style="width:40px"><!-- ; position:static -->
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											天
+										</td>
+										<td width="40px">
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time1_validate')" style="">
+											<span id="exec_senior_time1_validate" class="new_line error" style="display:none"></span>
+										</td>
+										<td width="15px">
+											<a title="添加" onclick="addSeniorTime(this,1)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											每
+											<select style="width:40px">
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											周
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div class="cont" style="width: 140px; display: none; visibility: hidden;" id="a">
+													
+													<ul>
+														
+														<li><input type="checkbox" checked="" name="weekmulti2" value="1" disabled="" onclick="multiClick(this,event,7);" style="">星期一</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,7)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											
+											
+											<!-- <select class="text">
+												<option value="1" selected>星期一</option>
+												
+											</select>-->
+											
+										</td>
+										<td>
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time2_validate')" style="">
+											<span id="exec_senior_time2_validate" class="new_line error" style="display:none"></span>
+										</td>
+										<td>
+											<a title="添加" onclick="addSeniorTime(this,2)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap">
+											每
+											<select style="width:40px">
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											月
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div style="width: 140px; height: 161px; display: none; visibility: hidden;" class="cont">
+													<ul>
+														<li><input type="checkbox" name="daymulti3" checked="" value="1" disabled="" onclick="multiClick(this,event,31);" style="">1日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="2" onclick="multiClick(this,event,31);" style="">2日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="3" onclick="multiClick(this,event,31);" style="">3日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="4" onclick="multiClick(this,event,31);" style="">4日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="5" onclick="multiClick(this,event,31);" style="">5日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="6" onclick="multiClick(this,event,31);" style="">6日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="7" onclick="multiClick(this,event,31);" style="">7日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="8" onclick="multiClick(this,event,31);" style="">8日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="9" onclick="multiClick(this,event,31);" style="">9日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="10" onclick="multiClick(this,event,31);" style="">10日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="11" onclick="multiClick(this,event,31);" style="">11日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="12" onclick="multiClick(this,event,31);" style="">12日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="13" onclick="multiClick(this,event,31);" style="">13日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="14" onclick="multiClick(this,event,31);" style="">14日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="15" onclick="multiClick(this,event,31);" style="">15日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="16" onclick="multiClick(this,event,31);" style="">16日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="17" onclick="multiClick(this,event,31);" style="">17日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="18" onclick="multiClick(this,event,31);" style="">18日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="19" onclick="multiClick(this,event,31);" style="">19日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="20" onclick="multiClick(this,event,31);" style="">20日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="21" onclick="multiClick(this,event,31);" style="">21日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="22" onclick="multiClick(this,event,31);" style="">22日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="23" onclick="multiClick(this,event,31);" style="">23日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="24" onclick="multiClick(this,event,31);" style="">24日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="25" onclick="multiClick(this,event,31);" style="">25日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="26" onclick="multiClick(this,event,31);" style="">26日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="27" onclick="multiClick(this,event,31);" style="">27日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="28" onclick="multiClick(this,event,31);" style="">28日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="29" onclick="multiClick(this,event,31);" style="">29日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="30" onclick="multiClick(this,event,31);" style="">30日</li>
+														
+															<li><input type="checkbox" name="daymulti3" value="31" onclick="multiClick(this,event,31);" style="">31日</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,31)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											<!-- 
+											<select class="text">
+												<option value="1" selected >1</option>
+												
+													<option value=1>1</option>
+												
+													<option value=2>2</option>
+												
+													<option value=3>3</option>
+												
+													<option value=4>4</option>
+												
+													<option value=5>5</option>
+												
+													<option value=6>6</option>
+												
+													<option value=7>7</option>
+												
+													<option value=8>8</option>
+												
+													<option value=9>9</option>
+												
+													<option value=10>10</option>
+												
+													<option value=11>11</option>
+												
+													<option value=12>12</option>
+												
+													<option value=13>13</option>
+												
+													<option value=14>14</option>
+												
+													<option value=15>15</option>
+												
+													<option value=16>16</option>
+												
+													<option value=17>17</option>
+												
+													<option value=18>18</option>
+												
+													<option value=19>19</option>
+												
+													<option value=20>20</option>
+												
+													<option value=21>21</option>
+												
+													<option value=22>22</option>
+												
+													<option value=23>23</option>
+												
+													<option value=24>24</option>
+												
+													<option value=25>25</option>
+												
+													<option value=26>26</option>
+												
+													<option value=27>27</option>
+												
+													<option value=28>28</option>
+												
+													<option value=29>29</option>
+												
+													<option value=30>30</option>
+												
+													<option value=31>31</option>
+												
+											</select>
+											 -->
+											
+										</td>
+										<td>
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time3_validate')" style="">
+											<span id="exec_senior_time3_validate" class="new_line error" style="display:none"></span>
+										</td>
+										<td>
+											<a title="添加" onclick="addSeniorTime(this,3)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											每
+											<select style="width:40px">
+												
+													<option value="1">1</option>
+												
+													<option value="2">2</option>
+												
+													<option value="3">3</option>
+												
+													<option value="4">4</option>
+												
+													<option value="5">5</option>
+												
+													<option value="6">6</option>
+												
+													<option value="7">7</option>
+												
+													<option value="8">8</option>
+												
+													<option value="9">9</option>
+												
+													<option value="10">10</option>
+												
+													<option value="11">11</option>
+												
+													<option value="12">12</option>
+												
+											</select>
+											月
+											
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div style="width: 140px; display: none; visibility: hidden;" class="cont">
+													<ul>
+														<li><input type="checkbox" checked="" name="permulti4" value="1" disabled="" onclick="multiClick(this,event,4);" style="">第1个</li>
+														
+															<li><input type="checkbox" name="permulti4" value="2" onclick="multiClick(this,event,4);" style="">第2个</li>
+														
+															<li><input type="checkbox" name="permulti4" value="3" onclick="multiClick(this,event,4);" style="">第3个</li>
+														
+															<li><input type="checkbox" name="permulti4" value="4" onclick="multiClick(this,event,4);" style="">第4个</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,4)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											<!-- 
+											<select>
+												
+													<option value=1>1</option>
+												
+													<option value=2>2</option>
+												
+													<option value=3>3</option>
+												
+													<option value=4>4</option>
+												
+													<option value=5>5</option>
+												
+											</select> -->
+											&nbsp;
+											<span class="selectMulti">
+												<input type="text" class="text select" style="width: 60px;" rel="（多选）" readonly="" show="true" value="">
+												<div class="cont" style="width: 140px; display: none; visibility: hidden;">
+													<ul>
+														<li><input type="checkbox" checked="" name="weekmulti4" value="1" disabled="" onclick="multiClick(this,event,7);" style="">星期一</li>
+														
+													</ul>
+												
+													<div class="tools">
+														<input type="button" class="cmn_btn SelectAll" onclick="multiSelectAll(this,event)" value="全选" style=""> 
+														<input type="button" class="cmn_btn SelectReverse" onclick="multiReverse(this,event,7)" value="反选" style="">
+													</div>
+												<b class="ico"></b></div>
+											</span>
+											<!-- 
+											<select class="text" name="exec_everyweek_day">
+												<option value="1" selected>星期一</option>
+												
+											</select> -->
+										</td>
+										<td>
+											<input type="text" class="cmn_form" size="5" maxlength="5" value="00:00" onchange="timeCheck(this,'#exec_senior_time4_validate')" style="">
+											<span id="exec_senior_time4_validate" class="new_line error" style="display:none"></span>
+										</td><td>
+											<a title="添加" onclick="addSeniorTime(this,4)" style="cursor:pointer">
+												<img align="absmiddle" src="/media/stylesheet/nsfocus_2012/images/icon/add.gif" alt="添加">
+											</a>
+										</td>
+									</tr>
+								</tbody></table>
+							</fieldset>
+						</td>
+						<td style="vertical-align:text-top; padding:0 8px" "="">
+							<fieldset style="min-height: 155px;">
+								<legend>已添加周期时间</legend>
+								<span id="exec_senior_added_validate" class="new_line error" style="display:none"></span>
+								<table style="width:345px;" class="cmn_table"><tbody id="added_senior_time">
+									
+									
+										<tr value="-1" id="no_data_tr">
+											<td colspan="5">
+												
+												<div class="cmn_warning tip">
+													<img class="ico" src="/media/stylesheet/nsfocus_2012/images/blank.gif"> 
+													无数据
+												</div>
+												
+						
+											</td>
+										</tr>
+									
+								</tbody></table>
+							</fieldset>
+						</td>
+					</tr>
+				</tbody></table>
+				<!-- <input type="button" onclick="testT()" value="测试"> -->
+<script>
+	function multiSelectAll(obj,e){
+		if (e.stopPropagation){e.stopPropagation();}
+		else{e.cancelBubble = true;};
+		jQuery(obj).parent().prev().children().children('input:checkbox').attr('disabled',false);
+		jQuery(obj).next().attr('disabled',true);
+	}
+	function multiReverse(obj,e,eflag){
+		var len=jQuery(obj).parent().prev().children().children('input:checkbox:checked').length;
+		if (e.stopPropagation){e.stopPropagation();}
+		else{e.cancelBubble = true;};
+		if (len>=eflag-1){
+			jQuery(obj).parent().prev().children().children('input:checkbox').attr('disabled',true);
+			jQuery(obj).parent().prev().children().children('input:checkbox:checked').attr('disabled',false);
+		}else{
+			jQuery(obj).parent().prev().children().children('input:checkbox').attr('disabled',false);
+		};
+	}
+	function multiClick(obj,e,eflag){
+		var len=jQuery(obj).parent().siblings().children('input:checkbox:checked').length;
+		//勾去时，为勾去之后的个数，勾对时为勾之前的个数
+		if (!jQuery(obj).attr("checked")){
+			jQuery(obj).parent().parent().next().children().eq(1).attr('disabled',false);
+			if (len<=1){
+				jQuery(obj).parent().siblings().children('input:checkbox:checked').attr('disabled',true)
+			};
+		}else{
+			jQuery(obj).parent().siblings().children('input:checkbox').attr('disabled',false);
+			if (len>=eflag-1){
+				jQuery(obj).parent().parent().next().children().eq(1).attr('disabled',true);
+			};
+		};
+		if (e.stopPropagation){e.stopPropagation();}
+		else{e.cancelBubble = true;};
+	}
+</script>
+		
+<script>
+	function addSeniorTime(obj,type){
+		var tm=jQuery(obj).parent().parent().children().eq(1).find('span:visible');
+		if (tm.length>0){alert("添加失败，格式有错误");}else{
+			if (jQuery("#added_senior_time").children().length<2){
+				jQuery("#no_data_tr").hide();
+				jQuery('#exec_senior_added_validate').hide();
+			};
+			var tr=jQuery(obj).parent().parent();
+			var tre=jQuery('<tr>');
+			jQuery("#added_senior_time").append(tre);
+			tde=getCronObj(obj,type);
+			tre.append(tde);
+			
+			var time=jQuery(obj).parent().parent().children().eq(1).find('input').val();
+			tde=jQuery('<td>',{'text':time})
+			tre.append(tde);
+			
+			tde=jQuery('<td>');
+			
+			var ae=jQuery('<a>',{'title':"删除",'style':"cursor:pointer"});
+			ae.bind("click",function(){
+				delSeniorTime(this);
+			});
+			
+			var ie=jQuery('<img>',{'src':"/media/stylesheet/nsfocus_2012/images/icon/delete.gif","align":"absmiddle","alt":"删除"});
+			ae.append(ie);
+			tde.append(ae);
+			tre.append(tde);
+			jQuery('#added_senior_time').append(tre);
+		};
+
+	}
+	function getCronObj(obj,type){
+		var td= document.createElement("td");
+		var time=jQuery(obj).parent().parent().children().eq(1).find('input').val();
+		if (type==1){
+			var value=jQuery(obj).parent().parent().children().eq(0).find('select').val();
+			var s='1@day#'+time+'#*/'+value+"#*#*#*";
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value+"天";
+		}else if(type==2){
+			var value1=jQuery(obj).parent().parent().children().eq(0).find('select').eq(0).val();
+			var value2=jQuery(obj).parent().parent().children().eq(0).find('span').eq(0).find('input').eq(0).val();
+			var value3="";
+			jQuery("[name=weekmulti2]").each(function(){
+				if (jQuery(this).attr('checked')){value3=value3+jQuery(this).val()+',';};
+			});
+			if (value3.length>1){
+				value3=value3.substr(0,value3.length-1);
+			};
+			var s='2@week#'+time+'#*#'+value3+'#*/'+value1+"#*";
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value1+"周&nbsp;"+value2;
+		}else if(type==3){
+			var value1=jQuery(obj).parent().parent().children().eq(0).find('select').eq(0).val();
+			var value2=jQuery(obj).parent().parent().children().eq(0).find('span').eq(0).find('input').eq(0).val();
+			var value3="";
+			jQuery("[name=daymulti3]").each(function(){
+				if (jQuery(this).attr('checked')){value3=value3+jQuery(this).val()+',';};
+			});
+			if (value3.length>1){
+				value3=value3.substr(0,value3.length-1);
+			};
+			var s='3@day#'+time+'#'+value3+"#*#*#*/"+value1;
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value1+"月&nbsp;"+value2;  //+"日"
+		}else if(type==4){
+			var value1=jQuery(obj).parent().parent().children().eq(0).find('select').eq(0).val();
+			var value2=jQuery(obj).parent().parent().children().eq(0).find('span').eq(0).find('input').eq(0).val();
+			var value3=jQuery(obj).parent().parent().children().eq(0).find('span').eq(1).find('input').eq(0).val();
+			var value4="";
+			jQuery("[name=weekmulti4]").each(function(){
+				if (jQuery(this).attr('checked')){value4=value4+jQuery(this).val()+',';};
+			});
+			if (value4.length>1){
+				value4=value4.substr(0,value4.length-1);
+			};
+			var value5="";
+			jQuery("[name=permulti4]").each(function(){
+				if (jQuery(this).attr('checked')){value5=value5+jQuery(this).val()+',';};
+			});
+			if (value5.length>1){
+				value5=value5.substr(0,value5.length-1);
+			};
+
+			var s='4@week#'+time+'#*#'+value4+'#'+value5+"#*/"+value1;
+			td.innerHTML = "<input type='hidden' value="+s+">\
+			每"+value1+"月&nbsp;"+value2+"&nbsp;"+value3; //"个"
+		};
+		
+		return td
+	}
+	function delSeniorTime(obj){
+		jQuery(obj).parent().parent().remove();
+		if (jQuery("#added_senior_time").children().length<2){
+			jQuery("#no_data_tr").show();
+		};
+	}
+</script>
+<script>
+	function testT(){
+		
+		var retstr="";
+		jQuery("#added_senior_time").children().each(function(){
+			var ins=jQuery(this).children().eq(0).find('input');
+			//alert(ins.length);
+			if (ins.length>0){
+				var tmpstr=ins.eq(0).val();
+				retstr=retstr+tmpstr+';';
+			};
+		});
+		if (retstr!=""){
+			retstr=retstr.substr(0,retstr.length-1);
+		};
+		
+		//alert(retstr);
+		return retstr
+		
+	}
+	function testTOLD(){
+		
+		var retstr="";
+		jQuery("#added_senior_time").children().each(function(){
+			var ins=jQuery(this).children().eq(0).find('input');
+			//alert(ins.length);
+			if (ins.length>0){
+				
+				var type=ins.eq(0).val();
+				retstr=retstr+type+'@';
+				var time=jQuery(this).children().eq(1).text();
+				if (type=='1'){
+					retstr=retstr+'day:';
+					retstr=retstr+time;
+					retstr=retstr+':*/'+ins.eq(1).val()+":*:*:*";
+					//retstr=retstr+ins.eq(1).val()+'#';
+				}else if(type=='2'){
+					retstr=retstr+'week:';
+					retstr=retstr+time;
+					retstr=retstr+':*:'+ins.eq(2).val()+":"+ins.eq(1).val()+":*";
+					//retstr=retstr+ins.eq(1).val()+'#';
+					//retstr=retstr+ins.eq(2).val()+'#';
+				}else if(type=='3'){
+					retstr=retstr+'day:';
+					retstr=retstr+time;
+					retstr=retstr+':'+ins.eq(2).val()+":*:*:*/"+ins.eq(1).val();
+					//retstr=retstr+ins.eq(1).val()+'#';
+					//retstr=retstr+ins.eq(2).val()+'#';
+				}else if(type=='4'){
+					retstr=retstr+'week:';
+					retstr=retstr+time;
+					retstr=retstr+':*:'+ins.eq(3).val()+":"+ins.eq(2).val()+":*/"+ins.eq(1).val();
+					//retstr=retstr+ins.eq(1).val()+'#';
+					//retstr=retstr+ins.eq(2).val()+'#';
+					//retstr=retstr+ins.eq(3).val()+'#';
+				};
+				
+				//retstr=retstr+time;
+				retstr=retstr+';';
+			};
+		});
+		if (retstr!=""){
+			retstr=retstr.substr(0,retstr.length-1);
+		};
+		
+		alert(retstr);
+		return retstr
+		
+	}
+</script>
+            </div>
+        </td>
+    </tr>
+
+    <!-- check known vul -->
+    <tr class="odd" style="display: none">
+        <th>已知漏洞检测</th>
+        <td>
+            <label>
+                <input type="checkbox" name="check_known_vuls" value="1" style="">
+                启用
+            </label>
+        </td>
+    </tr>
+
+    <tr class="line"><td colspan="2"></td></tr>
+    
+    <tr class="odd" style="display: none">
+        <th>扫描时间段</th>
+        <td>
+            <div id="exec_range_validate" class="error" style="display:none"></div>
+            <div style="float:left">
+                    <input class="text" type="text" name="exec_range" id="exec_range" onchange="validateExecRange()" size="5" maxlength="256" value="" style="width: 365px;">
+                    <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" align="absmiddle" style="vertical-align: top; cursor: pointer;" title="" tipbox="内容格式如00:00-12:00，多个时间段用分号隔开" w_tip="" h_tip="">
+            </div>
+        </td>
+    </tr>
+
+    <tr class="odd" style="display: none">
+        <th>调度优先级</th>
+        <td>
+            <select id="scan_pri" class="text" name="scan_pri" style="width:365px">
+                <option value="1">低</option>
+                <option selected="" value="2">中</option>
+                <option value="3">高</option>
+            </select> 
+            <img class="tipBox" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" align="absmiddle" style="vertical-align: top; cursor: pointer;" title="" tipbox="优先级越高的任务被优先执行的概率越大" w_tip="" h_tip="">   
+        </td>
+    </tr>
+
+    <tr class="line"><td colspan="2"></td></tr>
+    
+    <tr>
+        <th valign="top">任务说明</th>
+        <td>
+            
+                <textarea class="text" style="width: 365px;" rows="3" id="taskdesc" name="taskdesc" maxlength="256"></textarea>
+            
+            <span class="text_comment" align="absmiddle" style="vertical-align:top">长度小于256个字符。</span> 
+        </td>
+    </tr>
+
+    
+    <tr class="line"><td colspan="2"></td></tr>
+        <tr>
+            <th></th>
+            <td><font color="red"><b>Fuzzing任务提醒：为了避免扫描任务影响现网业务，禁止采用线上扫描。</b></font></td>
+        </tr>
+    
+</tbody></table>
+                        </div>
+                        <div id="fuzz_policy" class="content hide" style="margin-top: 0px">
+                            <!-- policy -->
+<style type="text/css">
+
+.off-left-2{
+    padding-left: 20px !important;
+}
+
+.net-ping p{
+  padding: 4px;
+  margin: 0;
+}
+
+.net-ping p label:nth-child(1){
+  width: 50px;
+  display: inline-block;
+}
+
+td label input{
+  margin: 0 4px;
+}
+
+.net-ping label:first-child input{
+  margin: 0;
+}
+
+.ms-parent * {
+  border-radius: 0 0;
+}
+
+button.ms-choice {
+  height: 24px;
+}
+
+label.cmn_label {
+  display: inline-block;
+  vertical-align: top;
+}
+</style>
+<table width="100%">
+  <tbody><tr class=""> 
+    <th width="15%" valign="top">协议数据生成策略</th>
+    <td>
+      <label class="cmn_label">
+          <input type="radio" name="policy_scan" value="s" style="display: none;" checked="">标准扫描</label>
+      
+    </td>
+  </tr>
+  <tr id="case_row"> 
+    <th width="15%" valign="top">选择用例</th>
+    <td>
+      <label class="cmn_label" style="display: block">
+      <select name="proto_cases[]" id="proto_cases" class="js-example-responsive" multiple="multiple" style="display: none; width: 100%;"><option value="1">读线圈</option>
+<option value="2">读离散输入</option>
+<option value="3">读保持寄存器</option>
+<option value="4">读输入寄存器</option>
+<option value="5">写单个线圈</option>
+<option value="6">写单个寄存器</option>
+<option value="7">读异常状态</option>
+<option value="8">写多个线圈</option>
+<option value="9">写多个寄存器</option>
+<option value="10">读文件记录</option>
+<option value="11">写文件记录</option>
+<option value="12">屏蔽写寄存器</option>
+<option value="13">读写多个寄存器</option>
+<option value="14">读FIFO队列</option>
+<option value="15">读取设备标识</option>
+<option value="16">支持功能码探测</option></select><div class="ms-parent js-example-responsive" style="width: 100%;"><button type="button" class="ms-choice"><span class="">已选择所有可用用例</span><div></div></button><div class="ms-drop bottom"><div class="ms-search"><input type="text" autocomplete="off" autocorrect="off" autocapitilize="off" spellcheck="false" style=""></div><ul style="max-height: 250px;"><li class="ms-select-all selected"><label><input type="checkbox" data-name="selectAllproto_cases[]" style=""> [全选]</label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="1" style=""><span>读线圈</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="2" style=""><span>读离散输入</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="3" style=""><span>读保持寄存器</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="4" style=""><span>读输入寄存器</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="5" style=""><span>写单个线圈</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="6" style=""><span>写单个寄存器</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="7" style=""><span>读异常状态</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="8" style=""><span>写多个线圈</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="9" style=""><span>写多个寄存器</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="10" style=""><span>读文件记录</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="11" style=""><span>写文件记录</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="12" style=""><span>屏蔽写寄存器</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="13" style=""><span>读写多个寄存器</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="14" style=""><span>读FIFO队列</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="15" style=""><span>读取设备标识</span></label></li><li class="multiple selected" style="width: 150px;"><label class=""><input type="checkbox" data-name="selectItemproto_cases[]" value="16" style=""><span>支持功能码探测</span></label></li><li class="ms-no-results">无结果</li></ul></div></div>
+      </label>
+    </td>
+  </tr>
+  
+    
+    <tr class="cus cus_2" style="display: none">
+      <td>维持链接</td>
+      <td>
+        
+        <label><input class="text" type="checkbox" name="keepalive" value="1" style="vertical-align: middle;">启用</label>
+        
+    </td></tr>
+    
+  
+    
+    <tr class="cus cus_6" style="display: none">
+      <td>源站址</td>
+      <td>
+        
+        <input class="text" type="text" name="src_addr" value="0" style=""></td>
+        
+    </tr>
+    
+    <tr class="cus cus_6" style="display: none">
+      <td>目的站址</td>
+      <td>
+        
+        <input class="text" type="text" name="dst_addr" value="0" style=""></td>
+        
+    </tr>
+    
+  
+
+  <tr class="line"><td colspan="2"></td></tr>
+  
+  <tr class=""> 
+    <th width="15%" valign="top">结果分析策略</th>
+    <td>
+      <label class="cmn_label"><input type="radio" name="policy_analyze" value="11" checked="" style="">行业模板/国际通用模板</label>
+    </td>
+  </tr>
+
+  <tr class="line"><td colspan="2"></td></tr>
+<!-- monitor -->
+
+  <tr class="odd monitor-row"> 
+    <th width="15%" valign="top">远程监控</th>
+    <td></td>
+  </tr>
+
+  <tr class="odd monitor-row"> 
+    <th width="15%" class="off-left-2" valign="top">ICMP</th>
+    <td>
+      <label class="cmn_label">
+        <input type="checkbox" name="icmp" class="ping" value="1" checked="" style="">启用
+      </label>
+      <label class="cmn_label">超时时间
+        <input type="input" class="text" name="icmp_timeout" value="1" style=""><span>秒</span></label>
+     
+    </td>
+  </tr>
+  <tr class="odd monitor-row"> 
+    <th width="15%" class="off-left-2" valign="top">ARP</th>
+    <td>
+      <label class="cmn_label">
+        <input type="checkbox" class="ping" name="arp" value="1" style="">启用
+      </label>
+      <label class="cmn_label">超时时间
+        <input type="input" class="text" name="arp_timeout" value="1" disabled="disabled" style=""><span>秒</span>
+      </label>    
+    </td>
+  </tr>
+  <tr class="odd monitor-row">
+    <th class="off-left-2" valign="top"> TCP端口探测 </th>
+    <td>
+      <label class="cmn_label"><input type="checkbox" class="ping" name="tcp" value="1" style="">启用</label> 
+      <label class="cmn_label">超时时间
+        <input type="input" class="text" name="tcp_timeout" value="1" disabled="disabled" style=""><span>秒</span>
+      </label>
+      <label class="cmn_label">
+          端口号
+          <input type="text" name="tcp_ports" class="text" value="" disabled="disabled" style="">
+          
+      </label>
+
+      <div id="checked_probes"></div>
+    </td>
+  </tr>
+
+  <tr class="line monitor-row"><td colspan="2"></td></tr>
+
+  <tr class="odd monitor-row"> 
+    <th width="15%" valign="top">Tcpdump抓包</th>
+    <td>
+      <label class="cmn_label">
+        <input type="checkbox" name="tcpdump" value="1" style="">启用
+      </label>
+    </td>
+  </tr>
+
+  <tr class="line"><td colspan="2"></td></tr>
+
+<!-- the advance -->
+  <tr class=""> 
+    <th width="15%" valign="top">
+        拒绝服务重连时间
+        <span class="cmn_must">*</span>
+    </th>
+    <td>
+      <input type="text" name="fuzzConnectRetryTimes" value="10" class="text" style="">
+      <span>秒</span>
+    </td>
+  </tr>
+  <tr class=""> 
+    <th width="15%" valign="top">拒绝服务重连次数<span class="cmn_must">*</span></th>
+    <td>
+      <input type="text" name="fuzzConnectRetryNums" value="12" class="text" style="">
+      <span>次</span>
+    </td>
+  </tr>
+
+  <tr class="line"><td colspan="2"></td></tr>
+
+<!-- the scan rate -->
+  <tr class=""> 
+    <th width="15%" valign="top">
+        扫描引擎发包间隔
+        <span class="cmn_must">*</span>
+    </th>
+    <td>
+      <input type="text" name="scan_pkt_rate" value="1" class="text" style="">
+      <span>秒</span>
+    </td>
+  </tr>
+  <tr class=""> 
+    <th width="15%" valign="top">监控引擎发包间隔<span class="cmn_must">*</span></th>
+    <td>
+      <input type="text" name="monitor_pkt_rate" value="1" class="text" style="">
+      <span>秒</span>
+    </td>
+  </tr>
+  
+</tbody></table>
+
+<script>
+jQuery(document).ready(function(){
+    var $ = jQuery;
+
+    // bind events
+    $(".ping").bind('change', function(e_obj){
+        var me = this.name,
+            checked = this.checked,
+            my_inputs = $("input[name^='" + me +"_']");
+
+        !checked ? my_inputs.attr('disabled', 'disabled') : my_inputs.removeAttr('disabled');
+
+        if (!checked && !$("input:checked.ping").length){
+            // alert("必须至少选择一种监控类型。");
+            $("input[name=icmp]").prop('checked', 'checked');
+            $("input[name=icmp]").trigger('change');
+        }
+    });
+    $("input[name=icmp]").trigger('change');
+    $("input[name=arp]").trigger('change');
+    $("input[name=tcp]").trigger('change');
+
+    $("input[name=policy_scan]").bind("change", function(){
+        var val = this.value
+            checked = this.checked;
+
+        /// s is standard scanning
+        if (checked) val === "s" ? $("#case_row").show() : $("#case_row").hide();
+    })
+    $("input[name=policy_scan]").trigger('change');
+
+    $("#proto_cases").multipleSelect({
+        // width:163,
+        filter: true,
+        multiple: true,
+        animate: 'none', // 'none', 'fade', 'slide'
+        selectAll: true,
+        multipleWidth: 150,
+
+        allSelected: "已选择所有可用用例",
+        selectAllText: "全选",
+        noMatchesFound: "无结果",
+
+        minimumCountSelected: 10,
+
+        onOpen: function(){
+            /// get protocol selected in fuzz_base.html
+        }
+      });
+
+    // $("#monitor_probe").multipleSelect({
+    //     width:163,
+    //     filter: true,
+    //     multiple: true,
+    //     selectAll: false,
+    //     multipleWidth:150,
+    //     noMatchesFound: "无结果",
+    //     styler: function(value){
+    //       if (value === "0"){
+    //         return "float:none;"
+    //       }
+    //     },
+
+    //     onClick: function(view) {
+    //         var val = view.value,
+    //             checked_me = view.checked,
+    //             checked_vals = $("#monitor_probe").multipleSelect("getSelects");
+            
+    //         /// disabled or auto match
+    //         if ((val === "no" || val === "0") && checked_me) {
+    //             $("#monitor_probe").multipleSelect("setSelects", [val]);
+    //         }
+    //         /// checked another
+    //         else if (checked_me){
+    //             var disabled_opt_idx = checked_vals.indexOf('no'),
+    //                 auto_match_opt_idx = checked_vals.indexOf('0');
+
+    //             disabled_opt_idx >= 0 && checked_vals.splice(disabled_opt_idx, 1);
+    //             auto_match_opt_idx >= 0 && checked_vals.splice(auto_match_opt_idx, 1);
+
+    //             $("#monitor_probe").multipleSelect("setSelects", checked_vals);
+    //         }
+
+    //         /// the unselect operation
+    //         if (!checked_me && !checked_vals.length){
+    //             $("#monitor_probe").multipleSelect("setSelects", ['no']);
+    //         }
+    //     }
+    // });
+});
+</script>
+                        </div>
+                        <div id="fuzz_report" class="content hide" style="margin-top: 0px">
+                            <script>
+/// **
+function cboxCheck(obj, target){
+    
+    if (jQuery(obj).prop("checked")){
+        if (target == '#report_ifsent_table'){
+            //validateReportEmail();
+        };
+        jQuery(target).show();
+    } else {
+        if (target=='#report_tpl_sum_tr'){
+            var tlen=jQuery(obj).siblings('input:checkbox:checked').length;
+            if (tlen==0){
+                alert('报表内容至少选择1种！');
+                jQuery(obj).prop("checked",true);
+            }else{
+                jQuery(target).hide();
+            };
+        }else{
+            jQuery(target).hide();
+        };
+        
+    }
+}
+
+function reportType(obj){
+	if (jQuery(obj).attr("checked")){
+		var nowval=jQuery("#report_ifsent_type").val();
+		jQuery("#report_ifsent_type").children().remove();
+		jQuery(obj).parent().children('input:checkbox:checked').each(function(){
+			var tmp_val = jQuery(this).val();
+			var tmp_name = 'HTML';
+			// if (tmp_val=='html'){
+			// 	tmp_name = 'HTML';
+			// }else if (tmp_val=='doc'){
+			// 	tmp_name='Word';
+			// }else if (tmp_val=='xls'){
+			// 	tmp_name='Excel';
+			// }else if (tmp_val=='pdf'){
+			// 	tmp_name='Pdf';
+			// };
+			if (nowval==tmp_val){
+				//alert('in');
+				jQuery("#report_ifsent_type").append("<option value='"+jQuery(this).val()+"' selected>"+tmp_name+"</option>");
+			}else{
+				jQuery("#report_ifsent_type").append("<option value='"+jQuery(this).val()+"'>"+tmp_name+"</option>");
+			};
+		});
+		//jQuery("#report_ifsent_type").append("<option value='"+jQuery(obj).val()+"'>"+jQuery(obj).val()+"</option>");
+	}
+	else
+	{
+		var tlen=jQuery(obj).siblings('input:checkbox:checked').length;
+		if (tlen==0){
+			
+			alert('报表类型至少选择1种！');
+			jQuery(obj).attr("checked",true);
+		}
+		else
+		{
+			jQuery("#report_ifsent_type option[value='"+jQuery(obj).val()+"']").remove();
+		}
+		
+	}
+}
+
+
+function validateReportEmail(){
+
+	var data = jQuery('#subTaskForm').serializeArray();
+	var tmp=jQuery('#report_ifsent_email').val();
+	tmp=tmp.replace(/\n/g,';');
+	var taskjson='({ "name": "emails", "value":\"'+tmp+'\"})';
+	var taskeval=eval(taskjson);
+	data.push(taskeval);
+	
+	jQuery.ajax({
+		type:"POST",
+		url:"/task/vul/report/validate/emails/",
+		data:data,
+		success:function(msg){
+			//alert(msg);
+			if (msg.length==1){
+				jQuery("#report_ifsent_email_validate").hide();
+				jQuery('#report_ifsent_email').removeClass('tip_error');
+			}
+			else
+			{
+				var obj=eval(msg);
+				var m=obj.context.fieldErrors.report_ifsent_email;
+				
+				jQuery("#report_ifsent_email_validate").text(""+m);
+				jQuery("#report_ifsent_email_validate").show();
+				jQuery('#report_ifsent_email').addClass('tip_error');
+			}
+
+		}
+		
+	});
+	
+}
+//判断ftp上传是否配置合理服务器选项
+function test_ftpconf_assess(){
+	if(jQuery("#send_ftp").prop("checked")==true){
+		jQuery.ajax({
+			type:"GET",
+			url:"/task/test_ftpconf/",
+			data:"",
+			success:function(msg){
+				if(msg=="fail"){
+					alert("请先配置FTP相关配置项")
+					jQuery("#send_ftp").prop("checked","");
+				}
+			}
+		});	
+	}
+}
+//判断自动生成与ftp上传和发送报表处的业务逻辑
+function check_autoexport_fuzzing(){
+	// alert(jQuery("#report_fuzzifcreate").prop("checked"));
+	if(jQuery("#report_ifcreate").prop("checked")==true){
+		jQuery('#send_ftp').prop('disabled','');
+		jQuery('#report_ifsent').prop('disabled','');
+	}else{
+		jQuery('#send_ftp').prop('disabled','true');
+		jQuery('#report_ifsent').prop('disabled','true');
+		jQuery('#send_ftp').prop('checked','');
+		jQuery('#report_ifsent').prop('checked','');
+		jQuery('#report_ifsent_table').hide();
+	}			
+}
+</script>
+
+<table width="100%">
+	<tbody><tr> 
+		<th width="15%">
+			报表类型
+		</th>
+		<td id="report_type_td">
+			<input type="checkbox" id="report_type_html" name="report_type_html" value="html" checked="" onclick="reportType(this)" style="display: none;">
+			<label for="report_type_html">
+			<img src="/media/stylesheet/nsfocus_2012/images/icon/html.gif">
+			HTML
+			</label>
+			&nbsp;&nbsp;
+			
+		</td>
+	</tr>
+	<tr>
+		<th>
+			报表内容
+		</th>
+		<td>
+			<input id="report_content_sum" type="checkbox" name="report_content_sum" value="sum" onclick="cboxCheck(this,'#report_tpl_sum_tr')" checked="" style="display: none;">
+			<label for="report_content_sum">综述报表</label>
+			&nbsp;&nbsp;
+			
+		
+		</td>
+		
+	</tr>
+	<tr id="report_tpl_sum_tr">
+		<th>综述报表模板</th>
+		<td>
+			<select style="width:200px;" name="report_tpl_sum">
+				
+					<option value="10007">系统默认模板</option>
+				
+	
+			</select>
+			
+			<a href="/template/report/fuzzingsummary_tpl" style="cursor:pointer;" target="_blank">
+				<img src="/media/stylesheet/nsfocus_2012/images/icon/template_report.gif" align="absmiddle">
+				报表模板管理
+			</a>
+			
+		</td>
+	</tr>
+	<tr>
+		<th>自动生成报表</th>
+		
+		<td>
+			<input id="report_ifcreate" type="checkbox" name="report_ifcreate" value="yes" onclick="check_autoexport_fuzzing();" style="">
+			<label for="report_ifcreate">启用</label>
+			<span id="report_ifcreate_validate" class="error" style="display:none"></span>
+		</td>
+	</tr>
+	<tr>
+		<th>FTP上传</th>
+		<td>
+			<input id="send_ftp" type="checkbox" name="send_ftp" value="yes" disabled="" onclick="test_ftpconf_assess();" style="">
+			<label for="send_ftp">启用</label>
+		</td>
+	</tr>
+	<tr>
+		<th valign="top">发送报表</th>
+		<td>
+			<input id="report_ifsent" type="checkbox" name="report_ifsent" value="yes" onclick="cboxCheck(this,'#report_ifsent_table')" disabled="" style="">
+			<label for="report_ifsent">启用</label><br>
+			
+			<table style="padding: 0px; display: none;" id="report_ifsent_table">
+				
+				<tbody><tr>
+					<th style="padding:0px;padding-top: 4px;">报表类型</th>
+					<td style="padding-top: 8px;">
+						<input type="checkbox" id="report_ifsent_type" name="report_ifsent_type" value="html" checked="" style="display: none;">
+						<label for="report_ifsent_type">
+						<img src="/media/stylesheet/nsfocus_2012/images/icon/html.gif">
+						HTML
+						</label>
+				
+					</td>
+				</tr>
+				<tr>
+					<th style="padding:0px" valign="top">邮箱地址<span class="cmn_must">*</span></th>
+					
+					<td>
+						<div id="report_ifsent_email_validate" class="error_top" style="display:none"></div>
+						
+							<textarea style="width: 144px;" class="textResize" rows="3" id="report_ifsent_email" name="report_ifsent_email" onchange="validateReportEmail()"></textarea>
+						
+						<img class="tipBox" align="absmiddle" style="vertical-align: top; cursor: pointer;" src="/media/stylesheet/nsfocus_2012/images/icon/from_help.gif" title="" tipbox="例：admin@example.com，多个邮箱用空格、回车、逗号或分号分隔，最多输入5个邮箱。 " w_tip="" h_tip="">
+						
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+                        </div>
+                    </td></tr>
+                </tbody></table>
+            </td>
+        </tr>
+        <tr>
+            <td class="tab_cell"></td>
+            <td id="submit_btn" class="tab_cell">
+                <input id="submitButton" class="cmn_btn" type="button" onclick="vulTaskSubmit()" onmouseover="" value="确定" disabled="" style="">
+            </td>
+        </tr>
+    </tbody></table>
+</form>
+
+
+
+		
+		
+		   
+			
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	UI.tipBox();
+	UI.resize('textarea.Resize');
+	UI.selectMulti();
+</script>
+
+</body></html>

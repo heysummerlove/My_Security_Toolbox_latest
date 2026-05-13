@@ -1,0 +1,40 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\runtime\python.exe -u -c "import os, sys; sys.path.insert(0, os.getcwd()); from app.adapters.nsfocus_auto import auto_submit_task; auto_submit_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else '')" 192.168.193.11 报告评估
+
+[*] Preparing web scan submission for target: 192.168.193.11
+[*] Opening scanner: https://192.168.193.10/
+[-] Automation failed: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://192.168.193.10/
+Call log:
+- navigating to "https://192.168.193.10/", waiting until "domcontentloaded"
+[*] Saved screenshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\submit_error_20260509_142915.png
+[*] Saved page snapshot: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\submit_error_20260509_142915.html
+[*] Saved control list: E:\My_Security_Toolbox\My_Security_Toolbox\data\nsfocus_debug\submit_error_controls_20260509_142916.txt
+Traceback (most recent call last):
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 487, in auto_submit_task
+login(page)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 222, in login
+page.goto(NSFOCUS_URL, wait_until="domcontentloaded", timeout=30000)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\sync_api\_generated.py", line 9362, in goto
+self._sync(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+return task.result()
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_page.py", line 552, in goto
+return await self._main_frame.goto(**locals_to_params(locals()))
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_frame.py", line 153, in goto
+await self._channel.send(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_connection.py", line 69, in send
+return await self._connection.wrap_api_call(
+File "E:\My_Security_Toolbox\My_Security_Toolbox\runtime\lib\site-packages\playwright\_impl\_connection.py", line 559, in wrap_api_call
+raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://192.168.193.10/
+Call log:
+- navigating to "https://192.168.193.10/", waiting until "domcontentloaded"
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+File "<string>", line 1, in <module>
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 511, in auto_submit_task
+export_frame_snapshot(page, "submit_error")
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 97, in export_frame_snapshot
+frame = get_main_frame(page)
+File "E:\My_Security_Toolbox\My_Security_Toolbox\app\adapters\nsfocus_auto.py", line 92, in get_main_frame
+raise RuntimeError("mainFrame iframe not found")
+RuntimeError: mainFrame iframe not found

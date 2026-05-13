@@ -1,0 +1,3 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\nmap\nmap.exe -Pn -T4 -F -sV --open 192.168.1.1
+
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-05-09 09:05 +0800
