@@ -5,6 +5,14 @@ from app.ops_manager import append_history_record
 from app.task_manager import create_task, update_task
 
 
+class ApiError(Exception):
+    def __init__(self, message: str, code: int = 400, data=""):
+        super().__init__(message)
+        self.message = message
+        self.code = code
+        self.data = data
+
+
 def json_error(message: str, code: int = 401):
     return {"code": code, "message": message, "data": ""}
 

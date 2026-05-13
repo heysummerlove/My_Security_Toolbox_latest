@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import json
 import os
 import secrets
 import sqlite3
@@ -8,22 +9,27 @@ from typing import Any
 
 from fastapi import Header
 
+from app.api_utils import ApiError
+
 from app.ops_manager import append_history_record
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, "data", "toolbox.db")
 TOKEN_TTL_HOURS = 12
 CAPTCHA_TTL_MINUTES = 5
-DEFAULT_USERNAME = os.getenv("MST_DEFAULT_USERNAME", "admin").strip() or "admin"
+DEFAULT_USERNAME = (os.getenv("MST_DEFAULT_USERNAME", "admin") or "admin").strip() or "admin"
 LOGIN_MAX_FAILURES = max(1, int(os.getenv("MST_LOGIN_MAX_FAILURES", "5")))
 LOGIN_LOCK_MINUTES = max(1, int(os.getenv("MST_LOGIN_LOCK_MINUTES", "15")))
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 PASSWORD_MIN_LENGTH = 12
-PASSWORD_SPECIAL_CHARS = set("!@#$%^&*()_+-=[]{}|;:,.<>?/~`\\'\"")
 
 
 def format_dt(value: datetime) -> str:
     return value.strftime(DATETIME_FORMAT)
+
+
+def now_str() -> str:
+    return format_dt(datetime.now())
 
 
 def parse_dt(value: str | None) -> datetime | None:
@@ -33,10 +39,6 @@ def parse_dt(value: str | None) -> datetime | None:
         return datetime.strptime(value, DATETIME_FORMAT)
     except ValueError:
         return None
-
-
-def now_str() -> str:
-    return format_dt(datetime.now())
 
 
 def get_db_connection():
@@ -70,26 +72,22 @@ def validate_password_strength(password: str) -> None:
         raise ValueError("新密码至少包含一个大写字母。")
     if not any(ch.isdigit() for ch in password):
         raise ValueError("新密码至少包含一个数字。")
-    if not any(ch in PASSWORD_SPECIAL_CHARS or not ch.isalnum() for ch in password):
+    if not any(not ch.isalnum() for ch in password):
         raise ValueError("新密码至少包含一个特殊字符。")
 
 
+def _encode_detail_data(detail_data: dict[str, Any] | None) -> str:
+    return json.dumps(detail_data or {}, ensure_ascii=False)
+
+
 def _ensure_user_security_columns(conn: sqlite3.Connection) -> None:
-    columns = {
-        row["name"] for row in conn.execute("PRAGMA table_info(users)").fetchall()
-    }
+    columns = {row["name"] for row in conn.execute("PRAGMA table_info(users)").fetchall()}
     if "failed_login_attempts" not in columns:
-        conn.execute(
-            "ALTER TABLE users ADD COLUMN failed_login_attempts INTEGER NOT NULL DEFAULT 0"
-        )
+        conn.execute("ALTER TABLE users ADD COLUMN failed_login_attempts INTEGER NOT NULL DEFAULT 0")
     if "locked_until" not in columns:
-        conn.execute(
-            "ALTER TABLE users ADD COLUMN locked_until TEXT NOT NULL DEFAULT ''"
-        )
+        conn.execute("ALTER TABLE users ADD COLUMN locked_until TEXT NOT NULL DEFAULT ''")
     if "password_initialized" not in columns:
-        conn.execute(
-            "ALTER TABLE users ADD COLUMN password_initialized INTEGER NOT NULL DEFAULT 1"
-        )
+        conn.execute("ALTER TABLE users ADD COLUMN password_initialized INTEGER NOT NULL DEFAULT 1")
 
 
 def _ensure_auth_audit_table(conn: sqlite3.Connection) -> None:
@@ -110,13 +108,14 @@ def _ensure_auth_audit_table(conn: sqlite3.Connection) -> None:
 
 
 def _ensure_default_admin_user(conn: sqlite3.Connection) -> None:
-    now = now_str()
     existing_user = conn.execute(
         "SELECT id FROM users WHERE username = ?",
         (DEFAULT_USERNAME,),
     ).fetchone()
     if existing_user:
         return
+
+    timestamp = now_str()
     conn.execute(
         """
         INSERT INTO users (
@@ -132,7 +131,7 @@ def _ensure_default_admin_user(conn: sqlite3.Connection) -> None:
         )
         VALUES (?, '', '', 1, 0, '', 0, ?, ?)
         """,
-        (DEFAULT_USERNAME, now, now),
+        (DEFAULT_USERNAME, timestamp, timestamp),
     )
 
 
@@ -182,35 +181,6 @@ def ensure_auth_tables() -> None:
     conn.close()
 
 
-def _append_ops_audit(
-    *,
-    username: str,
-    user_id: int | None,
-    event_type: str,
-    success: bool,
-    message: str,
-    detail_data: dict[str, Any] | None = None,
-) -> None:
-    status = "COMPLETED" if success else "ERROR"
-    try:
-        append_history_record(
-            task_name=f"认证事件:{event_type}",
-            executor=username or "anonymous",
-            status=status,
-            content=message,
-            operation_type="认证安全",
-            source_module="auth",
-            detail_data={
-                "event_type": event_type,
-                "success": success,
-                "user_id": user_id,
-                **(detail_data or {}),
-            },
-        )
-    except Exception:
-        pass
-
-
 def append_auth_audit_log(
     *,
     username: str,
@@ -240,28 +210,29 @@ def append_auth_audit_log(
     )
     conn.commit()
     conn.close()
-    _append_ops_audit(
-        username=username,
-        user_id=user_id,
-        event_type=event_type,
-        success=success,
-        message=message,
-        detail_data=detail_data,
-    )
 
-
-def _encode_detail_data(detail_data: dict[str, Any] | None) -> str:
-    import json
-
-    return json.dumps(detail_data or {}, ensure_ascii=False)
+    try:
+        append_history_record(
+            task_name=f"认证事件:{event_type}",
+            executor=username or "anonymous",
+            status="COMPLETED" if success else "ERROR",
+            content=message,
+            operation_type="认证安全",
+            source_module="auth",
+            detail_data={
+                "event_type": event_type,
+                "success": success,
+                "user_id": user_id,
+                **(detail_data or {}),
+            },
+        )
+    except Exception:
+        pass
 
 
 def cleanup_expired_tokens() -> None:
     conn = get_db_connection()
-    conn.execute(
-        "DELETE FROM auth_tokens WHERE expire_time <= ?",
-        (now_str(),),
-    )
+    conn.execute("DELETE FROM auth_tokens WHERE expire_time <= ?", (now_str(),))
     conn.commit()
     conn.close()
 
@@ -269,10 +240,7 @@ def cleanup_expired_tokens() -> None:
 def cleanup_expired_captchas() -> None:
     ensure_auth_tables()
     conn = get_db_connection()
-    conn.execute(
-        "DELETE FROM captcha_codes WHERE expire_time <= ?",
-        (now_str(),),
-    )
+    conn.execute("DELETE FROM captcha_codes WHERE expire_time <= ?", (now_str(),))
     conn.commit()
     conn.close()
 
@@ -385,23 +353,11 @@ def issue_token(user_id: int) -> tuple[str, str]:
         INSERT INTO auth_tokens (token, user_id, expire_time, create_time)
         VALUES (?, ?, ?, ?)
         """,
-        (
-            token,
-            user_id,
-            format_dt(expire_time),
-            format_dt(now),
-        ),
+        (token, user_id, format_dt(expire_time), format_dt(now)),
     )
     conn.commit()
     conn.close()
     return token, format_dt(expire_time)
-
-
-def revoke_user_tokens(user_id: int) -> None:
-    conn = get_db_connection()
-    conn.execute("DELETE FROM auth_tokens WHERE user_id = ?", (user_id,))
-    conn.commit()
-    conn.close()
 
 
 def revoke_token(token: str) -> None:
@@ -409,6 +365,13 @@ def revoke_token(token: str) -> None:
         return
     conn = get_db_connection()
     conn.execute("DELETE FROM auth_tokens WHERE token = ?", (token,))
+    conn.commit()
+    conn.close()
+
+
+def revoke_user_tokens(user_id: int) -> None:
+    conn = get_db_connection()
+    conn.execute("DELETE FROM auth_tokens WHERE user_id = ?", (user_id,))
     conn.commit()
     conn.close()
 
@@ -439,17 +402,17 @@ def initialize_admin_password(username: str, new_password: str) -> None:
         raise ValueError("管理员密码已初始化，请直接登录。")
 
     salt, password_hash = hash_password(new_password)
-    now = now_str()
     conn.execute(
         """
         UPDATE users
         SET password_salt = ?, password_hash = ?, password_initialized = 1, update_time = ?
         WHERE id = ?
         """,
-        (salt, password_hash, now, int(user["id"])),
+        (salt, password_hash, now_str(), int(user["id"])),
     )
     conn.commit()
     conn.close()
+
     append_auth_audit_log(
         username=username,
         user_id=int(user["id"]),
@@ -485,18 +448,18 @@ def change_user_password(user_id: int, old_password: str, new_password: str) -> 
         raise ValueError("旧密码错误。")
 
     salt, password_hash = hash_password(new_password)
-    now = now_str()
     conn.execute(
         """
         UPDATE users
         SET password_salt = ?, password_hash = ?, password_initialized = 1, update_time = ?
         WHERE id = ?
         """,
-        (salt, password_hash, now, user_id),
+        (salt, password_hash, now_str(), user_id),
     )
     conn.execute("DELETE FROM auth_tokens WHERE user_id = ?", (user_id,))
     conn.commit()
     conn.close()
+
     append_auth_audit_log(
         username=user["username"],
         user_id=int(user["id"]),
@@ -510,9 +473,7 @@ def issue_captcha() -> tuple[str, str]:
     ensure_auth_tables()
     cleanup_expired_captchas()
     captcha_id = secrets.token_urlsafe(16)
-    captcha_code = "".join(
-        secrets.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(4)
-    )
+    captcha_code = "".join(secrets.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(4))
     now = datetime.now()
     expire_time = now + timedelta(minutes=CAPTCHA_TTL_MINUTES)
     conn = get_db_connection()
@@ -521,12 +482,7 @@ def issue_captcha() -> tuple[str, str]:
         INSERT INTO captcha_codes (captcha_id, captcha_code, expire_time, create_time)
         VALUES (?, ?, ?, ?)
         """,
-        (
-            captcha_id,
-            captcha_code,
-            format_dt(expire_time),
-            format_dt(now),
-        ),
+        (captcha_id, captcha_code, format_dt(expire_time), format_dt(now)),
     )
     conn.commit()
     conn.close()
@@ -623,4 +579,11 @@ def require_current_user(authorization: str | None = Header(default=None)):
     current_user = get_current_user_by_token(token)
     if not current_user:
         return None
+    return current_user
+
+
+def require_authenticated_user(authorization: str | None = Header(default=None)):
+    current_user = require_current_user(authorization)
+    if not current_user:
+        raise ApiError("未登录或登录已过期，请重新登录。", 401)
     return current_user

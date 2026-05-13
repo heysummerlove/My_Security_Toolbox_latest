@@ -1,3 +1,9 @@
 browser_bins/
 runtime/
 .env
+__pycache__/
+*.pyc
+*.pyo
+*.log
+frontend/__tmp_*.js
+.idea/workspace.xml
