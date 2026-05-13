@@ -1099,6 +1099,66 @@
             line-height: 1.7;
         }
 
+        .section-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .section-toolbar p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 0.92rem;
+        }
+
+        .pill-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .info-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #eef7f7;
+            color: #1d5b5b;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .inline-note {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .readonly-input {
+            background: #f7fbff !important;
+            color: #476176;
+        }
+
+        .compliance-record-highlight {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .compliance-record-highlight .ops-stat-card {
+            min-height: 98px;
+        }
+
+        .data-table .compact-cell {
+            white-space: nowrap;
+        }
+
         @media (max-width: 1080px) {
             .home-grid,
             .module-grid,
@@ -1106,7 +1166,8 @@
             .report-field-grid,
             .checkbox-grid,
             .ops-stats,
-            .detail-grid {
+            .detail-grid,
+            .compliance-record-highlight {
                 grid-template-columns: 1fr;
             }
         }
@@ -1761,7 +1822,85 @@
                     <span class="module-tag">审计留痕</span>
                     <span class="module-tag">整改闭环</span>
                 </div>
-                <div class="module-footer">当前页面为模块介绍页；如需执行具体检测工具，请进入“漏洞检测”模块。</div>
+                <div class="module-footer">当前页面同时支持合规性检查信息填写、被测设备维护和检查台账留存。</div>
+
+                <div class="report-form-grid">
+                    <div class="report-form-section full-width">
+                        <div class="section-toolbar">
+                            <div>
+                                <h4>合规性检查信息填写表单</h4>
+                                <p>表单字段按 1.1.1 合规性检查固定字段组织，样品名称、设备型号与“编制安全检测记录表”共享同一份被测设备数据源。</p>
+                            </div>
+                            <div class="tool-action-row">
+                                <button id="compliance-add-device-btn" class="secondary-btn" type="button">新增被测设备</button>
+                                <button id="compliance-save-btn" class="secondary-btn" type="button">保存表单</button>
+                                <button id="compliance-reset-btn" class="secondary-btn" type="button">重置</button>
+                                <button id="compliance-submit-btn" class="primary-btn" type="button">提交表单</button>
+                            </div>
+                        </div>
+                        <div class="pill-list">
+                            <span class="info-pill">🔗 样品名称 / 设备型号双向联动</span>
+                            <span class="info-pill">级联筛选被测设备型号</span>
+                            <span class="info-pill">提交后进入合规性检查台账</span>
+                        </div>
+                        <div class="report-field-grid" style="margin-top: 14px;">
+                            <div class="field"><label for="compliance-record-no">检测编号</label><input id="compliance-record-no" class="readonly-input" type="text" placeholder="自动生成，支持手动调整"></div>
+                            <div class="field"><label for="compliance-standard">合规标准依据</label><select id="compliance-standard"><option value="">请选择标准依据</option><option value="等保 2.0">等保 2.0</option><option value="工控安全规范">工控安全规范</option><option value="舰艇信息系统合规标准">舰艇信息系统合规标准</option><option value="企业制度规范">企业制度规范</option><option value="专项检测要求">专项检测要求</option></select></div>
+                            <div class="field"><label for="compliance-sample-name">样品名称 🔗</label><input id="compliance-sample-name" type="text" list="shared-device-sample-options" placeholder="选择或搜索样品名称"></div>
+                            <div class="field"><label for="compliance-device-model">设备型号 🔗</label><input id="compliance-device-model" type="text" list="shared-device-model-options" placeholder="按样品名称级联筛选设备型号"></div>
+                            <div class="field"><label for="compliance-manufacturer">设备生产厂家</label><input id="compliance-manufacturer" type="text" placeholder="可由设备库自动带出，也可手动调整"></div>
+                            <div class="field"><label for="compliance-device-category">设备类别</label><input id="compliance-device-category" type="text" list="shared-device-category-options" placeholder="例如：工控设备 / 网络设备"></div>
+                            <div class="field span-2"><label for="compliance-check-item">检查项目</label><select id="compliance-check-item"><option value="">请选择检查项目</option><option value="设备及产线基本情况摸排">设备及产线基本情况摸排</option><option value="物理安全检测">物理安全检测</option><option value="设备安全配置核查">设备安全配置核查</option></select></div>
+                            <div class="field"><label for="compliance-result">检查结果</label><select id="compliance-result"><option value="">请选择检查结果</option><option value="符合">符合</option><option value="不符合">不符合</option><option value="待复测">待复测</option></select></div>
+                            <div class="field"><label for="compliance-check-date">检查日期</label><input id="compliance-check-date" type="date"></div>
+                            <div class="field"><label for="compliance-inspector">检查人</label><input id="compliance-inspector" type="text" placeholder="填写检查人员姓名"></div>
+                            <div class="field"><label for="compliance-source-trace">溯源标识</label><input id="compliance-source-trace" class="readonly-input" type="text" placeholder="提交后自动绑定设备信息"></div>
+                            <div class="field span-2"><label for="compliance-issue-desc">问题描述</label><textarea id="compliance-issue-desc" placeholder="填写不符合项、异常现象或核查结论依据"></textarea></div>
+                            <div class="field span-2"><label for="compliance-rectification">整改建议</label><textarea id="compliance-rectification" placeholder="填写整改措施、复测建议或闭环要求"></textarea></div>
+                            <div class="field span-2"><label for="compliance-remark">备注</label><textarea id="compliance-remark" placeholder="填写补充说明、现场限制、资料缺失等信息"></textarea></div>
+                        </div>
+                        <div id="compliance-form-message" class="feedback" hidden></div>
+                    </div>
+
+                    <div class="report-form-section full-width">
+                        <div class="section-toolbar">
+                            <div>
+                                <h4>合规性检查台账</h4>
+                                <p>提交后的表单自动归档至台账列表，可按设备、编号和检查结果追溯查看。</p>
+                            </div>
+                            <div class="tool-action-row">
+                                <button id="compliance-refresh-ledger-btn" class="secondary-btn" type="button">刷新台账</button>
+                            </div>
+                        </div>
+                        <div class="compliance-record-highlight">
+                            <div class="ops-stat-card"><strong id="compliance-ledger-count">0</strong><span>台账总数</span></div>
+                            <div class="ops-stat-card"><strong id="compliance-device-count">0</strong><span>被测设备数</span></div>
+                            <div class="ops-stat-card"><strong id="compliance-pending-count">0</strong><span>待复测条目</span></div>
+                            <div class="ops-stat-card"><strong id="compliance-nonconform-count">0</strong><span>不符合条目</span></div>
+                        </div>
+                        <div class="data-table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>检测编号</th>
+                                        <th>样品名称</th>
+                                        <th>设备型号</th>
+                                        <th>生产厂家</th>
+                                        <th>检查项目</th>
+                                        <th>检查结果</th>
+                                        <th>检查日期</th>
+                                        <th>检查人</th>
+                                        <th>溯源信息</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="compliance-ledger-body">
+                                    <tr><td colspan="10" class="empty-state">暂无合规性检查台账数据。</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card panel" data-panel="execution-history" hidden>
@@ -2928,6 +3067,37 @@
         </div>
     </div>
 
+    <div id="compliance-device-modal" class="modal-mask" hidden>
+        <div class="modal-card" style="width: min(760px, 100%);">
+            <h3>新增被测设备</h3>
+            <p>保存后会写入公共被测设备数据源，并实时刷新合规性检查表单和“编制安全检测记录表”的样品名称、设备型号联动下拉。</p>
+            <div class="report-field-grid">
+                <div class="field"><label for="device-modal-sample-name">样品名称</label><input id="device-modal-sample-name" type="text" placeholder="填写被测设备 / 系统全称"></div>
+                <div class="field"><label for="device-modal-model">设备型号</label><input id="device-modal-model" type="text" placeholder="填写设备型号"></div>
+                <div class="field"><label for="device-modal-manufacturer">生产厂家</label><input id="device-modal-manufacturer" type="text" placeholder="填写设备生产厂家"></div>
+                <div class="field"><label for="device-modal-category">设备类别</label><select id="device-modal-category"><option value="">请选择设备类别</option><option value="工控设备">工控设备</option><option value="网络设备">网络设备</option><option value="安全设备">安全设备</option><option value="舰艇专用设备">舰艇专用设备</option><option value="终端设备">终端设备</option><option value="其他">其他</option></select></div>
+                <div class="field span-2"><label for="device-modal-spec">规格参数</label><textarea id="device-modal-spec" placeholder="填写主要规格、接口、版本、部署特征等信息"></textarea></div>
+                <div class="field span-2"><label for="device-modal-remark">备注</label><textarea id="device-modal-remark" placeholder="填写补充说明、数据来源或特殊限制"></textarea></div>
+            </div>
+            <div id="device-modal-message" class="feedback" hidden></div>
+            <div class="inline-actions" style="margin-top: 16px;">
+                <button id="device-modal-submit-btn" class="primary-btn" type="button">保存设备</button>
+                <button id="device-modal-cancel-btn" class="secondary-btn" type="button">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <datalist id="shared-device-sample-options"></datalist>
+    <datalist id="shared-device-model-options"></datalist>
+    <datalist id="shared-device-category-options">
+        <option value="工控设备"></option>
+        <option value="网络设备"></option>
+        <option value="安全设备"></option>
+        <option value="舰艇专用设备"></option>
+        <option value="终端设备"></option>
+        <option value="其他"></option>
+    </datalist>
+
     <script>
         (() => {
             const API_BASE_URL = window.location.protocol === "file:"
@@ -3006,6 +3176,9 @@
                 "report-issue-statistics": "issue_statistics"
             };
             const REPORT_COMPILE_DRAFT_KEY = "mst_report_compile_drafts_v1";
+            const SHARED_DEVICE_LIBRARY_KEY = "mst_shared_device_library_v1";
+            const COMPLIANCE_FORM_DRAFT_KEY = "mst_compliance_form_draft_v1";
+            const COMPLIANCE_LEDGER_KEY = "mst_compliance_ledger_v1";
             const ITEM_CONFIRMATION_REASON_OPTIONS = [
                 { value: "业务不涉及", label: "业务不涉及" },
                 { value: "无环境", label: "无环境" },
@@ -3193,6 +3366,8 @@
                     expireTime: localStorage.getItem(EXPIRE_KEY) || ""
                 },
                 pollers: {},
+                sharedDevices: [],
+                complianceLedger: [],
                 panels: {
                     basic: createPanelState(),
                     nmap: createPanelState(),
@@ -3398,7 +3573,589 @@
                 localStorage.setItem(REPORT_COMPILE_DRAFT_KEY, JSON.stringify(drafts));
             }
 
+            function readJsonStorage(key, fallback) {
+                try {
+                    return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+                } catch (error) {
+                    return fallback;
+                }
+            }
+
+            function writeJsonStorage(key, value) {
+                localStorage.setItem(key, JSON.stringify(value));
+            }
+
+            function normalizeText(value) {
+                return String(value || "").trim();
+            }
+
+            function slugifyText(value) {
+                return normalizeText(value).toLowerCase();
+            }
+
+            function ensureSharedDevicesLoaded() {
+                if (!Array.isArray(state.sharedDevices) || !state.sharedDevices.length) {
+                    state.sharedDevices = readJsonStorage(SHARED_DEVICE_LIBRARY_KEY, []);
+                }
+                state.sharedDevices = dedupeSharedDevices(state.sharedDevices);
+                writeJsonStorage(SHARED_DEVICE_LIBRARY_KEY, state.sharedDevices);
+            }
+
+            function ensureComplianceLedgerLoaded() {
+                if (!Array.isArray(state.complianceLedger) || !state.complianceLedger.length) {
+                    state.complianceLedger = readJsonStorage(COMPLIANCE_LEDGER_KEY, []);
+                }
+            }
+
+            function dedupeSharedDevices(devices) {
+                const seen = new Map();
+                (devices || []).forEach((item) => {
+                    const sampleName = normalizeText(item.sample_name);
+                    const model = normalizeText(item.device_model);
+                    if (!sampleName || !model) return;
+                    const key = `${slugifyText(sampleName)}::${slugifyText(model)}`;
+                    const existing = seen.get(key) || {};
+                    seen.set(key, {
+                        id: item.id || existing.id || `device-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                        sample_name: sampleName,
+                        device_model: model,
+                        manufacturer: normalizeText(item.manufacturer) || existing.manufacturer || "",
+                        device_category: normalizeText(item.device_category) || existing.device_category || "",
+                        spec: normalizeText(item.spec) || existing.spec || "",
+                        remark: normalizeText(item.remark) || existing.remark || "",
+                        created_at: item.created_at || existing.created_at || new Date().toISOString()
+                    });
+                });
+                return Array.from(seen.values()).sort((a, b) => a.sample_name.localeCompare(b.sample_name, "zh-CN") || a.device_model.localeCompare(b.device_model, "zh-CN"));
+            }
+
+            function saveSharedDevices() {
+                state.sharedDevices = dedupeSharedDevices(state.sharedDevices);
+                writeJsonStorage(SHARED_DEVICE_LIBRARY_KEY, state.sharedDevices);
+            }
+
+            function saveComplianceLedger() {
+                writeJsonStorage(COMPLIANCE_LEDGER_KEY, state.complianceLedger);
+            }
+
+            function getSharedDeviceBySampleAndModel(sampleName, model) {
+                const normalizedSample = slugifyText(sampleName);
+                const normalizedModel = slugifyText(model);
+                return state.sharedDevices.find((item) => slugifyText(item.sample_name) === normalizedSample && slugifyText(item.device_model) === normalizedModel) || null;
+            }
+
+            function getSharedDeviceModels(sampleName) {
+                const normalizedSample = slugifyText(sampleName);
+                return state.sharedDevices
+                    .filter((item) => !normalizedSample || slugifyText(item.sample_name) === normalizedSample)
+                    .map((item) => item.device_model)
+                    .filter((value, index, array) => array.indexOf(value) === index)
+                    .sort((a, b) => a.localeCompare(b, "zh-CN"));
+            }
+
+            function renderSharedDeviceDatalists(sampleNameOverride = "") {
+                ensureSharedDevicesLoaded();
+                const sampleList = document.getElementById("shared-device-sample-options");
+                const modelList = document.getElementById("shared-device-model-options");
+                if (sampleList) {
+                    const sampleNames = state.sharedDevices
+                        .map((item) => item.sample_name)
+                        .filter((value, index, array) => array.indexOf(value) === index)
+                        .sort((a, b) => a.localeCompare(b, "zh-CN"));
+                    sampleList.innerHTML = sampleNames.map((name) => `<option value="${escapeHtml(name)}"></option>`).join("");
+                }
+                if (modelList) {
+                    const sampleName = normalizeText(sampleNameOverride || document.getElementById("compliance-sample-name")?.value);
+                    const models = getSharedDeviceModels(sampleName);
+                    modelList.innerHTML = models.map((model) => `<option value="${escapeHtml(model)}"></option>`).join("");
+                }
+            }
+
+            function getReportCompileFieldElements(field) {
+                return Array.from(document.querySelectorAll(`#app-shell [id="report-compile-${field}"]`));
+            }
+
+            function getCurrentTemplatePanels() {
+                const currentTemplate = getCurrentReportTemplateType();
+                return Array.from(document.querySelectorAll(`[data-report-template="${currentTemplate}"]`));
+            }
+
+            function getVisibleReportFieldElement(field) {
+                const exactId = `report-compile-${field}`;
+                const templatePanels = getCurrentTemplatePanels();
+                for (const panel of templatePanels) {
+                    const matched = panel.querySelector(`[id="${exactId}"]`);
+                    if (matched) return matched;
+                }
+                return document.getElementById(exactId);
+            }
+
+            function setAllReportFieldValues(field, value) {
+                const elements = getReportCompileFieldElements(field);
+                if (!elements.length) return false;
+                elements.forEach((el) => {
+                    el.value = value ?? "";
+                });
+                return true;
+            }
+
+            function saveComplianceDraft() {
+                const payload = collectComplianceFormPayload();
+                writeJsonStorage(COMPLIANCE_FORM_DRAFT_KEY, payload);
+            }
+
+            function restoreComplianceDraft() {
+                const payload = readJsonStorage(COMPLIANCE_FORM_DRAFT_KEY, {});
+                if (!payload || typeof payload !== "object") return;
+                Object.entries(payload).forEach(([key, value]) => {
+                    const el = document.getElementById(key);
+                    if (el && typeof value !== "object") {
+                        el.value = value ?? "";
+                    }
+                });
+                syncComplianceDeviceDetails();
+            }
+
+            function clearComplianceDraft() {
+                localStorage.removeItem(COMPLIANCE_FORM_DRAFT_KEY);
+            }
+
+            function getNextComplianceRecordNo() {
+                ensureComplianceLedgerLoaded();
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+                const day = String(currentDate.getDate()).padStart(2, "0");
+                const prefix = `HC-${year}${month}${day}`;
+                const todayCount = state.complianceLedger.filter((item) => String(item.record_no || "").startsWith(prefix)).length + 1;
+                return `${prefix}-${String(todayCount).padStart(3, "0")}`;
+            }
+
+            function ensureComplianceRecordNo() {
+                const input = document.getElementById("compliance-record-no");
+                if (input && !normalizeText(input.value)) {
+                    input.value = getNextComplianceRecordNo();
+                }
+            }
+
+            function fillComplianceTrace(sampleName, model) {
+                const traceInput = document.getElementById("compliance-source-trace");
+                if (!traceInput) return;
+                const device = getSharedDeviceBySampleAndModel(sampleName, model);
+                if (device) {
+                    traceInput.value = `${device.sample_name} / ${device.device_model}${device.manufacturer ? ` / ${device.manufacturer}` : ""}`;
+                    return;
+                }
+                traceInput.value = sampleName || model ? `${normalizeText(sampleName)} / ${normalizeText(model)}`.replace(/^ \/ | \/ $/g, "") : "";
+            }
+
+            function syncComplianceDeviceDetails() {
+                const sampleName = normalizeText(document.getElementById("compliance-sample-name")?.value);
+                renderSharedDeviceDatalists(sampleName);
+                const model = normalizeText(document.getElementById("compliance-device-model")?.value);
+                const manufacturerInput = document.getElementById("compliance-manufacturer");
+                const categoryInput = document.getElementById("compliance-device-category");
+                const device = getSharedDeviceBySampleAndModel(sampleName, model);
+                if (device) {
+                    if (manufacturerInput && !normalizeText(manufacturerInput.value)) manufacturerInput.value = device.manufacturer || "";
+                    if (categoryInput && !normalizeText(categoryInput.value)) categoryInput.value = device.device_category || "";
+                }
+                fillComplianceTrace(sampleName, model);
+            }
+
+            function collectComplianceFormPayload() {
+                return {
+                    "compliance-record-no": normalizeText(document.getElementById("compliance-record-no")?.value),
+                    "compliance-standard": normalizeText(document.getElementById("compliance-standard")?.value),
+                    "compliance-sample-name": normalizeText(document.getElementById("compliance-sample-name")?.value),
+                    "compliance-device-model": normalizeText(document.getElementById("compliance-device-model")?.value),
+                    "compliance-manufacturer": normalizeText(document.getElementById("compliance-manufacturer")?.value),
+                    "compliance-device-category": normalizeText(document.getElementById("compliance-device-category")?.value),
+                    "compliance-check-item": normalizeText(document.getElementById("compliance-check-item")?.value),
+                    "compliance-result": normalizeText(document.getElementById("compliance-result")?.value),
+                    "compliance-check-date": normalizeText(document.getElementById("compliance-check-date")?.value),
+                    "compliance-inspector": normalizeText(document.getElementById("compliance-inspector")?.value),
+                    "compliance-source-trace": normalizeText(document.getElementById("compliance-source-trace")?.value),
+                    "compliance-issue-desc": normalizeText(document.getElementById("compliance-issue-desc")?.value),
+                    "compliance-rectification": normalizeText(document.getElementById("compliance-rectification")?.value),
+                    "compliance-remark": normalizeText(document.getElementById("compliance-remark")?.value)
+                };
+            }
+
+            function validateComplianceForm(payload) {
+                if (!payload["compliance-record-no"]) return "请填写检测编号。";
+                if (!payload["compliance-sample-name"]) return "请选择样品名称。";
+                if (!payload["compliance-device-model"]) return "请选择设备型号。";
+                if (!payload["compliance-check-item"]) return "请选择检查项目。";
+                if (!payload["compliance-result"]) return "请选择检查结果。";
+                if (!payload["compliance-check-date"]) return "请填写检查日期。";
+                if (!payload["compliance-inspector"]) return "请填写检查人。";
+                return "";
+            }
+
+            function renderComplianceLedger() {
+                ensureComplianceLedgerLoaded();
+                const tbody = document.getElementById("compliance-ledger-body");
+                const totalEl = document.getElementById("compliance-ledger-count");
+                const deviceEl = document.getElementById("compliance-device-count");
+                const pendingEl = document.getElementById("compliance-pending-count");
+                const nonconformEl = document.getElementById("compliance-nonconform-count");
+                if (totalEl) totalEl.textContent = String(state.complianceLedger.length);
+                if (deviceEl) {
+                    const devices = new Set(state.complianceLedger.map((item) => `${item.sample_name}::${item.device_model}`));
+                    deviceEl.textContent = String(devices.size);
+                }
+                if (pendingEl) pendingEl.textContent = String(state.complianceLedger.filter((item) => item.result === "待复测").length);
+                if (nonconformEl) nonconformEl.textContent = String(state.complianceLedger.filter((item) => item.result === "不符合").length);
+                if (!tbody) return;
+                if (!state.complianceLedger.length) {
+                    tbody.innerHTML = '<tr><td colspan="10" class="empty-state">暂无合规性检查台账数据。</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = state.complianceLedger
+                    .slice()
+                    .sort((a, b) => String(b.check_date || "").localeCompare(String(a.check_date || "")) || String(b.created_at || "").localeCompare(String(a.created_at || "")))
+                    .map((item) => `
+                        <tr>
+                            <td class="compact-cell">${escapeHtml(item.record_no)}</td>
+                            <td>${escapeHtml(item.sample_name)}</td>
+                            <td>${escapeHtml(item.device_model)}</td>
+                            <td>${escapeHtml(item.manufacturer || "-")}</td>
+                            <td>${escapeHtml(item.check_item)}</td>
+                            <td>${renderStatusTag(item.result)}</td>
+                            <td class="compact-cell">${escapeHtml(item.check_date || "-")}</td>
+                            <td>${escapeHtml(item.inspector || "-")}</td>
+                            <td>${escapeHtml(item.source_trace || "-")}</td>
+                            <td>${escapeHtml(item.remark || "-")}</td>
+                        </tr>
+                    `).join("");
+            }
+
+            function openComplianceDeviceModal() {
+                const modal = document.getElementById("compliance-device-modal");
+                if (!modal) return;
+                [
+                    "device-modal-sample-name",
+                    "device-modal-model",
+                    "device-modal-manufacturer",
+                    "device-modal-category",
+                    "device-modal-spec",
+                    "device-modal-remark"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+                setFeedbackMessage("device-modal-message", "", "");
+                modal.hidden = false;
+            }
+
+            function closeComplianceDeviceModal() {
+                const modal = document.getElementById("compliance-device-modal");
+                if (modal) modal.hidden = true;
+            }
+
+            function saveComplianceDeviceFromModal() {
+                const sampleName = normalizeText(document.getElementById("device-modal-sample-name")?.value);
+                const deviceModel = normalizeText(document.getElementById("device-modal-model")?.value);
+                const manufacturer = normalizeText(document.getElementById("device-modal-manufacturer")?.value);
+                const category = normalizeText(document.getElementById("device-modal-category")?.value);
+                const spec = normalizeText(document.getElementById("device-modal-spec")?.value);
+                const remark = normalizeText(document.getElementById("device-modal-remark")?.value);
+                if (!sampleName) {
+                    setFeedbackMessage("device-modal-message", "请填写样品名称。", "error");
+                    return;
+                }
+                if (!deviceModel) {
+                    setFeedbackMessage("device-modal-message", "请填写设备型号。", "error");
+                    return;
+                }
+                upsertSharedDevice({
+                    sample_name: sampleName,
+                    device_model: deviceModel,
+                    manufacturer,
+                    device_category: category,
+                    spec,
+                    remark
+                });
+                const complianceSample = document.getElementById("compliance-sample-name");
+                const complianceModel = document.getElementById("compliance-device-model");
+                const complianceManufacturer = document.getElementById("compliance-manufacturer");
+                const complianceCategory = document.getElementById("compliance-device-category");
+                if (complianceSample && !normalizeText(complianceSample.value)) complianceSample.value = sampleName;
+                if (complianceModel && !normalizeText(complianceModel.value)) complianceModel.value = deviceModel;
+                if (complianceManufacturer && !normalizeText(complianceManufacturer.value)) complianceManufacturer.value = manufacturer;
+                if (complianceCategory && !normalizeText(complianceCategory.value)) complianceCategory.value = category;
+                const sampleFieldSet = setAllReportFieldValues("sample-name", sampleName);
+                const modelFieldSet = setAllReportFieldValues("sample-model", deviceModel);
+                if (sampleFieldSet || modelFieldSet) {
+                    const reportManufacturer = getVisibleReportFieldElement("manufacturer");
+                    if (reportManufacturer && !normalizeText(reportManufacturer.value)) {
+                        reportManufacturer.value = manufacturer;
+                    }
+                }
+                syncAllSharedDeviceConsumers();
+                saveComplianceDraft();
+                setFeedbackMessage("device-modal-message", "被测设备已加入公共设备数据源。", "success");
+                window.setTimeout(() => closeComplianceDeviceModal(), 300);
+            }
+
+            function saveComplianceFormAsDraft() {
+                const payload = collectComplianceFormPayload();
+                if (!payload["compliance-record-no"]) {
+                    ensureComplianceRecordNo();
+                }
+                saveComplianceDraft();
+                setFeedbackMessage("compliance-form-message", "合规性检查表单已暂存。", "success");
+            }
+
+            function submitComplianceForm() {
+                ensureComplianceRecordNo();
+                const payload = collectComplianceFormPayload();
+                const validationMessage = validateComplianceForm(payload);
+                if (validationMessage) {
+                    setFeedbackMessage("compliance-form-message", validationMessage, "error");
+                    return;
+                }
+
+                upsertSharedDevice({
+                    sample_name: payload["compliance-sample-name"],
+                    device_model: payload["compliance-device-model"],
+                    manufacturer: payload["compliance-manufacturer"],
+                    device_category: payload["compliance-device-category"],
+                    spec: "",
+                    remark: payload["compliance-remark"]
+                });
+
+                ensureComplianceLedgerLoaded();
+                state.complianceLedger.push({
+                    id: `compliance-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                    record_no: payload["compliance-record-no"],
+                    standard: payload["compliance-standard"],
+                    sample_name: payload["compliance-sample-name"],
+                    device_model: payload["compliance-device-model"],
+                    manufacturer: payload["compliance-manufacturer"],
+                    device_category: payload["compliance-device-category"],
+                    check_item: payload["compliance-check-item"],
+                    result: payload["compliance-result"],
+                    issue_desc: payload["compliance-issue-desc"],
+                    rectification: payload["compliance-rectification"],
+                    check_date: payload["compliance-check-date"],
+                    inspector: payload["compliance-inspector"],
+                    remark: payload["compliance-remark"],
+                    source_trace: payload["compliance-source-trace"],
+                    created_at: new Date().toISOString()
+                });
+                saveComplianceLedger();
+                renderComplianceLedger();
+                clearComplianceDraft();
+                resetComplianceForm(true);
+                syncAllSharedDeviceConsumers();
+                setFeedbackMessage("compliance-form-message", "合规性检查表单已提交并归档到台账。", "success");
+            }
+
+            function bindComplianceEvents() {
+                const modal = document.getElementById("compliance-device-modal");
+                const complianceSampleInput = document.getElementById("compliance-sample-name");
+                const complianceModelInput = document.getElementById("compliance-device-model");
+
+                document.getElementById("compliance-add-device-btn")?.addEventListener("click", openComplianceDeviceModal);
+                document.getElementById("compliance-save-btn")?.addEventListener("click", saveComplianceFormAsDraft);
+                document.getElementById("compliance-reset-btn")?.addEventListener("click", () => {
+                    resetComplianceForm(true);
+                    clearComplianceDraft();
+                    setFeedbackMessage("compliance-form-message", "合规性检查表单已重置。", "success");
+                });
+                document.getElementById("compliance-submit-btn")?.addEventListener("click", submitComplianceForm);
+                document.getElementById("compliance-refresh-ledger-btn")?.addEventListener("click", renderComplianceLedger);
+                document.getElementById("device-modal-submit-btn")?.addEventListener("click", saveComplianceDeviceFromModal);
+                document.getElementById("device-modal-cancel-btn")?.addEventListener("click", closeComplianceDeviceModal);
+
+                if (modal) {
+                    modal.addEventListener("click", (event) => {
+                        if (event.target === modal) {
+                            closeComplianceDeviceModal();
+                        }
+                    });
+                }
+
+                [
+                    "compliance-record-no",
+                    "compliance-standard",
+                    "compliance-sample-name",
+                    "compliance-device-model",
+                    "compliance-manufacturer",
+                    "compliance-device-category",
+                    "compliance-check-item",
+                    "compliance-result",
+                    "compliance-check-date",
+                    "compliance-inspector",
+                    "compliance-issue-desc",
+                    "compliance-rectification",
+                    "compliance-remark"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const eventName = el.tagName === "SELECT" ? "change" : "input";
+                    el.addEventListener(eventName, () => {
+                        if (id === "compliance-sample-name") {
+                            const currentModel = document.getElementById("compliance-device-model");
+                            const availableModels = getSharedDeviceModels(el.value);
+                            if (currentModel && normalizeText(currentModel.value) && !availableModels.includes(normalizeText(currentModel.value))) {
+                                currentModel.value = "";
+                            }
+                        }
+                        if (id === "compliance-sample-name" || id === "compliance-device-model") {
+                            syncComplianceDeviceDetails();
+                        }
+                        saveComplianceDraft();
+                    });
+                    if (eventName !== "change") {
+                        el.addEventListener("change", () => {
+                            if (id === "compliance-sample-name" || id === "compliance-device-model") {
+                                syncComplianceDeviceDetails();
+                            }
+                            saveComplianceDraft();
+                        });
+                    }
+                });
+
+                if (complianceSampleInput) {
+                    complianceSampleInput.addEventListener("change", syncComplianceDeviceDetails);
+                }
+                if (complianceModelInput) {
+                    complianceModelInput.addEventListener("change", syncComplianceDeviceDetails);
+                }
+            }
+
+            function bindSharedDeviceEvents() {
+                const sampleElements = getReportCompileFieldElements("sample-name");
+                const modelElements = getReportCompileFieldElements("sample-model");
+
+                sampleElements.forEach((el) => {
+                    el.setAttribute("list", "shared-device-sample-options");
+                    el.addEventListener("input", () => {
+                        renderSharedDeviceDatalists(el.value);
+                        const models = getSharedDeviceModels(el.value);
+                        modelElements.forEach((modelEl) => {
+                            if (normalizeText(modelEl.value) && !models.includes(normalizeText(modelEl.value))) {
+                                modelEl.value = "";
+                            }
+                        });
+                    });
+                    el.addEventListener("change", () => {
+                        upsertSharedDeviceFromCurrentReportCompile();
+                        syncReportCompileSharedDeviceFieldsFromLibrary();
+                    });
+                });
+
+                modelElements.forEach((el) => {
+                    el.setAttribute("list", "shared-device-model-options");
+                    el.addEventListener("change", () => {
+                        upsertSharedDeviceFromCurrentReportCompile();
+                        syncReportCompileSharedDeviceFieldsFromLibrary();
+                    });
+                });
+            }
+
+            function resetComplianceForm(regenerateRecordNo = true) {
+                [
+                    "compliance-record-no",
+                    "compliance-standard",
+                    "compliance-sample-name",
+                    "compliance-device-model",
+                    "compliance-manufacturer",
+                    "compliance-device-category",
+                    "compliance-check-item",
+                    "compliance-result",
+                    "compliance-check-date",
+                    "compliance-inspector",
+                    "compliance-source-trace",
+                    "compliance-issue-desc",
+                    "compliance-rectification",
+                    "compliance-remark"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+                if (regenerateRecordNo) ensureComplianceRecordNo();
+            }
+
+            function setFeedbackMessage(elementId, message, cssClass) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                el.hidden = !message;
+                el.className = `feedback${cssClass ? ` ${cssClass}` : ""}`;
+                el.textContent = message || "";
+            }
+
+            function upsertSharedDevice(device) {
+                ensureSharedDevicesLoaded();
+                const normalizedSample = slugifyText(device.sample_name);
+                const normalizedModel = slugifyText(device.device_model);
+                const index = state.sharedDevices.findIndex((item) => slugifyText(item.sample_name) === normalizedSample && slugifyText(item.device_model) === normalizedModel);
+                const nextItem = {
+                    id: device.id || `device-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                    sample_name: normalizeText(device.sample_name),
+                    device_model: normalizeText(device.device_model),
+                    manufacturer: normalizeText(device.manufacturer),
+                    device_category: normalizeText(device.device_category),
+                    spec: normalizeText(device.spec),
+                    remark: normalizeText(device.remark),
+                    created_at: device.created_at || new Date().toISOString()
+                };
+                if (index >= 0) {
+                    state.sharedDevices[index] = {
+                        ...state.sharedDevices[index],
+                        ...nextItem
+                    };
+                } else {
+                    state.sharedDevices.push(nextItem);
+                }
+                saveSharedDevices();
+                syncAllSharedDeviceConsumers();
+            }
+
+            function upsertSharedDeviceFromCurrentReportCompile() {
+                const sampleElement = getVisibleReportFieldElement("sample-name");
+                const modelElement = getVisibleReportFieldElement("sample-model");
+                const manufacturerElement = getVisibleReportFieldElement("manufacturer");
+                const sampleName = normalizeText(sampleElement?.value);
+                const deviceModel = normalizeText(modelElement?.value);
+                if (!sampleName || !deviceModel) return;
+                upsertSharedDevice({
+                    sample_name: sampleName,
+                    device_model: deviceModel,
+                    manufacturer: normalizeText(manufacturerElement?.value),
+                    device_category: "",
+                    spec: "",
+                    remark: ""
+                });
+            }
+
+            function syncReportCompileSharedDeviceFieldsFromLibrary() {
+                const sampleElement = getVisibleReportFieldElement("sample-name");
+                const modelElement = getVisibleReportFieldElement("sample-model");
+                const manufacturerElement = getVisibleReportFieldElement("manufacturer");
+                if (!sampleElement || !modelElement) return;
+                renderSharedDeviceDatalists(sampleElement.value);
+                sampleElement.setAttribute("list", "shared-device-sample-options");
+                modelElement.setAttribute("list", "shared-device-model-options");
+                const sampleName = normalizeText(sampleElement.value);
+                const model = normalizeText(modelElement.value);
+                const matchedDevice = getSharedDeviceBySampleAndModel(sampleName, model);
+                if (matchedDevice && manufacturerElement && !normalizeText(manufacturerElement.value)) {
+                    manufacturerElement.value = matchedDevice.manufacturer || "";
+                }
+            }
+
+            function syncAllSharedDeviceConsumers() {
+                renderSharedDeviceDatalists();
+                syncComplianceDeviceDetails();
+                syncReportCompileSharedDeviceFieldsFromLibrary();
+            }
+
             function setFieldValue(field, value) {
+                if (setAllReportFieldValues(field, value)) return;
                 const el = document.getElementById(`report-compile-${field}`);
                 if (!el) return;
                 el.value = value ?? "";
@@ -3725,7 +4482,7 @@
 
             function collectReportCompilePayload() {
                 const getValue = (field) => {
-                    const el = document.getElementById(`report-compile-${field}`);
+                    const el = getVisibleReportFieldElement(field) || document.getElementById(`report-compile-${field}`);
                     return el ? el.value.trim() : "";
                 };
 
@@ -4185,6 +4942,15 @@
                     restoreReportCompileDraft(tabKey);
                     renderReportCompileMeta();
                     renderReportCompileStep();
+                    syncReportCompileSharedDeviceFieldsFromLibrary();
+                }
+                if (tabKey === "compliance") {
+                    ensureSharedDevicesLoaded();
+                    ensureComplianceLedgerLoaded();
+                    ensureComplianceRecordNo();
+                    restoreComplianceDraft();
+                    renderComplianceLedger();
+                    syncAllSharedDeviceConsumers();
                 }
                 document.querySelectorAll(".menu-item").forEach((item) => {
                     item.classList.toggle("active", item.dataset.tab === tabKey);
@@ -5034,6 +5800,16 @@
                 const payload = collectReportCompilePayload();
                 const panelKey = "report-device-survey";
                 const currentName = getReportCompileDisplayName(state.currentReportCompileTab);
+                if (normalizeText(payload.sample_name) && normalizeText(payload.sample_model)) {
+                    upsertSharedDevice({
+                        sample_name: payload.sample_name,
+                        device_model: payload.sample_model,
+                        manufacturer: payload.manufacturer || "",
+                        device_category: "",
+                        spec: "",
+                        remark: ""
+                    });
+                }
                 if (payload.template_type === "data_retention") {
                     const validationMessage = validateDataRetentionPayload(payload);
                     if (validationMessage) {
@@ -5338,6 +6114,15 @@
             bindUploadFieldSync();
             bindDataRetentionEvents();
             bindItemConfirmationEvents();
+            ensureSharedDevicesLoaded();
+            ensureComplianceLedgerLoaded();
+            ensureComplianceRecordNo();
+            renderSharedDeviceDatalists();
+            renderComplianceLedger();
+            bindComplianceEvents();
+            bindSharedDeviceEvents();
+            restoreComplianceDraft();
+            syncAllSharedDeviceConsumers();
             resetManagedTaskForm();
             renderReportCompileStep();
             switchTab("home");
