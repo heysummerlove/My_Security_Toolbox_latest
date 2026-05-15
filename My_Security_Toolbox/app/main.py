@@ -9,12 +9,14 @@ from app.basic_test_record_manager import ensure_basic_test_record_table
 from app.auth import cleanup_expired_captchas, cleanup_expired_tokens, ensure_auth_tables
 from app.device_basic_info_manager import ensure_device_basic_info_table
 from app.issue_statistics_manager import ensure_issue_statistics_table
+from app.module_data_manager import ensure_module_data_tables
 from app.ops_manager import ensure_ops_tables
 from app.task_manager import ensure_task_tables, terminate_running_handles
 from app.routers.auth import router as auth_router
 from app.routers.basic_test_record import router as basic_test_record_router
 from app.routers.device_basic_info import router as device_basic_info_router
 from app.routers.issue_statistics import router as issue_statistics_router
+from app.routers.module_data import router as module_data_router
 from app.routers.ops import router as ops_router
 from app.routers.reports import router as reports_router
 from app.routers.tasks import router as tasks_router
@@ -47,6 +49,7 @@ app.include_router(ops_router)
 app.include_router(device_basic_info_router)
 app.include_router(basic_test_record_router)
 app.include_router(issue_statistics_router)
+app.include_router(module_data_router)
 app.mount("/assets", StaticFiles(directory=FRONTEND_ASSETS_PATH), name="assets")
 
 
@@ -58,6 +61,7 @@ def startup_event():
     ensure_device_basic_info_table()
     ensure_basic_test_record_table()
     ensure_issue_statistics_table()
+    ensure_module_data_tables()
     cleanup_expired_tokens()
     cleanup_expired_captchas()
 

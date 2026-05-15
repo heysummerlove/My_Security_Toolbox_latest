@@ -1,0 +1,54 @@
+Command: E:\My_Security_Toolbox\My_Security_Toolbox\tools\nmap\nmap.exe -Pn -T4 -F -sV --open 127.0.0.1
+
+漏洞检测报告（Nmap）
+========================================================================
+扫描目标: 127.0.0.1
+执行命令: E:\My_Security_Toolbox\My_Security_Toolbox\tools\nmap\nmap.exe -Pn -T4 -F -sV --open 127.0.0.1
+执行结果: 成功
+主机信息: Nmap scan report for localhost (127.0.0.1)
+连通状态: Host is up (0.0000060s latency).
+开放端口数量: 4
+
+开放端口摘要:
+1. 135/tcp -> msrpc | Microsoft Windows RPC
+2. 445/tcp -> microsoft-ds?
+3. 8080/tcp -> http | Uvicorn
+4. 10000/tcp -> snet-sensor-mgmt?
+
+原始输出:
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-05-14 16:25 +0800
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0000060s latency).
+Not shown: 96 closed tcp ports (reset)
+PORT      STATE SERVICE           VERSION
+135/tcp   open  msrpc             Microsoft Windows RPC
+445/tcp   open  microsoft-ds?
+8080/tcp  open  http              Uvicorn
+10000/tcp open  snet-sensor-mgmt?
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port10000-TCP:V=7.99%I=7%D=5/14%Time=6A05871B%P=i686-pc-windows-windows
+SF:%r(GetRequest,10,"\x10\0\0\x000\x20HT\x04\0\0\0\0\0\0\0")%r(HTTPOptions
+SF:,10,"\x10\0\0\0PNS\x20\x04\0\0\0\0\0\0\0")%r(RTSPRequest,10,"\x10\0\0\0
+SF:PNS\x20\x04\0\0\0\0\0\0\0")%r(GenericLines,10,"\x10\0\0\0\x01\0\0\0\x04
+SF:\0\0\0\0\0\0\0")%r(DNSVersionBindReqTCP,10,"\x10\0\0\0\x02\0\0\x01\x04\
+SF:0\0\0\0\0\0\0")%r(DNSStatusRequestTCP,10,"\x10\0\0\0\x11\0\0\0\x04\0\0\
+SF:0\0\0\0\0")%r(Help,10,"\x10\0\0\0\x0e\n\0\0\x04\0\0\0\0\0\0\0")%r(SSLSe
+SF:ssionReq,10,"\x10\0\0\0T\x01\0\0\x04\0\0\0\0\0\0\0")%r(TerminalServerCo
+SF:okie,10,"\x10\0\0\0&\xe0\0\0\x04\0\0\0\0\0\0\0")%r(TLSSessionReq,10,"\x
+SF:10\0\0\0j\x01\0\0\x04\0\0\0\0\0\0\0")%r(Kerberos,10,"\x10\0\0\0k\x81n0\
+SF:x04\0\0\0\0\0\0\0")%r(SMBProgNeg,10,"\x10\0\0\0\0TMB\x04\0\0\0\0\0\0\0"
+SF:)%r(X11Probe,10,"\x10\0\0\0\x01\0\0\0\x04\0\0\0\0\0\0\0")%r(FourOhFourR
+SF:equest,10,"\x10\0\0\x000nic\x04\0\0\0\0\0\0\0")%r(LDAPBindReq,10,"\x10\
+SF:0\0\0\x02`\x07\x02\x04\0\0\0\0\0\0\0")%r(SIPOptions,10,"\x10\0\0\0PNS\x
+SF:20\x04\0\0\0\0\0\0\0")%r(LANDesk-RC,10,"\x10\0\0\0\x05\0\0\0\x04\0\0\0\
+SF:0\0\0\0")%r(TerminalServer,10,"\x10\0\0\0\x07\xe0\0\0\x04\0\0\0\0\0\0\0
+SF:")%r(NCP,10,"\x10\0\0\0\x01\0\0\x17\x04\0\0\0\0\0\0\0")%r(NotesRPC,10,"
+SF:\x10\0\0\x000\0\0\0\x04\0\0\0\0\0\0\0")%r(JavaRMI,10,"\x10\0\0\0\x01\x0
+SF:2K\0\x04\0\0\0\0\0\0\0")%r(WMSRequest,10,"\x10\0\0\0\xcf\xfa\x0b\xb0\x0
+SF:4\0\0\0\0\0\0\0")%r(oracle-tns,10,"\x10\0\0\0\x02\0\0\0\x04\0\0\0\0\0\0
+SF:\0")%r(ms-sql-s,10,"\x10\0\0\0\x01\0\0\0\x04\0\0\0\0\0\0\0")%r(afp,10,"
+SF:\x10\0\0\0\x01\0\0\0\x04\0\0\0\0\0\0\0")%r(giop,10,"\x10\0\0\0\x02\0\x0
+SF:1\0\x04\0\0\0\0\0\0\0");
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 188.22 seconds

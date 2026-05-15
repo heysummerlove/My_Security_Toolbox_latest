@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import zipfile
 from pathlib import Path
@@ -44,6 +45,34 @@ SHEET_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 
 ET.register_namespace("", SHEET_NS)
+
+
+def _template_dirs_from_env() -> list[Path]:
+    raw = (os.getenv("MST_TEMPLATE_DIRS") or "").strip()
+    if not raw:
+        return []
+    return [Path(item.strip()) for item in raw.split(os.pathsep) if item.strip()]
+
+
+def _build_template_source_dirs() -> list[Path]:
+    candidates = [
+        *_template_dirs_from_env(),
+        BASE_DIR / "templates",
+        DATA_DIR / "template_extract",
+        *TEMPLATE_SOURCE_DIRS,
+    ]
+    result: list[Path] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        normalized = str(candidate.resolve(strict=False)).lower()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        result.append(candidate)
+    return result
+
+
+TEMPLATE_SOURCE_DIRS = _build_template_source_dirs()
 
 
 def ensure_report_dirs() -> None:

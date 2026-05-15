@@ -72,6 +72,14 @@ def _trim_report_output(output: str, max_chars: int = 4000) -> str:
     return output[:max_chars] + "\n\n... (output truncated) ..."
 
 
+def _extract_first_match(output: str, patterns: list[str], flags: int = re.IGNORECASE) -> str:
+    for pattern in patterns:
+        match = re.search(pattern, output, flags)
+        if match:
+            return match.group(1).strip()
+    return ""
+
+
 def _write_evaluation_report(
     report_path: str,
     *,
@@ -124,6 +132,87 @@ def _write_output_file(output_path: str, cmd: list[str], output: str) -> None:
     with open(output_path, "w", encoding="utf-8") as fh:
         fh.write("Command: " + subprocess.list2cmdline(cmd) + "\n\n")
         fh.write(output)
+
+
+def _format_ping_report(target: str, cmd: list[str], output: str, return_code: int | None) -> str:
+    sent = _extract_first_match(output, [r"Sent = (\d+)", r"已发送\s*=\s*(\d+)"])
+    received = _extract_first_match(output, [r"Received = (\d+)", r"已接收\s*=\s*(\d+)"])
+    lost = _extract_first_match(output, [r"Lost = (\d+)", r"丢失\s*=\s*(\d+)"])
+    loss_rate = _extract_first_match(output, [r"\((\d+% loss)\)", r"\((\d+%\s*丢失)\)"])
+    minimum = _extract_first_match(output, [r"Minimum = (\d+ms)", r"最短\s*=\s*(\d+ms)"])
+    maximum = _extract_first_match(output, [r"Maximum = (\d+ms)", r"最长\s*=\s*(\d+ms)"])
+    average = _extract_first_match(output, [r"Average = (\d+ms)", r"平均\s*=\s*(\d+ms)"])
+    reply_line = next((line.strip() for line in output.splitlines() if "TTL=" in line or "ttl=" in line), "")
+
+    summary_lines = [
+        "基础探测报告（Ping）",
+        "=" * 72,
+        f"探测目标: {target}",
+        f"执行命令: {subprocess.list2cmdline(cmd)}",
+        f"执行结果: {'成功' if return_code in (0, None) else f'失败（退出码 {return_code}）'}",
+        "",
+        "摘要:",
+        f"- 发包数: {sent or '-'}",
+        f"- 收包数: {received or '-'}",
+        f"- 丢包数: {lost or '-'}",
+        f"- 丢包率: {loss_rate or '-'}",
+        f"- 最短往返时间: {minimum or '-'}",
+        f"- 最长往返时间: {maximum or '-'}",
+        f"- 平均往返时间: {average or '-'}",
+        f"- 典型回显: {reply_line or '-'}",
+        "",
+        "原始输出:",
+        output.strip() or "(无输出)",
+    ]
+    return "\n".join(summary_lines)
+
+
+def _parse_nmap_open_ports(output: str) -> list[tuple[str, str, str]]:
+    ports: list[tuple[str, str, str]] = []
+    for raw_line in output.splitlines():
+        line = raw_line.strip()
+        match = re.match(r"^(\d+/(?:tcp|udp))\s+open\s+(\S+)(?:\s+(.*))?$", line, re.IGNORECASE)
+        if not match:
+            continue
+        ports.append((match.group(1), match.group(2), (match.group(3) or "").strip()))
+    return ports
+
+
+def _format_nmap_report(target: str, cmd: list[str], output: str, return_code: int | None) -> str:
+    host_line = next((line.strip() for line in output.splitlines() if "Nmap scan report for" in line), "")
+    host_status = next((line.strip() for line in output.splitlines() if "Host is up" in line), "")
+    ports = _parse_nmap_open_ports(output)
+
+    summary_lines = [
+        "漏洞检测报告（Nmap）",
+        "=" * 72,
+        f"扫描目标: {target}",
+        f"执行命令: {subprocess.list2cmdline(cmd)}",
+        f"执行结果: {'成功' if return_code in (0, None) else f'失败（退出码 {return_code}）'}",
+        f"主机信息: {host_line or target}",
+        f"连通状态: {host_status or '-'}",
+        f"开放端口数量: {len(ports)}",
+        "",
+        "开放端口摘要:",
+    ]
+
+    if ports:
+        for index, (port, service, version) in enumerate(ports, start=1):
+            detail = f"{port} -> {service}"
+            if version:
+                detail += f" | {version}"
+            summary_lines.append(f"{index}. {detail}")
+    else:
+        summary_lines.append("未识别到开放端口，或扫描输出未包含端口明细。")
+
+    summary_lines.extend(
+        [
+            "",
+            "原始输出:",
+            output.strip() or "(无输出)",
+        ]
+    )
+    return "\n".join(summary_lines)
 
 
 def _terminate_process(process: subprocess.Popen) -> None:
@@ -261,6 +350,7 @@ def _run_managed_process(
     cwd: str | None = None,
     running_message: str | None = None,
     missing_message: str | None = None,
+    report_formatter: Callable[[list[str], str, int | None], str] | None = None,
     finalize_task: bool = True,
 ) -> dict[str, str]:
     ensure_result_dirs()
@@ -350,7 +440,8 @@ def _run_managed_process(
         unregister_handle(task_id)
 
     output_text = "\n".join(output_lines).strip()
-    _write_output_file(output_path, cmd, output_text)
+    report_text = report_formatter(cmd, output_text, return_code) if report_formatter else output_text
+    _write_output_file(output_path, cmd, report_text)
 
     if canceled:
         message = f"CANCELED: {label} was paused by user"
@@ -407,6 +498,9 @@ def run_basic_task(task_id: int, tool: str, target: str) -> None:
         cmd=cmd,
         output_path=output_path,
         summary_func=lambda output, return_code: _extract_basic_summary(tool, output, 0 if return_code in (0, None) else return_code),
+        report_formatter=lambda report_cmd, output, return_code: _format_ping_report(target, report_cmd, output, return_code)
+        if tool == "ping"
+        else output,
         running_message=f"RUNNING: {tool} is probing {target}",
         finalize_task=True,
     )
@@ -422,6 +516,7 @@ def run_nmap_task(task_id: int, target: str) -> None:
         cwd=os.path.dirname(NMAP_EXE),
         output_path=output_path,
         summary_func=lambda output, _return_code: _extract_nmap_summary(output),
+        report_formatter=lambda report_cmd, output, return_code: _format_nmap_report(target, report_cmd, output, return_code),
         running_message=f"RUNNING: nmap is scanning {target}",
         missing_message="ERROR: nmap.exe was not found",
         finalize_task=True,

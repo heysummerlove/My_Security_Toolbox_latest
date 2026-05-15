@@ -1,0 +1,28 @@
+Command: ping -n 4 127.0.0.1
+
+基础探测报告（Ping）
+========================================================================
+探测目标: 127.0.0.1
+执行命令: ping -n 4 127.0.0.1
+执行结果: 成功
+
+摘要:
+- 发包数: 4
+- 收包数: 4
+- 丢包数: 0
+- 丢包率: 0% loss
+- 最短往返时间: 0ms
+- 最长往返时间: 0ms
+- 平均往返时间: 0ms
+- 典型回显: Reply from 127.0.0.1: bytes=32 time<1ms TTL=128
+
+原始输出:
+Pinging 127.0.0.1 with 32 bytes of data:
+Reply from 127.0.0.1: bytes=32 time<1ms TTL=128
+Reply from 127.0.0.1: bytes=32 time<1ms TTL=128
+Reply from 127.0.0.1: bytes=32 time<1ms TTL=128
+Reply from 127.0.0.1: bytes=32 time<1ms TTL=128
+Ping statistics for 127.0.0.1:
+Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+Minimum = 0ms, Maximum = 0ms, Average = 0ms

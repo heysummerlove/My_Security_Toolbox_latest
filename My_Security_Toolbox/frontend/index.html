@@ -6,19 +6,19 @@
     <title>My Security Toolbox</title>
     <style>
         :root {
-            --bg-main: #eef3f8;
-            --bg-panel: rgba(255, 255, 255, 0.94);
-            --bg-sidebar: #102235;
-            --bg-sidebar-hover: #193650;
-            --accent: #0f8f88;
-            --accent-strong: #0b6d68;
-            --border: #d9e2ec;
-            --text-main: #1f2937;
-            --text-muted: #64748b;
-            --success: #1d8348;
-            --warning: #d35400;
-            --error: #c0392b;
-            --shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+            --bg-main: #071521;
+            --bg-panel: linear-gradient(180deg, rgba(9, 28, 45, 0.9) 0%, rgba(6, 22, 36, 0.86) 100%);
+            --bg-sidebar: rgba(6, 20, 33, 0.92);
+            --bg-sidebar-hover: rgba(18, 68, 102, 0.46);
+            --accent: #21b8d8;
+            --accent-strong: #79ddff;
+            --border: rgba(123, 196, 227, 0.22);
+            --text-main: #eff9ff;
+            --text-muted: rgba(205, 228, 241, 0.72);
+            --success: #59d690;
+            --warning: #ffb85c;
+            --error: #ff7d7d;
+            --shadow: 0 24px 56px rgba(2, 10, 19, 0.34);
         }
 
         * {
@@ -41,31 +41,81 @@
         }
 
         .app-shell {
+            position: relative;
             display: flex;
             width: 100%;
             min-height: 100vh;
+            background:
+                radial-gradient(circle at 14% 18%, rgba(84, 193, 255, 0.16), transparent 18%),
+                radial-gradient(circle at 88% 14%, rgba(12, 137, 168, 0.14), transparent 22%),
+                linear-gradient(135deg, #05131f 0%, #0a2234 40%, #081b2c 100%);
+            isolation: isolate;
+        }
+
+        .app-shell::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(82, 196, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(82, 196, 255, 0.06) 1px, transparent 1px);
+            background-size: 120px 120px;
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: -1;
         }
 
         .login-shell {
             min-height: 100vh;
+            position: relative;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 16px;
-            padding: 24px;
+            justify-content: flex-end;
+            padding: 36px 28px;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .login-shell::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(108deg, rgba(4, 14, 27, 0.88) 8%, rgba(8, 33, 56, 0.72) 30%, rgba(10, 64, 102, 0.28) 56%, rgba(255, 255, 255, 0.03) 100%),
+                radial-gradient(circle at 16% 24%, rgba(125, 218, 255, 0.18), transparent 22%),
+                radial-gradient(circle at 22% 72%, rgba(11, 157, 186, 0.18), transparent 20%),
+                url("/assets/login-ship-bg.jpeg") 62% center / cover no-repeat;
+            transform: scale(1.04);
+            z-index: -2;
+        }
+
+        .login-shell::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(82, 196, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(82, 196, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(4, 15, 27, 0.36) 100%);
+            background-size: 120px 120px, 120px 120px, auto;
+            background-position: center, center, center;
+            z-index: -1;
+        }
+
+        .login-stage {
+            width: min(440px, 100%);
+            margin-right: clamp(16px, 6vw, 96px);
         }
 
         .login-brand {
-            display: inline-flex;
+            position: absolute;
+            top: 28px;
+            left: 28px;
+            z-index: 2;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 14px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.82);
-            border: 1px solid rgba(255, 255, 255, 0.72);
-            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-            backdrop-filter: blur(10px);
+            padding: 0;
         }
 
         .login-brand img {
@@ -76,36 +126,41 @@
         }
 
         .login-card {
-            width: min(420px, 100%);
-            padding: 36px 32px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+            width: min(440px, 100%);
+            padding: 34px 32px 30px;
+            border-radius: 28px;
+            background:
+                linear-gradient(180deg, rgba(9, 28, 45, 0.9) 0%, rgba(6, 22, 36, 0.86) 100%);
+            box-shadow: 0 26px 60px rgba(2, 10, 19, 0.42);
+            border: 1px solid rgba(123, 214, 255, 0.18);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at top right, rgba(110, 221, 255, 0.12), transparent 28%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 22%);
+            pointer-events: none;
+        }
+
+        .login-card > * {
+            position: relative;
+            z-index: 1;
         }
 
         .login-title {
-            font-size: 1.9rem;
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .login-desc {
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 28px;
-        }
-
-        .hint-box {
-            background: #f4fbfb;
-            border: 1px solid #cbeeee;
-            color: #175d5d;
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            margin-bottom: 18px;
+            color: #f4fbff;
+            letter-spacing: 0.02em;
+            text-align: center;
         }
 
         .field {
@@ -116,6 +171,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
+            color: #d7ecf8;
         }
 
         .field input,
@@ -123,17 +179,23 @@
             width: 100%;
             padding: 13px 14px;
             border-radius: 12px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(123, 196, 227, 0.24);
             font-size: 1rem;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
-            background: #fff;
+            background: rgba(230, 244, 255, 0.08);
+            color: #eff9ff;
+        }
+
+        .field input::placeholder,
+        .tool-input-group input::placeholder {
+            color: rgba(208, 230, 242, 0.56);
         }
 
         .field input:focus,
         .tool-input-group input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(15, 143, 136, 0.12);
+            border-color: #67d8ff;
+            box-shadow: 0 0 0 4px rgba(89, 204, 255, 0.14);
         }
 
         .captcha-row {
@@ -149,9 +211,9 @@
         .captcha-box {
             width: 160px;
             min-width: 160px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(123, 196, 227, 0.24);
             border-radius: 12px;
-            background: #f7fbff;
+            background: rgba(230, 244, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -174,7 +236,7 @@
         .link-btn {
             border: none;
             background: transparent;
-            color: var(--accent-strong);
+            color: #7fe3ff;
             cursor: pointer;
             font-weight: 700;
             padding: 0;
@@ -198,13 +260,15 @@
         }
 
         .secondary-btn {
-            background: #e8f3f3;
-            color: #125858;
+            background: rgba(33, 184, 216, 0.12);
+            color: #c8f0ff;
+            border: 1px solid rgba(123, 196, 227, 0.16);
         }
 
         .danger-btn {
-            background: #fdecea;
-            color: #b03a2e;
+            background: rgba(255, 125, 125, 0.14);
+            color: #ffd2d2;
+            border: 1px solid rgba(255, 125, 125, 0.2);
         }
 
         .primary-btn:hover,
@@ -224,13 +288,38 @@
 
         .login-card .primary-btn {
             width: 100%;
-            padding: 13px 16px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0ea5a0 0%, #1f7fd3 54%, #47c6ff 100%);
+            box-shadow: 0 14px 30px rgba(23, 117, 182, 0.28);
         }
 
         .inline-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+        }
+
+        .toolbar-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .toolbar-user {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(33, 184, 216, 0.1);
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            color: rgba(226, 241, 250, 0.86);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: nowrap;
         }
 
         .modal-mask {
@@ -248,15 +337,16 @@
             width: min(460px, 100%);
             padding: 28px 26px;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.98);
-            border: 1px solid rgba(255, 255, 255, 0.72);
-            box-shadow: 0 24px 64px rgba(15, 23, 42, 0.18);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(180deg, rgba(9, 28, 45, 0.94) 0%, rgba(6, 22, 36, 0.9) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.18);
+            box-shadow: 0 24px 64px rgba(2, 10, 19, 0.32);
+            backdrop-filter: blur(16px);
         }
 
         .modal-card h3 {
             font-size: 1.3rem;
             margin-bottom: 8px;
+            color: #eef9ff;
         }
 
         .modal-card p {
@@ -267,16 +357,18 @@
 
         .sidebar {
             width: 300px;
-            background: linear-gradient(180deg, #102235 0%, #17324a 100%);
+            background: linear-gradient(180deg, rgba(5, 18, 30, 0.96) 0%, rgba(8, 29, 46, 0.9) 100%);
             color: #fff;
             display: flex;
             flex-direction: column;
-            box-shadow: 8px 0 30px rgba(15, 23, 42, 0.08);
+            border-right: 1px solid rgba(123, 196, 227, 0.14);
+            box-shadow: 18px 0 42px rgba(2, 10, 19, 0.28);
+            backdrop-filter: blur(14px);
         }
 
         .sidebar-header {
             padding: 28px 22px 22px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(123, 196, 227, 0.14);
         }
 
         .sidebar-brand {
@@ -285,9 +377,9 @@
             padding: 8px 12px;
             margin-bottom: 18px;
             border-radius: 14px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            background: rgba(14, 50, 74, 0.44);
+            border: 1px solid rgba(123, 196, 227, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
         }
 
         .sidebar-brand img {
@@ -300,6 +392,7 @@
         .sidebar-header h1 {
             font-size: 1.25rem;
             margin-bottom: 8px;
+            color: #eef9ff;
         }
 
         .sidebar-header p,
@@ -321,15 +414,19 @@
             transition: background 0.25s, border-color 0.25s;
             border-left: 4px solid transparent;
             line-height: 1.55;
+            color: rgba(233, 245, 255, 0.84);
         }
 
         .menu-item:hover {
             background-color: var(--bg-sidebar-hover);
+            color: #fff;
         }
 
         .menu-item.active {
-            background-color: rgba(15, 143, 136, 0.18);
-            border-left-color: var(--accent);
+            background: linear-gradient(90deg, rgba(33, 184, 216, 0.2) 0%, rgba(33, 184, 216, 0.06) 100%);
+            border-left-color: var(--accent-strong);
+            color: #fff;
+            box-shadow: inset 0 0 0 1px rgba(123, 196, 227, 0.08);
         }
 
         .menu-group {
@@ -340,7 +437,7 @@
             width: 100%;
             border: none;
             background: transparent;
-            color: #fff;
+            color: rgba(233, 245, 255, 0.84);
             text-align: left;
             padding: 15px 22px;
             cursor: pointer;
@@ -357,12 +454,14 @@
 
         .menu-group-toggle:hover {
             background-color: var(--bg-sidebar-hover);
+            color: #fff;
         }
 
         .menu-group.open .menu-group-toggle,
         .menu-group.active .menu-group-toggle {
-            background-color: rgba(15, 143, 136, 0.18);
-            border-left-color: var(--accent);
+            background: linear-gradient(90deg, rgba(33, 184, 216, 0.2) 0%, rgba(33, 184, 216, 0.06) 100%);
+            border-left-color: var(--accent-strong);
+            color: #fff;
         }
 
         .menu-group-arrow {
@@ -390,24 +489,20 @@
         }
 
         .menu-subitem:hover {
-            background-color: rgba(255, 255, 255, 0.06);
+            background-color: rgba(33, 184, 216, 0.1);
         }
 
         .menu-subitem.active {
-            background-color: rgba(15, 143, 136, 0.18);
+            background: linear-gradient(90deg, rgba(33, 184, 216, 0.18) 0%, rgba(33, 184, 216, 0.06) 100%);
             border-left-color: #7be0d8;
             color: #fff;
-        }
-
-        .sidebar-footer {
-            padding: 18px 22px 26px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .main-content {
             flex: 1;
             padding: 30px;
             overflow-y: auto;
+            position: relative;
         }
 
         .toolbar {
@@ -422,6 +517,8 @@
         .toolbar-title h2 {
             font-size: 1.7rem;
             margin-bottom: 6px;
+            color: #eff9ff;
+            letter-spacing: 0.02em;
         }
 
         .toolbar-title p {
@@ -433,14 +530,15 @@
         .card {
             background: var(--bg-panel);
             padding: 30px;
-            border-radius: 18px;
+            border-radius: 24px;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(123, 196, 227, 0.18);
+            backdrop-filter: blur(18px);
         }
 
         .card h3 {
             margin-bottom: 10px;
-            color: #14324a;
+            color: #eaf8ff;
             font-size: 1.35rem;
         }
 
@@ -471,11 +569,11 @@
             min-width: 54px;
             height: 54px;
             border-radius: 18px;
-            background: linear-gradient(135deg, #0f8f88 0%, #1a79a4 100%);
+            background: linear-gradient(135deg, #0ea5a0 0%, #1f7fd3 54%, #47c6ff 100%);
             color: #fff;
             font-size: 1.1rem;
             font-weight: 800;
-            box-shadow: 0 12px 26px rgba(15, 143, 136, 0.18);
+            box-shadow: 0 14px 30px rgba(23, 117, 182, 0.24);
         }
 
         .module-hero-text {
@@ -495,9 +593,9 @@
         .module-status {
             padding: 10px 14px;
             border-radius: 999px;
-            background: #ecf8f7;
-            border: 1px solid #cdecea;
-            color: #12635e;
+            background: rgba(33, 184, 216, 0.12);
+            border: 1px solid rgba(123, 196, 227, 0.22);
+            color: #9ce9ff;
             font-size: 0.92rem;
             font-weight: 700;
         }
@@ -512,12 +610,12 @@
         .module-section {
             padding: 18px 18px 16px;
             border-radius: 16px;
-            background: #fbfdff;
-            border: 1px solid rgba(20, 50, 74, 0.08);
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.82) 0%, rgba(8, 27, 42, 0.74) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
         }
 
         .module-section h4 {
-            color: #15324a;
+            color: #def5ff;
             font-size: 1rem;
             margin-bottom: 12px;
         }
@@ -526,7 +624,7 @@
             list-style: none;
             display: grid;
             gap: 10px;
-            color: #38536a;
+            color: rgba(216, 236, 247, 0.82);
             line-height: 1.65;
         }
 
@@ -557,16 +655,16 @@
             align-items: center;
             padding: 8px 12px;
             border-radius: 999px;
-            background: #f2f7fb;
-            border: 1px solid rgba(26, 121, 164, 0.14);
-            color: #28506a;
+            background: rgba(33, 184, 216, 0.12);
+            border: 1px solid rgba(123, 196, 227, 0.16);
+            color: #bdeeff;
             font-size: 0.88rem;
             font-weight: 600;
         }
 
         .module-footer {
             padding-top: 18px;
-            border-top: 1px solid rgba(20, 50, 74, 0.08);
+            border-top: 1px solid rgba(123, 196, 227, 0.12);
             margin-top: 18px;
             color: var(--text-muted);
             line-height: 1.7;
@@ -580,18 +678,18 @@
 
         .home-card {
             padding: 22px;
-            border-radius: 18px;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%);
-            border: 1px solid rgba(20, 50, 74, 0.08);
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.84) 0%, rgba(8, 27, 42, 0.76) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            box-shadow: 0 14px 30px rgba(2, 10, 19, 0.18);
             cursor: pointer;
             transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
         }
 
         .home-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
-            border-color: rgba(15, 143, 136, 0.24);
+            box-shadow: 0 20px 36px rgba(2, 10, 19, 0.28);
+            border-color: rgba(123, 196, 227, 0.28);
         }
 
         .home-card-top {
@@ -602,7 +700,7 @@
         }
 
         .home-card h4 {
-            color: #15324a;
+            color: #e3f7ff;
             font-size: 1.05rem;
             margin-bottom: 6px;
         }
@@ -623,10 +721,10 @@
         }
 
         .accordion-item {
-            border-radius: 18px;
-            border: 1px solid rgba(20, 50, 74, 0.08);
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%);
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+            border-radius: 22px;
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.84) 0%, rgba(8, 27, 42, 0.76) 100%);
+            box-shadow: 0 14px 30px rgba(2, 10, 19, 0.18);
             overflow: hidden;
         }
 
@@ -638,7 +736,7 @@
             gap: 16px;
             padding: 18px 22px;
             background: transparent;
-            color: #15324a;
+            color: #def5ff;
             text-align: left;
         }
 
@@ -660,7 +758,7 @@
 
         .accordion-indicator {
             font-size: 1.25rem;
-            color: #2c6777;
+            color: #7fe3ff;
             transition: transform 0.2s ease;
         }
 
@@ -670,7 +768,299 @@
 
         .accordion-content {
             padding: 0 22px 22px;
-            border-top: 1px solid rgba(20, 50, 74, 0.08);
+            border-top: 1px solid rgba(123, 196, 227, 0.12);
+        }
+
+        .tool-tabs {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 22px 0 18px;
+        }
+
+        .tool-tab {
+            border: 1px solid rgba(123, 196, 227, 0.16);
+            background: rgba(11, 38, 59, 0.76);
+            color: #ccebf8;
+            border-radius: 999px;
+            padding: 10px 16px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-tab:hover {
+            transform: translateY(-1px);
+            border-color: rgba(123, 196, 227, 0.28);
+        }
+
+        .tool-tab.active {
+            background: linear-gradient(135deg, #0ea5a0 0%, #1f7fd3 54%, #47c6ff 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 14px 28px rgba(23, 117, 182, 0.22);
+        }
+
+        .tool-tab-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(123, 196, 227, 0.16);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .tool-tab.active .tool-tab-index {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .tool-tab-label {
+            white-space: nowrap;
+        }
+
+        .tool-tab-panels {
+            margin-top: 8px;
+        }
+
+        .tool-tab-panel[hidden] {
+            display: none !important;
+        }
+
+        .tool-tab-panel {
+            padding: 22px;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.84) 0%, rgba(8, 27, 42, 0.76) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            box-shadow: 0 14px 30px rgba(2, 10, 19, 0.18);
+        }
+
+        .tool-tab-header {
+            margin-bottom: 18px;
+        }
+
+        .tool-tab-header h4 {
+            color: #e3f7ff;
+            font-size: 1.08rem;
+            margin-bottom: 6px;
+        }
+
+        .tool-tab-header p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 0.94rem;
+        }
+
+        .analytics-shell {
+            display: grid;
+            gap: 18px;
+        }
+
+        .analytics-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            gap: 18px;
+        }
+
+        .analytics-hero-panel,
+        .analytics-side-panel,
+        .analytics-section {
+            padding: 22px;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.84) 0%, rgba(8, 27, 42, 0.76) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            box-shadow: 0 14px 30px rgba(2, 10, 19, 0.18);
+        }
+
+        .analytics-kicker {
+            color: #79ddff;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .analytics-hero-panel h3,
+        .analytics-side-panel h3,
+        .analytics-section h3 {
+            color: #eaf8ff;
+            font-size: 1.18rem;
+            margin-bottom: 10px;
+        }
+
+        .analytics-hero-panel p,
+        .analytics-side-panel p,
+        .analytics-section p {
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        .analytics-topline {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .analytics-metric {
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(7, 24, 38, 0.78);
+            border: 1px solid rgba(123, 196, 227, 0.12);
+        }
+
+        .analytics-metric strong {
+            display: block;
+            color: #f0fbff;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .analytics-metric span {
+            display: block;
+            color: rgba(216, 236, 247, 0.76);
+            line-height: 1.6;
+            font-size: 0.92rem;
+        }
+
+        .analytics-side-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .analytics-side-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(7, 24, 38, 0.78);
+            border: 1px solid rgba(123, 196, 227, 0.12);
+        }
+
+        .analytics-side-item strong {
+            color: #eaf8ff;
+            font-size: 1rem;
+        }
+
+        .analytics-side-item span {
+            color: #8fe7ff;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .analytics-bars {
+            display: grid;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .analytics-bar-row {
+            display: grid;
+            gap: 8px;
+        }
+
+        .analytics-bar-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: rgba(226, 241, 250, 0.86);
+            font-size: 0.92rem;
+        }
+
+        .analytics-bar-track {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+
+        .analytics-bar-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #0ea5a0 0%, #1f7fd3 54%, #47c6ff 100%);
+        }
+
+        .analytics-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .analytics-chip {
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(7, 24, 38, 0.78);
+            border: 1px solid rgba(123, 196, 227, 0.12);
+        }
+
+        .analytics-chip strong {
+            display: block;
+            color: #8fe7ff;
+            font-size: 1.28rem;
+            margin-bottom: 6px;
+        }
+
+        .analytics-chip span {
+            color: rgba(216, 236, 247, 0.76);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .analytics-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .analytics-mini-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(7, 24, 38, 0.78);
+            border: 1px solid rgba(123, 196, 227, 0.12);
+        }
+
+        .analytics-mini-card strong {
+            display: block;
+            color: #eaf8ff;
+            font-size: 1.34rem;
+            margin-bottom: 6px;
+        }
+
+        .analytics-mini-card span {
+            color: rgba(216, 236, 247, 0.76);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .analytics-footnote {
+            margin-top: 14px;
+            color: rgba(205, 228, 241, 0.64);
+            font-size: 0.84rem;
+            line-height: 1.7;
         }
 
         .tool-input-group,
@@ -688,6 +1078,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            color: #d7ecf8;
         }
 
         .tool-input-group input {
@@ -710,11 +1101,11 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #f6f9fc;
+            background: rgba(33, 184, 216, 0.1);
             border: 1px solid var(--border);
             border-radius: 999px;
             padding: 8px 14px;
-            color: var(--text-main);
+            color: #def5ff;
             font-size: 0.92rem;
             margin-bottom: 14px;
         }
@@ -730,10 +1121,11 @@
         .feedback {
             margin-top: 10px;
             font-weight: 700;
+            color: #d9f6ff;
         }
 
         .log-box {
-            background-color: #101a26;
+            background-color: rgba(5, 18, 30, 0.92);
             color: #d7e5f5;
             padding: 16px;
             border-radius: 14px;
@@ -757,8 +1149,8 @@
         .report-form-section {
             padding: 18px;
             border-radius: 16px;
-            background: #fbfdff;
-            border: 1px solid rgba(20, 50, 74, 0.08);
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.82) 0%, rgba(8, 27, 42, 0.74) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
         }
 
         .report-form-section.full-width {
@@ -766,7 +1158,7 @@
         }
 
         .report-form-section h4 {
-            color: #15324a;
+            color: #def5ff;
             font-size: 1rem;
             margin-bottom: 14px;
         }
@@ -807,13 +1199,14 @@
             line-height: 1.65;
             resize: vertical;
             outline: none;
-            background: #fff;
+            background: rgba(230, 244, 255, 0.08);
+            color: #eff9ff;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .report-form-section textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(15, 143, 136, 0.12);
+            border-color: #67d8ff;
+            box-shadow: 0 0 0 4px rgba(89, 204, 255, 0.14);
         }
 
         .upload-field {
@@ -825,10 +1218,10 @@
         .upload-input {
             width: 100%;
             padding: 10px 12px;
-            border: 1px dashed rgba(20, 50, 74, 0.28);
+            border: 1px dashed rgba(123, 196, 227, 0.3);
             border-radius: 12px;
-            background: #f8fbff;
-            color: #24465d;
+            background: rgba(230, 244, 255, 0.06);
+            color: #def5ff;
         }
 
         .upload-note {
@@ -848,7 +1241,7 @@
             align-items: center;
             gap: 8px;
             font-weight: 600;
-            color: #26455e;
+            color: #d7ecf8;
         }
 
         .report-step-tabs {
@@ -859,9 +1252,9 @@
         }
 
         .report-step-tab {
-            border: 1px solid rgba(20, 50, 74, 0.12);
-            background: #f7fbff;
-            color: #24465d;
+            border: 1px solid rgba(123, 196, 227, 0.16);
+            background: rgba(11, 38, 59, 0.76);
+            color: #ccebf8;
             border-radius: 999px;
             padding: 10px 16px;
             font-size: 0.92rem;
@@ -883,9 +1276,9 @@
         .report-step-summary {
             padding: 16px 18px;
             border-radius: 16px;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%);
-            border: 1px solid rgba(20, 50, 74, 0.08);
-            color: #476176;
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.82) 0%, rgba(8, 27, 42, 0.74) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            color: rgba(216, 236, 247, 0.82);
             line-height: 1.75;
         }
 
@@ -937,15 +1330,16 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             font-size: 1rem;
-            background: #fff;
+            background: rgba(230, 244, 255, 0.08);
+            color: #eff9ff;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .ops-toolbar select:focus,
         .report-form-section select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(15, 143, 136, 0.12);
+            border-color: #67d8ff;
+            box-shadow: 0 0 0 4px rgba(89, 204, 255, 0.14);
         }
 
         .ops-stats {
@@ -958,14 +1352,14 @@
         .ops-stat-card {
             padding: 18px;
             border-radius: 16px;
-            background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-            border: 1px solid rgba(20, 50, 74, 0.08);
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.84) 0%, rgba(8, 27, 42, 0.76) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
         }
 
         .ops-stat-card strong {
             display: block;
             font-size: 1.5rem;
-            color: #14324a;
+            color: #e9f9ff;
             margin-bottom: 6px;
         }
 
@@ -977,8 +1371,8 @@
         .data-table-wrap {
             overflow: auto;
             border-radius: 16px;
-            border: 1px solid rgba(20, 50, 74, 0.08);
-            background: #fff;
+            border: 1px solid rgba(123, 196, 227, 0.14);
+            background: rgba(7, 24, 38, 0.82);
         }
 
         .data-table {
@@ -990,16 +1384,17 @@
         .data-table th,
         .data-table td {
             padding: 14px 12px;
-            border-bottom: 1px solid rgba(20, 50, 74, 0.08);
+            border-bottom: 1px solid rgba(123, 196, 227, 0.1);
             text-align: left;
             vertical-align: top;
             line-height: 1.6;
             font-size: 0.94rem;
+            color: rgba(226, 241, 250, 0.86);
         }
 
         .data-table th {
-            background: #f7fbff;
-            color: #14324a;
+            background: rgba(11, 38, 59, 0.96);
+            color: #e9f9ff;
             font-weight: 700;
             position: sticky;
             top: 0;
@@ -1007,7 +1402,7 @@
         }
 
         .data-table tbody tr:hover {
-            background: #f8fcff;
+            background: rgba(33, 184, 216, 0.08);
         }
 
         .table-actions {
@@ -1020,16 +1415,16 @@
             border: none;
             border-radius: 999px;
             padding: 7px 12px;
-            background: #edf7f6;
-            color: #14645e;
+            background: rgba(33, 184, 216, 0.14);
+            color: #bdeeff;
             cursor: pointer;
             font-weight: 700;
             font-size: 0.85rem;
         }
 
         .mini-btn.danger {
-            background: #fdecea;
-            color: #b03a2e;
+            background: rgba(255, 125, 125, 0.14);
+            color: #ffd2d2;
         }
 
         .status-tag {
@@ -1039,31 +1434,31 @@
             border-radius: 999px;
             font-size: 0.84rem;
             font-weight: 700;
-            background: #eef6ff;
-            color: #24506e;
+            background: rgba(33, 184, 216, 0.12);
+            color: #c8f0ff;
         }
 
         .status-tag.success {
-            background: #ebf8ef;
-            color: #1d8348;
+            background: rgba(89, 214, 144, 0.16);
+            color: #aef0c8;
         }
 
         .status-tag.warning {
-            background: #fff5ea;
-            color: #d35400;
+            background: rgba(255, 184, 92, 0.16);
+            color: #ffd9a0;
         }
 
         .status-tag.error {
-            background: #fdecea;
-            color: #c0392b;
+            background: rgba(255, 125, 125, 0.14);
+            color: #ffd2d2;
         }
 
         .detail-card {
             margin-top: 20px;
             padding: 20px;
             border-radius: 18px;
-            background: #fbfdff;
-            border: 1px solid rgba(20, 50, 74, 0.08);
+            background: linear-gradient(180deg, rgba(10, 34, 54, 0.82) 0%, rgba(8, 27, 42, 0.74) 100%);
+            border: 1px solid rgba(123, 196, 227, 0.14);
         }
 
         .detail-grid {
@@ -1075,19 +1470,19 @@
         .detail-item {
             padding: 14px 16px;
             border-radius: 14px;
-            background: #fff;
-            border: 1px solid rgba(20, 50, 74, 0.08);
+            background: rgba(7, 24, 38, 0.78);
+            border: 1px solid rgba(123, 196, 227, 0.12);
         }
 
         .detail-item strong {
             display: block;
-            color: #14324a;
+            color: #e9f9ff;
             margin-bottom: 6px;
         }
 
         .detail-item span,
         .detail-item pre {
-            color: #425d73;
+            color: rgba(216, 236, 247, 0.82);
             white-space: pre-wrap;
             word-break: break-word;
         }
@@ -1127,8 +1522,8 @@
             gap: 8px;
             padding: 8px 12px;
             border-radius: 999px;
-            background: #eef7f7;
-            color: #1d5b5b;
+            background: rgba(33, 184, 216, 0.12);
+            color: #c8f0ff;
             font-size: 0.88rem;
             font-weight: 600;
         }
@@ -1140,8 +1535,8 @@
         }
 
         .readonly-input {
-            background: #f7fbff !important;
-            color: #476176;
+            background: rgba(230, 244, 255, 0.05) !important;
+            color: rgba(216, 236, 247, 0.72);
         }
 
         .compliance-record-highlight {
@@ -1193,7 +1588,7 @@
 
         @media (max-width: 640px) {
             .login-brand img {
-                width: 126px;
+                width: 120px;
             }
 
             .sidebar-brand img {
@@ -1201,8 +1596,39 @@
             }
 
             .login-shell {
-                padding: 20px 16px;
+                justify-content: center;
+                padding: 18px 16px;
             }
+
+            .login-shell::before {
+                background:
+                    linear-gradient(138deg, rgba(4, 14, 27, 0.88) 6%, rgba(8, 33, 56, 0.74) 38%, rgba(10, 64, 102, 0.26) 100%),
+                    radial-gradient(circle at 24% 30%, rgba(255, 255, 255, 0.14), transparent 26%),
+                    url("/assets/login-ship-bg.jpeg") 64% center / cover no-repeat;
+            }
+
+            .login-stage {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .login-brand {
+                top: 16px;
+                left: 16px;
+                padding: 0;
+            }
+
+            .login-card {
+                width: 100%;
+                padding: 28px 22px;
+                border-radius: 22px;
+            }
+
+            .login-title {
+                font-size: 1.72rem;
+                margin-bottom: 16px;
+            }
+
         }
     </style>
 </head>
@@ -1211,37 +1637,34 @@
         <div class="login-brand" aria-label="CSSC logo">
             <img src="/assets/cssc-logo.png" alt="CSSC Logo">
         </div>
-        <div class="login-card">
-            <div class="login-title">安全工具箱登录</div>
-            <div class="login-desc">请先完成身份验证，再进入检测导航窗格查看 8 大检测模块及对应能力。</div>
-            <div class="hint-box">
-                默认账号: <strong>admin</strong><br>
-                默认密码: <strong>Admin@123456</strong>
-            </div>
+        <div class="login-stage">
+            <div class="login-card">
+                <div class="login-title">安全检测工具箱</div>
 
-            <div class="field">
-                <label for="username">用户名</label>
-                <input id="username" type="text" placeholder="请输入用户名" autocomplete="username">
-            </div>
-
-            <div class="field">
-                <label for="password">密码</label>
-                <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
-            </div>
-
-            <div class="field">
-                <label for="captcha-code">验证码</label>
-                <div class="captcha-row">
-                    <input id="captcha-code" class="captcha-input" type="text" placeholder="请输入验证码" maxlength="4" autocomplete="off">
-                    <div id="captcha-box" class="captcha-box"></div>
+                <div class="field">
+                    <label for="username">用户名</label>
+                    <input id="username" type="text" placeholder="请输入用户名" autocomplete="username">
                 </div>
-                <div class="captcha-actions">
-                    <button id="refresh-captcha-btn" class="link-btn" type="button">刷新验证码</button>
-                </div>
-            </div>
 
-            <button id="login-btn" class="primary-btn">登录并进入系统</button>
-            <div id="login-message" class="feedback" hidden></div>
+                <div class="field">
+                    <label for="password">密码</label>
+                    <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+
+                <div class="field">
+                    <label for="captcha-code">验证码</label>
+                    <div class="captcha-row">
+                        <input id="captcha-code" class="captcha-input" type="text" placeholder="请输入验证码" maxlength="4" autocomplete="off">
+                        <div id="captcha-box" class="captcha-box"></div>
+                    </div>
+                    <div class="captcha-actions">
+                        <button id="refresh-captcha-btn" class="link-btn" type="button">刷新验证码</button>
+                    </div>
+                </div>
+
+                <button id="login-btn" class="primary-btn">登录</button>
+                <div id="login-message" class="feedback" hidden></div>
+            </div>
         </div>
     </div>
 
@@ -1251,8 +1674,6 @@
                 <div class="sidebar-brand" aria-label="CSSC logo">
                     <img src="/assets/cssc-logo.png" alt="CSSC Logo">
                 </div>
-                <h1>My Security Toolbox</h1>
-                <p>检测导航窗格覆盖网络、固件、电磁、无损拆解与合规检查八大模块。</p>
             </div>
 
             <div class="sidebar-menu">
@@ -1286,10 +1707,6 @@
                 </div>
             </div>
 
-            <div class="sidebar-footer">
-                <div class="sidebar-user">当前用户: <span id="current-username">-</span></div>
-                <div class="sidebar-user">到期时间: <span id="current-expire-time">-</span></div>
-            </div>
         </div>
 
         <div class="main-content">
@@ -1298,9 +1715,13 @@
                     <h2 id="page-title">主页面</h2>
                     <p id="page-subtitle">汇总展示 8 大检测模块的基本信息，帮助快速了解能力边界与适用场景。</p>
                 </div>
-                <div class="inline-actions">
-                    <button id="change-password-btn" class="secondary-btn" type="button">修改密码</button>
-                    <button id="logout-btn" class="secondary-btn" type="button">退出登录</button>
+                <div class="toolbar-meta">
+                    <div class="toolbar-user">账户: <span id="current-username">-</span></div>
+                    <div class="toolbar-user">到期时间: <span id="current-expire-time">-</span></div>
+                    <div class="inline-actions">
+                        <button id="change-password-btn" class="secondary-btn" type="button">修改密码</button>
+                        <button id="logout-btn" class="secondary-btn" type="button">退出登录</button>
+                    </div>
                 </div>
             </div>
 
@@ -1542,7 +1963,209 @@
                     <span class="module-tag">敏感信息审计</span>
                     <span class="module-tag">组件漏洞关联</span>
                 </div>
-                <div class="module-footer">当前页面为模块介绍页；如需执行具体检测工具，请进入“漏洞检测”模块。</div>
+                <div class="module-footer">当前页面支持嵌入式设备固件提取及检测表单填写、台账查询和 CSV 导出。</div>
+
+                <div class="report-form-grid">
+                    <div class="report-form-section full-width">
+                        <div class="section-toolbar">
+                            <div>
+                                <h4>嵌入式设备固件提取及检测表单</h4>
+                                <p>检测项描述、检测方式、检测方法依据“安全检测记录表模板”固件章节固定展示；样品名称、设备型号与“编制安全检测记录表”双向联动，并支持在此处新增被测设备。</p>
+                            </div>
+                            <div class="tool-action-row">
+                                <button id="firmware-add-device-btn" class="secondary-btn" type="button">新增被测设备</button>
+                                <button id="firmware-save-btn" class="secondary-btn" type="button">保存</button>
+                                <button id="firmware-reset-btn" class="secondary-btn" type="button">重置</button>
+                                <button id="firmware-submit-btn" class="primary-btn" type="button">提交</button>
+                            </div>
+                        </div>
+                        <div class="pill-list">
+                            <span class="info-pill">🔗 样品名称 / 设备型号双向联动</span>
+                            <span class="info-pill">九项固件检测完整填写</span>
+                            <span class="info-pill">支持保存、查询、导出</span>
+                        </div>
+                        <div class="report-field-grid" style="margin-top: 14px;">
+                            <div class="field"><label for="firmware-record-no">检测编号</label><input id="firmware-record-no" class="readonly-input" type="text" placeholder="自动生成，支持手动调整"></div>
+                            <div class="field"><label for="firmware-sample-name">样品名称 🔗</label><input id="firmware-sample-name" type="text" list="shared-device-sample-options" placeholder="选择或搜索样品名称"></div>
+                            <div class="field"><label for="firmware-device-model">设备型号 🔗</label><input id="firmware-device-model" type="text" list="shared-device-model-options" placeholder="按样品名称级联筛选设备型号"></div>
+                            <div class="field"><label for="firmware-manufacturer">设备生产厂家</label><input id="firmware-manufacturer" type="text" placeholder="可由设备库自动带出，也可手动调整"></div>
+                        </div>
+                        <div class="report-field-grid" style="margin-top: 14px;">
+                            <div class="field span-2"><label for="firmware-item-1-desc">1. 固件提取 - 检测项描述</label><textarea id="firmware-item-1-desc" readonly>对目标设备固件开展提取，确认获取方式、提取过程及样本完整性。</textarea></div>
+                            <div class="field"><label for="firmware-item-1-mode">检测方式</label><input id="firmware-item-1-mode" type="text" value="静态检测 / 现场操作" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-1-method">检测方法</label><textarea id="firmware-item-1-method" readonly>通过官方升级包、调试口、芯片读取或漏洞利用方式提取固件，并记录操作步骤与介质来源。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-1-process">检测过程</label><textarea id="firmware-item-1-process" placeholder="记录提取路径、工具、操作步骤、版本来源和完整性校验过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-1-result">检测结果</label><textarea id="firmware-item-1-result" placeholder="填写提取结果、获取状态、样本完整性和异常说明"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-2-desc">2. 固件元信息分析 - 检测项描述</label><textarea id="firmware-item-2-desc" readonly>对固件包结构、哈希、版本和厂商标识等元信息开展分析。</textarea></div>
+                            <div class="field"><label for="firmware-item-2-mode">检测方式</label><input id="firmware-item-2-mode" type="text" value="静态检测" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-2-method">检测方法</label><textarea id="firmware-item-2-method" readonly>分析固件哈希、文件系统、版本号、编译信息和厂商型号指纹，确认样本归属和完整性。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-2-process">检测过程</label><textarea id="firmware-item-2-process" placeholder="记录哈希计算、解包过程、版本识别、元信息提取与比对步骤"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-2-result">检测结果</label><textarea id="firmware-item-2-result" placeholder="填写元信息识别结论、完整性状态和异常说明"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-3-desc">3. 敏感文件提取 - 检测项描述</label><textarea id="firmware-item-3-desc" readonly>识别固件中的配置文件、账号口令、证书密钥和其他敏感内容。</textarea></div>
+                            <div class="field"><label for="firmware-item-3-mode">检测方式</label><input id="firmware-item-3-mode" type="text" value="静态检测" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-3-method">检测方法</label><textarea id="firmware-item-3-method" readonly>检查文件系统、配置文件、脚本和权限设置，识别明文口令、密钥、证书与敏感参数。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-3-process">检测过程</label><textarea id="firmware-item-3-process" placeholder="记录文件系统遍历、敏感字段检索、权限核查和人工复核过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-3-result">检测结果</label><textarea id="firmware-item-3-result" placeholder="填写发现的敏感文件、账号口令、证书密钥或未发现结论"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-4-desc">4. 供应链安全分析 - 检测项描述</label><textarea id="firmware-item-4-desc" readonly>识别第三方组件、依赖版本和已知供应链风险。</textarea></div>
+                            <div class="field"><label for="firmware-item-4-mode">检测方式</label><input id="firmware-item-4-mode" type="text" value="静态检测 / 漏洞比对" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-4-method">检测方法</label><textarea id="firmware-item-4-method" readonly>提取第三方组件清单、版本依赖和构建信息，并关联公开漏洞库与风险通报进行分析。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-4-process">检测过程</label><textarea id="firmware-item-4-process" placeholder="记录组件识别、版本提取、指纹比对和漏洞库匹配过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-4-result">检测结果</label><textarea id="firmware-item-4-result" placeholder="填写组件识别结论、风险组件、版本问题和供应链分析结果"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-5-desc">5. 代码审计 - 检测项描述</label><textarea id="firmware-item-5-desc" readonly>对可获取源码或反编译结果进行安全审计，关注认证、输入处理和敏感调用。</textarea></div>
+                            <div class="field"><label for="firmware-item-5-mode">检测方式</label><input id="firmware-item-5-mode" type="text" value="静态检测 / 人工审计" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-5-method">检测方法</label><textarea id="firmware-item-5-method" readonly>对源码或反编译代码开展静态审计，重点检查认证授权、输入校验、命令执行和密钥存储逻辑。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-5-process">检测过程</label><textarea id="firmware-item-5-process" placeholder="记录代码获取方式、审计范围、重点函数分析和人工复核过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-5-result">检测结果</label><textarea id="firmware-item-5-result" placeholder="填写审计发现、缺陷描述、触发条件和修复建议"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-6-desc">6. 漏洞挖掘 - 检测项描述</label><textarea id="firmware-item-6-desc" readonly>结合静态分析、动态验证和测试手段挖掘固件中的安全漏洞。</textarea></div>
+                            <div class="field"><label for="firmware-item-6-mode">检测方式</label><input id="firmware-item-6-mode" type="text" value="静态检测 / 动态验证" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-6-method">检测方法</label><textarea id="firmware-item-6-method" readonly>结合反编译、服务分析、内存缺陷定位、模糊测试和环境复现开展漏洞挖掘。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-6-process">检测过程</label><textarea id="firmware-item-6-process" placeholder="记录挖掘策略、测试入口、验证过程和风险确认步骤"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-6-result">检测结果</label><textarea id="firmware-item-6-result" placeholder="填写发现漏洞、影响范围、验证结果和风险等级"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-7-desc">7. 漏洞匹配 - 检测项描述</label><textarea id="firmware-item-7-desc" readonly>将识别到的组件、版本和特征与公开漏洞库进行匹配确认。</textarea></div>
+                            <div class="field"><label for="firmware-item-7-mode">检测方式</label><input id="firmware-item-7-mode" type="text" value="漏洞比对" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-7-method">检测方法</label><textarea id="firmware-item-7-method" readonly>将组件版本、函数指纹、文件特征与 CVE/CNVD/CNNVD 等公开漏洞库进行比对确认。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-7-process">检测过程</label><textarea id="firmware-item-7-process" placeholder="记录漏洞库来源、比对策略、匹配条件和人工确认过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-7-result">检测结果</label><textarea id="firmware-item-7-result" placeholder="填写匹配漏洞编号、危害等级、受影响组件和说明"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-8-desc">8. 恶意代码检测 - 检测项描述</label><textarea id="firmware-item-8-desc" readonly>识别固件中的后门、恶意脚本、异常持久化逻辑和恶意特征。</textarea></div>
+                            <div class="field"><label for="firmware-item-8-mode">检测方式</label><input id="firmware-item-8-mode" type="text" value="静态检测 / 特征匹配" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-8-method">检测方法</label><textarea id="firmware-item-8-method" readonly>使用规则库、特征匹配、人工分析和 YARA 检测识别恶意代码与异常持久化逻辑。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-8-process">检测过程</label><textarea id="firmware-item-8-process" placeholder="记录规则库、特征命中、人工分析和复核过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-8-result">检测结果</label><textarea id="firmware-item-8-result" placeholder="填写恶意代码、后门特征、异常脚本命中情况或未发现结论"></textarea></div>
+
+                            <div class="field span-2"><label for="firmware-item-9-desc">9. 仿真测试 - 检测项描述</label><textarea id="firmware-item-9-desc" readonly>在仿真或沙箱环境中启动固件，验证服务行为、网络暴露面和运行风险。</textarea></div>
+                            <div class="field"><label for="firmware-item-9-mode">检测方式</label><input id="firmware-item-9-mode" type="text" value="动态检测 / 仿真验证" readonly></div>
+                            <div class="field span-2"><label for="firmware-item-9-method">检测方法</label><textarea id="firmware-item-9-method" readonly>构建仿真或沙箱环境启动固件镜像，分析服务暴露、启动行为、通信特征和潜在风险。</textarea></div>
+                            <div class="field span-2"><label for="firmware-item-9-process">检测过程</label><textarea id="firmware-item-9-process" placeholder="记录环境搭建、启动步骤、服务验证、交互测试和异常捕获过程"></textarea></div>
+                            <div class="field span-2"><label for="firmware-item-9-result">检测结果</label><textarea id="firmware-item-9-result" placeholder="填写仿真启动结果、服务行为、风险发现和限制说明"></textarea></div>
+
+                            <div class="field"><label for="firmware-check-date">检查日期</label><input id="firmware-check-date" type="date"></div>
+                            <div class="field"><label for="firmware-inspector">检查人</label><input id="firmware-inspector" type="text" placeholder="填写检查人员姓名"></div>
+                            <div class="field span-2"><label for="firmware-remark">备注</label><textarea id="firmware-remark" placeholder="填写补充说明、环境限制、样本来源、特殊情况等"></textarea></div>
+                            <div class="field span-2 upload-field"><label for="firmware-attachments">附件上传</label><input id="firmware-attachments" type="text" placeholder="固件包、分析报告、漏洞清单、截图、仿真日志（PDF/XLSX/BIN/PNG/MP4）"><input class="upload-input" type="file" data-sync-target="firmware-attachments" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.csv,.bin,.fw,.pcap,.mp4" multiple><div class="upload-note">支持 PDF/XLSX/CSV/BIN/FW/PNG/JPG/MP4，多文件会自动合并显示文件名。</div></div>
+                        </div>
+                        <div id="firmware-form-message" class="feedback" hidden></div>
+                    </div>
+
+                    <div class="report-form-section full-width">
+                        <div class="section-toolbar">
+                            <div>
+                                <h4>固件检测台账查询</h4>
+                                <p>支持按检测编号、样品名称、设备型号和检查人查询，提交后自动进入固件检测台账，可导出 CSV。</p>
+                            </div>
+                            <div class="tool-action-row">
+                                <button id="firmware-search-btn" class="primary-btn" type="button">查询</button>
+                                <button id="firmware-reset-filter-btn" class="secondary-btn" type="button">重置筛选</button>
+                                <button id="firmware-export-btn" class="secondary-btn" type="button">导出CSV</button>
+                            </div>
+                        </div>
+                        <div class="ops-toolbar">
+                            <div class="field"><label for="firmware-filter-record-no">检测编号</label><input id="firmware-filter-record-no" type="text" placeholder="输入检测编号"></div>
+                            <div class="field"><label for="firmware-filter-sample-name">样品名称</label><input id="firmware-filter-sample-name" type="text" placeholder="输入样品名称"></div>
+                            <div class="field"><label for="firmware-filter-device-model">设备型号</label><input id="firmware-filter-device-model" type="text" placeholder="输入设备型号"></div>
+                            <div class="field"><label for="firmware-filter-inspector">检查人</label><input id="firmware-filter-inspector" type="text" placeholder="输入检查人"></div>
+                            <div class="field"><label for="firmware-filter-date-from">开始日期</label><input id="firmware-filter-date-from" type="date"></div>
+                            <div class="field"><label for="firmware-filter-date-to">结束日期</label><input id="firmware-filter-date-to" type="date"></div>
+                        </div>
+                        <div class="compliance-record-highlight">
+                            <div class="ops-stat-card"><strong id="firmware-ledger-count">0</strong><span>台账总数</span></div>
+                            <div class="ops-stat-card"><strong id="firmware-device-count">0</strong><span>关联设备数</span></div>
+                            <div class="ops-stat-card"><strong id="firmware-file-count">0</strong><span>附件记录数</span></div>
+                            <div class="ops-stat-card"><strong id="firmware-query-count">0</strong><span>当前查询结果</span></div>
+                        </div>
+                        <div class="data-table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>检测编号</th>
+                                        <th>样品名称</th>
+                                        <th>设备型号</th>
+                                        <th>生产厂家</th>
+                                        <th>检查日期</th>
+                                        <th>检查人</th>
+                                        <th>附件</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="firmware-ledger-body">
+                                    <tr><td colspan="8" class="empty-state">暂无固件检测台账数据。</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-hero" style="margin-top: 28px; margin-bottom: 18px;">
+                    <div class="module-badge">09</div>
+                    <div class="module-hero-text">
+                        <h3>统计分析总览</h3>
+                        <p>首页已合并统计分析视图，进入系统后即可同时查看模块导航概览、执行热度、漏洞统计和任务负载分布，无需再切换到单独页面。</p>
+                    </div>
+                    <div class="module-status">首页合并展示</div>
+                </div>
+
+                <div class="analytics-shell">
+                    <div class="analytics-hero">
+                        <div class="analytics-hero-panel">
+                            <div class="analytics-kicker">Analytics Overview</div>
+                            <h3>检测工作态势面板</h3>
+                            <p>当前页面基于系统内已有执行记录、问题统计台账与任务管理数据自动计算，纯前端汇总，不依赖第三方图表库，可直接嵌入现有后台。</p>
+                            <div class="analytics-topline">
+                                <div class="analytics-metric"><strong id="analytics-total-executions">0</strong><span>总执行次数</span></div>
+                                <div class="analytics-metric"><strong id="analytics-total-vulns">0</strong><span>发现漏洞总数</span></div>
+                                <div class="analytics-metric"><strong id="analytics-total-managed">0</strong><span>任务管理总数</span></div>
+                                <div class="analytics-metric"><strong id="analytics-active-tools">0</strong><span>活跃工具种类</span></div>
+                            </div>
+                        </div>
+                        <div class="analytics-side-panel">
+                            <div class="analytics-kicker">Quick Insights</div>
+                            <h3>快速洞察</h3>
+                            <div id="analytics-insight-list" class="analytics-side-list">
+                                <div class="analytics-side-item"><strong>数据加载中</strong><span>...</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-section">
+                            <h3>各检测模块执行次数</h3>
+                            <p>基于历史执行记录中的模块来源与操作类型，统计各检测模块的累计调用量。</p>
+                            <div id="analytics-module-bars" class="analytics-bars"></div>
+                        </div>
+
+                        <div class="analytics-section">
+                            <h3>工具调用次数与频率</h3>
+                            <p>重点统计漏洞检测工具链的调用次数、占比和相对活跃度。</p>
+                            <div id="analytics-tool-bars" class="analytics-bars"></div>
+                        </div>
+
+                        <div class="analytics-section">
+                            <h3>漏洞发现概览</h3>
+                            <p>聚合漏洞问题台账，统计总量、严重级别与整改状态分布。</p>
+                            <div id="analytics-vuln-chip-grid" class="analytics-chip-grid"></div>
+                            <div id="analytics-severity-bars" class="analytics-bars"></div>
+                        </div>
+
+                        <div class="analytics-section">
+                            <h3>所有模块使用频率排行</h3>
+                            <p>按调用次数对系统各功能模块进行排序，帮助识别高频模块与资源倾斜方向。</p>
+                            <div id="analytics-ranking-bars" class="analytics-bars"></div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h3>补充指标</h3>
+                        <p>补充展示执行完成率、异常率、近 7 天热度、当前逾期任务和高危漏洞数量，方便作为值守驾驶舱使用。</p>
+                        <div id="analytics-mini-grid" class="analytics-mini-grid"></div>
+                        <div class="analytics-footnote">说明：本页统计结果默认按当前已拉取的系统记录计算，若后端新增记录字段，前端可继续扩展维度而无需引入额外依赖。</div>
+                    </div>
+                </div>
             </div>
 
             <div class="card panel" data-panel="vulnerability" hidden>
@@ -1550,20 +2173,24 @@
                     <div class="module-badge">04</div>
                     <div class="module-hero-text">
                         <h3>漏洞检测</h3>
-                        <p>该模块已整合原先全部可执行检测工具。以下采用下拉栏位方式管理各类工具，展开后即可执行任务、查看日志、暂停任务与下载报告。</p>
+                        <p>该模块已整合原先全部可执行检测工具。以下采用分页页签方式切换工具模块，单页聚焦单类任务，界面更清晰。</p>
                     </div>
                     <div class="module-status">执行工具中心</div>
                 </div>
-                <div class="accordion-list">
-                    <div class="accordion-item" data-accordion="basic">
-                        <button class="accordion-btn" type="button">
-                            <div class="accordion-title">
-                                <strong>基础网络探测</strong>
-                                <span>支持 Ping / Tracert，快速判断连通性与路径状态。</span>
-                            </div>
-                            <div class="accordion-indicator">+</div>
-                        </button>
-                        <div class="accordion-content" hidden>
+                <div class="tool-tabs">
+                    <button class="tool-tab active" type="button" data-vuln-tab="basic"><span class="tool-tab-index">01</span><span class="tool-tab-label">基础网络探测</span></button>
+                    <button class="tool-tab" type="button" data-vuln-tab="nmap"><span class="tool-tab-index">02</span><span class="tool-tab-label">Nmap 识别</span></button>
+                    <button class="tool-tab" type="button" data-vuln-tab="fscan"><span class="tool-tab-index">03</span><span class="tool-tab-label">Fscan 巡检</span></button>
+                    <button class="tool-tab" type="button" data-vuln-tab="nsfocus"><span class="tool-tab-index">04</span><span class="tool-tab-label">Web 漏扫下发</span></button>
+                    <button class="tool-tab" type="button" data-vuln-tab="evaluation"><span class="tool-tab-index">05</span><span class="tool-tab-label">综合评估</span></button>
+                </div>
+                <div class="tool-tab-panels">
+                    <div class="tool-tab-panel" data-vuln-panel="basic">
+                        <div class="tool-tab-header">
+                            <h4>基础网络探测</h4>
+                            <p>支持 Ping / Tracert，快速判断连通性与路径状态。</p>
+                        </div>
+                        <div class="accordion-content" style="padding: 0; border-top: 0;">
                             <div class="option-row">
                                 <label><input type="radio" name="basic-tool" value="ping" checked> Ping</label>
                                 <label><input type="radio" name="basic-tool" value="tracert"> Tracert</label>
@@ -1582,15 +2209,12 @@
                         </div>
                     </div>
 
-                    <div class="accordion-item" data-accordion="nmap">
-                        <button class="accordion-btn" type="button">
-                            <div class="accordion-title">
-                                <strong>Nmap 端口与服务识别</strong>
-                                <span>快速识别目标主机开放端口、服务类型与基础暴露面。</span>
-                            </div>
-                            <div class="accordion-indicator">+</div>
-                        </button>
-                        <div class="accordion-content" hidden>
+                    <div class="tool-tab-panel" data-vuln-panel="nmap" hidden>
+                        <div class="tool-tab-header">
+                            <h4>Nmap 端口与服务识别</h4>
+                            <p>快速识别目标主机开放端口、服务类型与基础暴露面。</p>
+                        </div>
+                        <div class="accordion-content" style="padding: 0; border-top: 0;">
                             <div class="tool-input-group">
                                 <input id="nmap-target" type="text" placeholder="请输入目标 IP，例如 192.168.1.10">
                                 <button id="nmap-run-btn" class="primary-btn">开始任务</button>
@@ -1605,15 +2229,12 @@
                         </div>
                     </div>
 
-                    <div class="accordion-item" data-accordion="fscan">
-                        <button class="accordion-btn" type="button">
-                            <div class="accordion-title">
-                                <strong>Fscan 综合漏洞巡检</strong>
-                                <span>适用于内网资产探测、服务识别与常见弱点巡检。</span>
-                            </div>
-                            <div class="accordion-indicator">+</div>
-                        </button>
-                        <div class="accordion-content" hidden>
+                    <div class="tool-tab-panel" data-vuln-panel="fscan" hidden>
+                        <div class="tool-tab-header">
+                            <h4>Fscan 综合漏洞巡检</h4>
+                            <p>适用于内网资产探测、服务识别与常见弱点巡检。</p>
+                        </div>
+                        <div class="accordion-content" style="padding: 0; border-top: 0;">
                             <div class="tool-input-group">
                                 <input id="fscan-target" type="text" placeholder="请输入 Fscan 参数，例如 -h 192.168.1.0/24">
                                 <button id="fscan-run-btn" class="primary-btn">开始任务</button>
@@ -1628,15 +2249,12 @@
                         </div>
                     </div>
 
-                    <div class="accordion-item" data-accordion="nsfocus">
-                        <button class="accordion-btn" type="button">
-                            <div class="accordion-title">
-                                <strong>Web 漏扫下发</strong>
-                                <span>调用远端 Web 漏扫平台创建任务，或下载最近生成的报告。</span>
-                            </div>
-                            <div class="accordion-indicator">+</div>
-                        </button>
-                        <div class="accordion-content" hidden>
+                    <div class="tool-tab-panel" data-vuln-panel="nsfocus" hidden>
+                        <div class="tool-tab-header">
+                            <h4>Web 漏扫下发</h4>
+                            <p>调用远端 Web 漏扫平台创建任务，或下载最近生成的报告。</p>
+                        </div>
+                        <div class="accordion-content" style="padding: 0; border-top: 0;">
                             <div class="tool-input-group">
                                 <input id="nsfocus-target" type="text" placeholder="请输入目标 IP，例如 192.168.193.11">
                                 <input id="nsfocus-task-name" class="tool-task-name" type="text" placeholder="可选：任务名称">
@@ -1654,15 +2272,12 @@
                         </div>
                     </div>
 
-                    <div class="accordion-item" data-accordion="evaluation">
-                        <button class="accordion-btn" type="button">
-                            <div class="accordion-title">
-                                <strong>综合评估</strong>
-                                <span>统一串联基础探测、端口识别、Fscan 与 Web 漏扫，输出完整评估报告。</span>
-                            </div>
-                            <div class="accordion-indicator">+</div>
-                        </button>
-                        <div class="accordion-content" hidden>
+                    <div class="tool-tab-panel" data-vuln-panel="evaluation" hidden>
+                        <div class="tool-tab-header">
+                            <h4>综合评估</h4>
+                            <p>统一串联基础探测、端口识别、Fscan 与 Web 漏扫，输出完整评估报告。</p>
+                        </div>
+                        <div class="accordion-content" style="padding: 0; border-top: 0;">
                             <div class="tool-input-group">
                                 <input id="evaluation-target" type="text" placeholder="请输入目标 IP，例如 192.168.193.11">
                                 <input id="evaluation-task-name" class="tool-task-name" type="text" placeholder="可选：评估任务名称">
@@ -1869,6 +2484,7 @@
                                 <p>提交后的表单自动归档至台账列表，可按设备、编号和检查结果追溯查看。</p>
                             </div>
                             <div class="tool-action-row">
+                                <button id="compliance-export-btn" class="secondary-btn" type="button">导出CSV</button>
                                 <button id="compliance-refresh-ledger-btn" class="secondary-btn" type="button">刷新台账</button>
                             </div>
                         </div>
@@ -3125,7 +3741,7 @@
                 },
                 vulnerability: {
                     title: "漏洞检测",
-                    subtitle: "全部检测工具已集中至此，并以可展开的下拉栏位方式组织。"
+                    subtitle: "全部检测工具已集中至此，并以分页页签方式组织。"
                 },
                 "electromagnetic-device": {
                     title: "设备电磁安全检测",
@@ -3142,6 +3758,10 @@
                 compliance: {
                     title: "合规性检查",
                     subtitle: "对标制度、规范和基线要求，形成符合性核验与整改建议。"
+                },
+                analytics: {
+                    title: "统计分析",
+                    subtitle: "聚合执行历史、漏洞台账与任务数据，生成模块调用热度、漏洞发现情况和整体使用频率排行。"
                 },
                 "execution-history": {
                     title: "历史执行记录",
@@ -3176,9 +3796,6 @@
                 "report-issue-statistics": "issue_statistics"
             };
             const REPORT_COMPILE_DRAFT_KEY = "mst_report_compile_drafts_v1";
-            const SHARED_DEVICE_LIBRARY_KEY = "mst_shared_device_library_v1";
-            const COMPLIANCE_FORM_DRAFT_KEY = "mst_compliance_form_draft_v1";
-            const COMPLIANCE_LEDGER_KEY = "mst_compliance_ledger_v1";
             const ITEM_CONFIRMATION_REASON_OPTIONS = [
                 { value: "业务不涉及", label: "业务不涉及" },
                 { value: "无环境", label: "无环境" },
@@ -3352,6 +3969,13 @@
                     dateTo: ""
                 },
                 historyData: [],
+                analyticsData: {
+                    issues: [],
+                    managedTasks: [],
+                    historyLoaded: false,
+                    issuesLoaded: false,
+                    managedLoaded: false
+                },
                 managedTaskFilters: {
                     keyword: "",
                     taskType: "",
@@ -3368,6 +3992,8 @@
                 pollers: {},
                 sharedDevices: [],
                 complianceLedger: [],
+                firmwareLedger: [],
+                activeDeviceModalContext: "compliance",
                 panels: {
                     basic: createPanelState(),
                     nmap: createPanelState(),
@@ -3406,6 +4032,19 @@
             const managedTableBody = document.getElementById("managed-table-body");
             const managedDetailCard = document.getElementById("managed-detail-card");
             const managedDetailGrid = document.getElementById("managed-detail-grid");
+            const analyticsDom = {
+                totalExecutions: document.getElementById("analytics-total-executions"),
+                totalVulns: document.getElementById("analytics-total-vulns"),
+                totalManaged: document.getElementById("analytics-total-managed"),
+                activeTools: document.getElementById("analytics-active-tools"),
+                insightList: document.getElementById("analytics-insight-list"),
+                moduleBars: document.getElementById("analytics-module-bars"),
+                toolBars: document.getElementById("analytics-tool-bars"),
+                vulnChipGrid: document.getElementById("analytics-vuln-chip-grid"),
+                severityBars: document.getElementById("analytics-severity-bars"),
+                rankingBars: document.getElementById("analytics-ranking-bars"),
+                miniGrid: document.getElementById("analytics-mini-grid")
+            };
 
             const panelDom = {
                 basic: bindPanelDom("basic"),
@@ -3573,18 +4212,6 @@
                 localStorage.setItem(REPORT_COMPILE_DRAFT_KEY, JSON.stringify(drafts));
             }
 
-            function readJsonStorage(key, fallback) {
-                try {
-                    return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
-                } catch (error) {
-                    return fallback;
-                }
-            }
-
-            function writeJsonStorage(key, value) {
-                localStorage.setItem(key, JSON.stringify(value));
-            }
-
             function normalizeText(value) {
                 return String(value || "").trim();
             }
@@ -3593,17 +4220,27 @@
                 return normalizeText(value).toLowerCase();
             }
 
+            function isAutoGeneratedComplianceRecordNo(value) {
+                return /^HC-\d{8}-\d{3}$/.test(normalizeText(value));
+            }
+
+            function isAutoGeneratedFirmwareRecordNo(value) {
+                return /^FW-\d{8}-\d{3}$/.test(normalizeText(value));
+            }
+
             function ensureSharedDevicesLoaded() {
-                if (!Array.isArray(state.sharedDevices) || !state.sharedDevices.length) {
-                    state.sharedDevices = readJsonStorage(SHARED_DEVICE_LIBRARY_KEY, []);
-                }
                 state.sharedDevices = dedupeSharedDevices(state.sharedDevices);
-                writeJsonStorage(SHARED_DEVICE_LIBRARY_KEY, state.sharedDevices);
             }
 
             function ensureComplianceLedgerLoaded() {
-                if (!Array.isArray(state.complianceLedger) || !state.complianceLedger.length) {
-                    state.complianceLedger = readJsonStorage(COMPLIANCE_LEDGER_KEY, []);
+                if (!Array.isArray(state.complianceLedger)) {
+                    state.complianceLedger = [];
+                }
+            }
+
+            function ensureFirmwareLedgerLoaded() {
+                if (!Array.isArray(state.firmwareLedger)) {
+                    state.firmwareLedger = [];
                 }
             }
 
@@ -3631,11 +4268,14 @@
 
             function saveSharedDevices() {
                 state.sharedDevices = dedupeSharedDevices(state.sharedDevices);
-                writeJsonStorage(SHARED_DEVICE_LIBRARY_KEY, state.sharedDevices);
             }
 
             function saveComplianceLedger() {
-                writeJsonStorage(COMPLIANCE_LEDGER_KEY, state.complianceLedger);
+                ensureComplianceLedgerLoaded();
+            }
+
+            function saveFirmwareLedger() {
+                ensureFirmwareLedgerLoaded();
             }
 
             function getSharedDeviceBySampleAndModel(sampleName, model) {
@@ -3699,13 +4339,15 @@
                 return true;
             }
 
-            function saveComplianceDraft() {
+            async function saveComplianceDraft() {
                 const payload = collectComplianceFormPayload();
-                writeJsonStorage(COMPLIANCE_FORM_DRAFT_KEY, payload);
+                if (!state.currentUser.username || !getToken()) return;
+                await saveComplianceDraftRemote(payload);
             }
 
-            function restoreComplianceDraft() {
-                const payload = readJsonStorage(COMPLIANCE_FORM_DRAFT_KEY, {});
+            async function restoreComplianceDraft() {
+                if (!state.currentUser.username || !getToken()) return;
+                const payload = await loadComplianceDraftFromBackend();
                 if (!payload || typeof payload !== "object") return;
                 Object.entries(payload).forEach(([key, value]) => {
                     const el = document.getElementById(key);
@@ -3716,25 +4358,20 @@
                 syncComplianceDeviceDetails();
             }
 
-            function clearComplianceDraft() {
-                localStorage.removeItem(COMPLIANCE_FORM_DRAFT_KEY);
+            async function clearComplianceDraft() {
+                if (!state.currentUser.username || !getToken()) return;
+                await clearComplianceDraftRemote();
             }
 
-            function getNextComplianceRecordNo() {
-                ensureComplianceLedgerLoaded();
-                const currentDate = new Date();
-                const year = currentDate.getFullYear();
-                const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-                const day = String(currentDate.getDate()).padStart(2, "0");
-                const prefix = `HC-${year}${month}${day}`;
-                const todayCount = state.complianceLedger.filter((item) => String(item.record_no || "").startsWith(prefix)).length + 1;
-                return `${prefix}-${String(todayCount).padStart(3, "0")}`;
+            async function getNextComplianceRecordNo() {
+                if (!state.currentUser.username || !getToken()) return "";
+                return fetchNextRecordNo("compliance");
             }
 
-            function ensureComplianceRecordNo() {
+            async function ensureComplianceRecordNo() {
                 const input = document.getElementById("compliance-record-no");
                 if (input && !normalizeText(input.value)) {
-                    input.value = getNextComplianceRecordNo();
+                    input.value = await getNextComplianceRecordNo();
                 }
             }
 
@@ -3747,6 +4384,14 @@
                     return;
                 }
                 traceInput.value = sampleName || model ? `${normalizeText(sampleName)} / ${normalizeText(model)}`.replace(/^ \/ | \/ $/g, "") : "";
+            }
+
+            function fillFirmwareDetails(sampleName, model) {
+                const manufacturerInput = document.getElementById("firmware-manufacturer");
+                const device = getSharedDeviceBySampleAndModel(sampleName, model);
+                if (device && manufacturerInput && !normalizeText(manufacturerInput.value)) {
+                    manufacturerInput.value = device.manufacturer || "";
+                }
             }
 
             function syncComplianceDeviceDetails() {
@@ -3782,6 +4427,211 @@
                 };
             }
 
+            function collectFirmwareFormPayload() {
+                const getValue = (id) => normalizeText(document.getElementById(id)?.value);
+                return {
+                    record_no: getValue("firmware-record-no"),
+                    sample_name: getValue("firmware-sample-name"),
+                    device_model: getValue("firmware-device-model"),
+                    manufacturer: getValue("firmware-manufacturer"),
+                    check_date: getValue("firmware-check-date"),
+                    inspector: getValue("firmware-inspector"),
+                    remark: getValue("firmware-remark"),
+                    attachments: getValue("firmware-attachments"),
+                    items: Array.from({ length: 9 }, (_, index) => {
+                        const itemNo = index + 1;
+                        return {
+                            item_no: itemNo,
+                            item_name: [
+                                "固件提取",
+                                "固件元信息分析",
+                                "敏感文件提取",
+                                "供应链安全分析",
+                                "代码审计",
+                                "漏洞挖掘",
+                                "漏洞匹配",
+                                "恶意代码检测",
+                                "仿真测试"
+                            ][index],
+                            description: getValue(`firmware-item-${itemNo}-desc`),
+                            mode: getValue(`firmware-item-${itemNo}-mode`),
+                            method: getValue(`firmware-item-${itemNo}-method`),
+                            process: getValue(`firmware-item-${itemNo}-process`),
+                            result: getValue(`firmware-item-${itemNo}-result`)
+                        };
+                    })
+                };
+            }
+
+            function validateFirmwareForm(payload) {
+                if (!payload.record_no) return "请填写检测编号。";
+                if (!payload.sample_name) return "请选择样品名称。";
+                if (!payload.device_model) return "请选择设备型号。";
+                if (!payload.check_date) return "请填写检查日期。";
+                if (!payload.inspector) return "请填写检查人。";
+                const hasEmptyItem = (payload.items || []).find((item) => !item.process || !item.result);
+                if (hasEmptyItem) {
+                    return `${hasEmptyItem.item_name}：请完整填写检测过程和检测结果。`;
+                }
+                return "";
+            }
+
+            async function saveFirmwareDraft() {
+                if (!state.currentUser.username || !getToken()) return;
+                await saveFirmwareDraftRemote(collectFirmwareFormPayload());
+            }
+
+            async function restoreFirmwareDraft() {
+                if (!state.currentUser.username || !getToken()) return;
+                const payload = await loadFirmwareDraftFromBackend();
+                if (!payload || typeof payload !== "object") return;
+                [
+                    "firmware-record-no",
+                    "firmware-sample-name",
+                    "firmware-device-model",
+                    "firmware-manufacturer",
+                    "firmware-check-date",
+                    "firmware-inspector",
+                    "firmware-remark",
+                    "firmware-attachments"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    const payloadKey = id.replace(/-/g, "_");
+                    if (el && payload[payloadKey] !== undefined) {
+                        el.value = payload[payloadKey] ?? "";
+                    }
+                });
+                (payload.items || []).forEach((item) => {
+                    const itemNo = item.item_no;
+                    if (!itemNo) return;
+                    [
+                        ["desc", item.description],
+                        ["mode", item.mode],
+                        ["method", item.method],
+                        ["process", item.process],
+                        ["result", item.result]
+                    ].forEach(([suffix, value]) => {
+                        const el = document.getElementById(`firmware-item-${itemNo}-${suffix}`);
+                        if (el) el.value = value ?? "";
+                    });
+                });
+                fillFirmwareDetails(getValueById("firmware-sample-name"), getValueById("firmware-device-model"));
+            }
+
+            async function clearFirmwareDraft() {
+                if (!state.currentUser.username || !getToken()) return;
+                await clearFirmwareDraftRemote();
+            }
+
+            function getValueById(id) {
+                return normalizeText(document.getElementById(id)?.value);
+            }
+
+            async function getNextFirmwareRecordNo() {
+                if (!state.currentUser.username || !getToken()) return "";
+                return fetchNextRecordNo("firmware");
+            }
+
+            async function ensureFirmwareRecordNo() {
+                const input = document.getElementById("firmware-record-no");
+                if (input && !normalizeText(input.value)) {
+                    input.value = await getNextFirmwareRecordNo();
+                }
+            }
+
+            async function resetFirmwareForm(regenerateRecordNo = true) {
+                [
+                    "firmware-record-no",
+                    "firmware-sample-name",
+                    "firmware-device-model",
+                    "firmware-manufacturer",
+                    "firmware-check-date",
+                    "firmware-inspector",
+                    "firmware-remark",
+                    "firmware-attachments"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+                Array.from({ length: 9 }, (_, index) => index + 1).forEach((itemNo) => {
+                    ["process", "result"].forEach((suffix) => {
+                        const el = document.getElementById(`firmware-item-${itemNo}-${suffix}`);
+                        if (el) el.value = "";
+                    });
+                });
+                if (regenerateRecordNo) await ensureFirmwareRecordNo();
+            }
+
+            function collectFirmwareFilters() {
+                return {
+                    record_no: getValueById("firmware-filter-record-no"),
+                    sample_name: getValueById("firmware-filter-sample-name"),
+                    device_model: getValueById("firmware-filter-device-model"),
+                    inspector: getValueById("firmware-filter-inspector"),
+                    date_from: getValueById("firmware-filter-date-from"),
+                    date_to: getValueById("firmware-filter-date-to")
+                };
+            }
+
+            async function renderFirmwareLedger() {
+                if (state.currentUser.username && getToken()) {
+                    await loadFirmwareLedgerFromBackend(collectFirmwareFilters());
+                }
+                ensureFirmwareLedgerLoaded();
+                const rows = state.firmwareLedger;
+                const tbody = document.getElementById("firmware-ledger-body");
+                const totalEl = document.getElementById("firmware-ledger-count");
+                const deviceEl = document.getElementById("firmware-device-count");
+                const fileEl = document.getElementById("firmware-file-count");
+                const queryEl = document.getElementById("firmware-query-count");
+                if (totalEl) totalEl.textContent = String(state.firmwareLedger.length);
+                if (deviceEl) {
+                    const devices = new Set(state.firmwareLedger.map((item) => `${item.sample_name}::${item.device_model}`));
+                    deviceEl.textContent = String(devices.size);
+                }
+                if (fileEl) fileEl.textContent = String(state.firmwareLedger.filter((item) => normalizeText(item.attachments)).length);
+                if (queryEl) queryEl.textContent = String(rows.length);
+                if (!tbody) return;
+                if (!rows.length) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无符合条件的固件检测台账数据。</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = rows
+                    .slice()
+                    .sort((a, b) => String(b.check_date || "").localeCompare(String(a.check_date || "")) || String(b.created_at || "").localeCompare(String(a.created_at || "")))
+                    .map((item) => `
+                        <tr>
+                            <td class="compact-cell">${escapeHtml(item.record_no)}</td>
+                            <td>${escapeHtml(item.sample_name)}</td>
+                            <td>${escapeHtml(item.device_model)}</td>
+                            <td>${escapeHtml(item.manufacturer || "-")}</td>
+                            <td class="compact-cell">${escapeHtml(item.check_date || "-")}</td>
+                            <td>${escapeHtml(item.inspector || "-")}</td>
+                            <td>${escapeHtml(item.attachments || "-")}</td>
+                            <td>${escapeHtml(item.remark || "-")}</td>
+                        </tr>
+                    `).join("");
+            }
+
+            async function exportFirmwareLedgerCsv() {
+                if (!state.currentUser.username || !getToken()) return;
+                const filters = collectFirmwareFilters();
+                const hasAnyFilter = Object.values(filters).some((value) => normalizeText(value));
+                if (!hasAnyFilter && !state.firmwareLedger.length) {
+                    setFeedbackMessage("firmware-form-message", "当前没有可导出的固件检测台账数据。", "warning");
+                    return;
+                }
+                try {
+                    await secureDownload("/module-data/firmware/export", filters, "firmware_ledger.csv");
+                } catch (error) {
+                    if (error.status === 401) {
+                        handleAuthFailure();
+                        return;
+                    }
+                    setFeedbackMessage("firmware-form-message", error.message || "导出失败。", "error");
+                }
+            }
+
             function validateComplianceForm(payload) {
                 if (!payload["compliance-record-no"]) return "请填写检测编号。";
                 if (!payload["compliance-sample-name"]) return "请选择样品名称。";
@@ -3793,7 +4643,27 @@
                 return "";
             }
 
-            function renderComplianceLedger() {
+            async function exportComplianceLedgerCsv() {
+                if (!state.currentUser.username || !getToken()) return;
+                if (!state.complianceLedger.length) {
+                    setFeedbackMessage("compliance-form-message", "当前没有可导出的合规性检查台账数据。", "warning");
+                    return;
+                }
+                try {
+                    await secureDownload("/module-data/compliance/export", {}, "compliance_ledger.csv");
+                } catch (error) {
+                    if (error.status === 401) {
+                        handleAuthFailure();
+                        return;
+                    }
+                    setFeedbackMessage("compliance-form-message", error.message || "导出失败。", "error");
+                }
+            }
+
+            async function renderComplianceLedger() {
+                if (state.currentUser.username && getToken()) {
+                    await loadComplianceLedgerFromBackend();
+                }
                 ensureComplianceLedgerLoaded();
                 const tbody = document.getElementById("compliance-ledger-body");
                 const totalEl = document.getElementById("compliance-ledger-count");
@@ -3831,9 +4701,10 @@
                     `).join("");
             }
 
-            function openComplianceDeviceModal() {
+            function openComplianceDeviceModal(context = "compliance") {
                 const modal = document.getElementById("compliance-device-modal");
                 if (!modal) return;
+                state.activeDeviceModalContext = context;
                 [
                     "device-modal-sample-name",
                     "device-modal-model",
@@ -3854,7 +4725,7 @@
                 if (modal) modal.hidden = true;
             }
 
-            function saveComplianceDeviceFromModal() {
+            async function saveComplianceDeviceFromModal() {
                 const sampleName = normalizeText(document.getElementById("device-modal-sample-name")?.value);
                 const deviceModel = normalizeText(document.getElementById("device-modal-model")?.value);
                 const manufacturer = normalizeText(document.getElementById("device-modal-manufacturer")?.value);
@@ -3869,22 +4740,42 @@
                     setFeedbackMessage("device-modal-message", "请填写设备型号。", "error");
                     return;
                 }
-                upsertSharedDevice({
-                    sample_name: sampleName,
-                    device_model: deviceModel,
-                    manufacturer,
-                    device_category: category,
-                    spec,
-                    remark
-                });
+                try {
+                    await upsertSharedDevice({
+                        sample_name: sampleName,
+                        device_model: deviceModel,
+                        manufacturer,
+                        device_category: category,
+                        spec,
+                        remark
+                    });
+                } catch (error) {
+                    if (error.status === 401) {
+                        handleAuthFailure();
+                        return;
+                    }
+                    setFeedbackMessage("device-modal-message", error.message || "保存设备失败。", "error");
+                    return;
+                }
                 const complianceSample = document.getElementById("compliance-sample-name");
                 const complianceModel = document.getElementById("compliance-device-model");
                 const complianceManufacturer = document.getElementById("compliance-manufacturer");
                 const complianceCategory = document.getElementById("compliance-device-category");
-                if (complianceSample && !normalizeText(complianceSample.value)) complianceSample.value = sampleName;
-                if (complianceModel && !normalizeText(complianceModel.value)) complianceModel.value = deviceModel;
-                if (complianceManufacturer && !normalizeText(complianceManufacturer.value)) complianceManufacturer.value = manufacturer;
-                if (complianceCategory && !normalizeText(complianceCategory.value)) complianceCategory.value = category;
+                const firmwareSample = document.getElementById("firmware-sample-name");
+                const firmwareModel = document.getElementById("firmware-device-model");
+                const firmwareManufacturer = document.getElementById("firmware-manufacturer");
+                if (state.activeDeviceModalContext === "compliance") {
+                    if (complianceSample && !normalizeText(complianceSample.value)) complianceSample.value = sampleName;
+                    if (complianceModel && !normalizeText(complianceModel.value)) complianceModel.value = deviceModel;
+                    if (complianceManufacturer && !normalizeText(complianceManufacturer.value)) complianceManufacturer.value = manufacturer;
+                    if (complianceCategory && !normalizeText(complianceCategory.value)) complianceCategory.value = category;
+                }
+                if (state.activeDeviceModalContext === "firmware") {
+                    if (firmwareSample && !normalizeText(firmwareSample.value)) firmwareSample.value = sampleName;
+                    if (firmwareModel && !normalizeText(firmwareModel.value)) firmwareModel.value = deviceModel;
+                    if (firmwareManufacturer && !normalizeText(firmwareManufacturer.value)) firmwareManufacturer.value = manufacturer;
+                    saveFirmwareDraft().catch(() => {});
+                }
                 const sampleFieldSet = setAllReportFieldValues("sample-name", sampleName);
                 const modelFieldSet = setAllReportFieldValues("sample-model", deviceModel);
                 if (sampleFieldSet || modelFieldSet) {
@@ -3894,22 +4785,22 @@
                     }
                 }
                 syncAllSharedDeviceConsumers();
-                saveComplianceDraft();
+                saveComplianceDraft().catch(() => {});
                 setFeedbackMessage("device-modal-message", "被测设备已加入公共设备数据源。", "success");
                 window.setTimeout(() => closeComplianceDeviceModal(), 300);
             }
 
-            function saveComplianceFormAsDraft() {
+            async function saveComplianceFormAsDraft() {
                 const payload = collectComplianceFormPayload();
                 if (!payload["compliance-record-no"]) {
-                    ensureComplianceRecordNo();
+                    await ensureComplianceRecordNo();
                 }
-                saveComplianceDraft();
+                await saveComplianceDraft();
                 setFeedbackMessage("compliance-form-message", "合规性检查表单已暂存。", "success");
             }
 
-            function submitComplianceForm() {
-                ensureComplianceRecordNo();
+            async function submitComplianceForm() {
+                await ensureComplianceRecordNo();
                 const payload = collectComplianceFormPayload();
                 const validationMessage = validateComplianceForm(payload);
                 if (validationMessage) {
@@ -3917,40 +4808,49 @@
                     return;
                 }
 
-                upsertSharedDevice({
-                    sample_name: payload["compliance-sample-name"],
-                    device_model: payload["compliance-device-model"],
-                    manufacturer: payload["compliance-manufacturer"],
-                    device_category: payload["compliance-device-category"],
-                    spec: "",
-                    remark: payload["compliance-remark"]
-                });
-
-                ensureComplianceLedgerLoaded();
-                state.complianceLedger.push({
-                    id: `compliance-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
-                    record_no: payload["compliance-record-no"],
-                    standard: payload["compliance-standard"],
-                    sample_name: payload["compliance-sample-name"],
-                    device_model: payload["compliance-device-model"],
-                    manufacturer: payload["compliance-manufacturer"],
-                    device_category: payload["compliance-device-category"],
-                    check_item: payload["compliance-check-item"],
-                    result: payload["compliance-result"],
-                    issue_desc: payload["compliance-issue-desc"],
-                    rectification: payload["compliance-rectification"],
-                    check_date: payload["compliance-check-date"],
-                    inspector: payload["compliance-inspector"],
-                    remark: payload["compliance-remark"],
-                    source_trace: payload["compliance-source-trace"],
-                    created_at: new Date().toISOString()
-                });
-                saveComplianceLedger();
-                renderComplianceLedger();
-                clearComplianceDraft();
-                resetComplianceForm(true);
-                syncAllSharedDeviceConsumers();
-                setFeedbackMessage("compliance-form-message", "合规性检查表单已提交并归档到台账。", "success");
+                try {
+                    await upsertSharedDevice({
+                        sample_name: payload["compliance-sample-name"],
+                        device_model: payload["compliance-device-model"],
+                        manufacturer: payload["compliance-manufacturer"],
+                        device_category: payload["compliance-device-category"],
+                        spec: "",
+                        remark: payload["compliance-remark"]
+                    });
+                    const response = await moduleDataRequest("/compliance/records", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            record_no: isAutoGeneratedComplianceRecordNo(payload["compliance-record-no"]) ? "" : payload["compliance-record-no"],
+                            standard: payload["compliance-standard"],
+                            sample_name: payload["compliance-sample-name"],
+                            device_model: payload["compliance-device-model"],
+                            manufacturer: payload["compliance-manufacturer"],
+                            device_category: payload["compliance-device-category"],
+                            check_item: payload["compliance-check-item"],
+                            result: payload["compliance-result"],
+                            issue_desc: payload["compliance-issue-desc"],
+                            rectification: payload["compliance-rectification"],
+                            check_date: payload["compliance-check-date"],
+                            inspector: payload["compliance-inspector"],
+                            remark: payload["compliance-remark"],
+                            source_trace: payload["compliance-source-trace"]
+                        })
+                    });
+                    const saved = response.data || {};
+                    state.complianceLedger.unshift(saved);
+                    saveComplianceLedger();
+                    await clearComplianceDraft();
+                    await resetComplianceForm(true);
+                    await renderComplianceLedger();
+                    syncAllSharedDeviceConsumers();
+                    setFeedbackMessage("compliance-form-message", "合规性检查表单已提交并归档到台账。", "success");
+                } catch (error) {
+                    if (error.status === 401) {
+                        handleAuthFailure();
+                        return;
+                    }
+                    setFeedbackMessage("compliance-form-message", error.message || "提交失败。", "error");
+                }
             }
 
             function bindComplianceEvents() {
@@ -3958,15 +4858,16 @@
                 const complianceSampleInput = document.getElementById("compliance-sample-name");
                 const complianceModelInput = document.getElementById("compliance-device-model");
 
-                document.getElementById("compliance-add-device-btn")?.addEventListener("click", openComplianceDeviceModal);
+                document.getElementById("compliance-add-device-btn")?.addEventListener("click", () => openComplianceDeviceModal("compliance"));
                 document.getElementById("compliance-save-btn")?.addEventListener("click", saveComplianceFormAsDraft);
                 document.getElementById("compliance-reset-btn")?.addEventListener("click", () => {
-                    resetComplianceForm(true);
-                    clearComplianceDraft();
+                    resetComplianceForm(true).catch(() => {});
+                    clearComplianceDraft().catch(() => {});
                     setFeedbackMessage("compliance-form-message", "合规性检查表单已重置。", "success");
                 });
                 document.getElementById("compliance-submit-btn")?.addEventListener("click", submitComplianceForm);
-                document.getElementById("compliance-refresh-ledger-btn")?.addEventListener("click", renderComplianceLedger);
+                document.getElementById("compliance-export-btn")?.addEventListener("click", exportComplianceLedgerCsv);
+                document.getElementById("compliance-refresh-ledger-btn")?.addEventListener("click", () => renderComplianceLedger().catch(() => {}));
                 document.getElementById("device-modal-submit-btn")?.addEventListener("click", saveComplianceDeviceFromModal);
                 document.getElementById("device-modal-cancel-btn")?.addEventListener("click", closeComplianceDeviceModal);
 
@@ -4007,14 +4908,14 @@
                         if (id === "compliance-sample-name" || id === "compliance-device-model") {
                             syncComplianceDeviceDetails();
                         }
-                        saveComplianceDraft();
+                        saveComplianceDraft().catch(() => {});
                     });
                     if (eventName !== "change") {
                         el.addEventListener("change", () => {
                             if (id === "compliance-sample-name" || id === "compliance-device-model") {
                                 syncComplianceDeviceDetails();
                             }
-                            saveComplianceDraft();
+                            saveComplianceDraft().catch(() => {});
                         });
                     }
                 });
@@ -4025,6 +4926,129 @@
                 if (complianceModelInput) {
                     complianceModelInput.addEventListener("change", syncComplianceDeviceDetails);
                 }
+            }
+
+            async function saveFirmwareFormAsDraft() {
+                if (!getValueById("firmware-record-no")) {
+                    await ensureFirmwareRecordNo();
+                }
+                await saveFirmwareDraft();
+                setFeedbackMessage("firmware-form-message", "固件检测表单已保存。", "success");
+            }
+
+            async function submitFirmwareForm() {
+                await ensureFirmwareRecordNo();
+                const payload = collectFirmwareFormPayload();
+                const validationMessage = validateFirmwareForm(payload);
+                if (validationMessage) {
+                    setFeedbackMessage("firmware-form-message", validationMessage, "error");
+                    return;
+                }
+                try {
+                    await upsertSharedDevice({
+                        sample_name: payload.sample_name,
+                        device_model: payload.device_model,
+                        manufacturer: payload.manufacturer,
+                        device_category: "",
+                        spec: "",
+                        remark: payload.remark
+                    });
+                    const response = await moduleDataRequest("/firmware/records", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            ...payload,
+                            record_no: isAutoGeneratedFirmwareRecordNo(payload.record_no) ? "" : payload.record_no
+                        })
+                    });
+                    const saved = response.data || {};
+                    state.firmwareLedger.unshift(saved);
+                    saveFirmwareLedger();
+                    await clearFirmwareDraft();
+                    await resetFirmwareForm(true);
+                    await renderFirmwareLedger();
+                    syncAllSharedDeviceConsumers();
+                    setFeedbackMessage("firmware-form-message", "固件检测表单已提交并归档到台账。", "success");
+                } catch (error) {
+                    if (error.status === 401) {
+                        handleAuthFailure();
+                        return;
+                    }
+                    setFeedbackMessage("firmware-form-message", error.message || "提交失败。", "error");
+                }
+            }
+
+            function resetFirmwareFilters() {
+                [
+                    "firmware-filter-record-no",
+                    "firmware-filter-sample-name",
+                    "firmware-filter-device-model",
+                    "firmware-filter-inspector",
+                    "firmware-filter-date-from",
+                    "firmware-filter-date-to"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+            }
+
+            function bindFirmwareEvents() {
+                document.getElementById("firmware-add-device-btn")?.addEventListener("click", () => openComplianceDeviceModal("firmware"));
+                document.getElementById("firmware-save-btn")?.addEventListener("click", saveFirmwareFormAsDraft);
+                document.getElementById("firmware-reset-btn")?.addEventListener("click", () => {
+                    resetFirmwareForm(true).catch(() => {});
+                    clearFirmwareDraft().catch(() => {});
+                    setFeedbackMessage("firmware-form-message", "固件检测表单已重置。", "success");
+                });
+                document.getElementById("firmware-submit-btn")?.addEventListener("click", submitFirmwareForm);
+                document.getElementById("firmware-search-btn")?.addEventListener("click", () => renderFirmwareLedger().catch(() => {}));
+                document.getElementById("firmware-reset-filter-btn")?.addEventListener("click", () => {
+                    resetFirmwareFilters();
+                    renderFirmwareLedger().catch(() => {});
+                });
+                document.getElementById("firmware-export-btn")?.addEventListener("click", exportFirmwareLedgerCsv);
+
+                [
+                    "firmware-record-no",
+                    "firmware-sample-name",
+                    "firmware-device-model",
+                    "firmware-manufacturer",
+                    "firmware-check-date",
+                    "firmware-inspector",
+                    "firmware-remark",
+                    "firmware-attachments"
+                ].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.addEventListener("input", () => {
+                        if (id === "firmware-sample-name") {
+                            renderSharedDeviceDatalists(el.value);
+                            const currentModel = document.getElementById("firmware-device-model");
+                            const availableModels = getSharedDeviceModels(el.value);
+                            if (currentModel && normalizeText(currentModel.value) && !availableModels.includes(normalizeText(currentModel.value))) {
+                                currentModel.value = "";
+                            }
+                        }
+                        if (id === "firmware-sample-name" || id === "firmware-device-model") {
+                            fillFirmwareDetails(getValueById("firmware-sample-name"), getValueById("firmware-device-model"));
+                        }
+                        saveFirmwareDraft().catch(() => {});
+                    });
+                    el.addEventListener("change", () => {
+                        if (id === "firmware-sample-name" || id === "firmware-device-model") {
+                            fillFirmwareDetails(getValueById("firmware-sample-name"), getValueById("firmware-device-model"));
+                        }
+                        saveFirmwareDraft().catch(() => {});
+                    });
+                });
+
+                Array.from({ length: 9 }, (_, index) => index + 1).forEach((itemNo) => {
+                    ["process", "result"].forEach((suffix) => {
+                        const el = document.getElementById(`firmware-item-${itemNo}-${suffix}`);
+                        if (!el) return;
+                        el.addEventListener("input", () => saveFirmwareDraft().catch(() => {}));
+                        el.addEventListener("change", () => saveFirmwareDraft().catch(() => {}));
+                    });
+                });
             }
 
             function bindSharedDeviceEvents() {
@@ -4043,7 +5067,7 @@
                         });
                     });
                     el.addEventListener("change", () => {
-                        upsertSharedDeviceFromCurrentReportCompile();
+                        upsertSharedDeviceFromCurrentReportCompile().catch(() => {});
                         syncReportCompileSharedDeviceFieldsFromLibrary();
                     });
                 });
@@ -4051,13 +5075,13 @@
                 modelElements.forEach((el) => {
                     el.setAttribute("list", "shared-device-model-options");
                     el.addEventListener("change", () => {
-                        upsertSharedDeviceFromCurrentReportCompile();
+                        upsertSharedDeviceFromCurrentReportCompile().catch(() => {});
                         syncReportCompileSharedDeviceFieldsFromLibrary();
                     });
                 });
             }
 
-            function resetComplianceForm(regenerateRecordNo = true) {
+            async function resetComplianceForm(regenerateRecordNo = true) {
                 [
                     "compliance-record-no",
                     "compliance-standard",
@@ -4077,7 +5101,7 @@
                     const el = document.getElementById(id);
                     if (el) el.value = "";
                 });
-                if (regenerateRecordNo) ensureComplianceRecordNo();
+                if (regenerateRecordNo) await ensureComplianceRecordNo();
             }
 
             function setFeedbackMessage(elementId, message, cssClass) {
@@ -4088,41 +5112,27 @@
                 el.textContent = message || "";
             }
 
-            function upsertSharedDevice(device) {
-                ensureSharedDevicesLoaded();
-                const normalizedSample = slugifyText(device.sample_name);
-                const normalizedModel = slugifyText(device.device_model);
-                const index = state.sharedDevices.findIndex((item) => slugifyText(item.sample_name) === normalizedSample && slugifyText(item.device_model) === normalizedModel);
-                const nextItem = {
-                    id: device.id || `device-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+            async function upsertSharedDevice(device) {
+                const record = await upsertSharedDeviceRemote({
                     sample_name: normalizeText(device.sample_name),
                     device_model: normalizeText(device.device_model),
                     manufacturer: normalizeText(device.manufacturer),
                     device_category: normalizeText(device.device_category),
                     spec: normalizeText(device.spec),
-                    remark: normalizeText(device.remark),
-                    created_at: device.created_at || new Date().toISOString()
-                };
-                if (index >= 0) {
-                    state.sharedDevices[index] = {
-                        ...state.sharedDevices[index],
-                        ...nextItem
-                    };
-                } else {
-                    state.sharedDevices.push(nextItem);
-                }
-                saveSharedDevices();
+                    remark: normalizeText(device.remark)
+                });
                 syncAllSharedDeviceConsumers();
+                return record;
             }
 
-            function upsertSharedDeviceFromCurrentReportCompile() {
+            async function upsertSharedDeviceFromCurrentReportCompile() {
                 const sampleElement = getVisibleReportFieldElement("sample-name");
                 const modelElement = getVisibleReportFieldElement("sample-model");
                 const manufacturerElement = getVisibleReportFieldElement("manufacturer");
                 const sampleName = normalizeText(sampleElement?.value);
                 const deviceModel = normalizeText(modelElement?.value);
                 if (!sampleName || !deviceModel) return;
-                upsertSharedDevice({
+                await upsertSharedDevice({
                     sample_name: sampleName,
                     device_model: deviceModel,
                     manufacturer: normalizeText(manufacturerElement?.value),
@@ -4947,9 +5957,18 @@
                 if (tabKey === "compliance") {
                     ensureSharedDevicesLoaded();
                     ensureComplianceLedgerLoaded();
-                    ensureComplianceRecordNo();
-                    restoreComplianceDraft();
-                    renderComplianceLedger();
+                    ensureComplianceRecordNo().catch(() => {});
+                    restoreComplianceDraft().catch(() => {});
+                    renderComplianceLedger().catch(() => {});
+                    syncAllSharedDeviceConsumers();
+                }
+                if (tabKey === "firmware") {
+                    ensureSharedDevicesLoaded();
+                    ensureFirmwareLedgerLoaded();
+                    ensureFirmwareRecordNo().catch(() => {});
+                    restoreFirmwareDraft().catch(() => {});
+                    renderFirmwareLedger().catch(() => {});
+                    fillFirmwareDetails(getValueById("firmware-sample-name"), getValueById("firmware-device-model"));
                     syncAllSharedDeviceConsumers();
                 }
                 document.querySelectorAll(".menu-item").forEach((item) => {
@@ -4974,6 +5993,9 @@
                 });
                 if (tabKey === "execution-history") {
                     loadExecutionHistory();
+                }
+                if (tabKey === "home" || tabKey === "analytics") {
+                    loadAnalyticsData();
                 }
                 if (tabKey === "task-management") {
                     loadManagedTasks();
@@ -5048,6 +6070,100 @@
                 }
 
                 return payload;
+            }
+
+            async function moduleDataRequest(path, options = {}) {
+                return apiRequest(`/module-data${path}`, options);
+            }
+
+            async function loadSharedDevicesFromBackend() {
+                const response = await moduleDataRequest("/shared-devices", { method: "GET" });
+                state.sharedDevices = dedupeSharedDevices(Array.isArray(response.data) ? response.data : []);
+                return state.sharedDevices;
+            }
+
+            async function upsertSharedDeviceRemote(device) {
+                const response = await moduleDataRequest("/shared-devices", {
+                    method: "POST",
+                    body: JSON.stringify(device || {})
+                });
+                const record = response.data || {};
+                const normalizedSample = slugifyText(record.sample_name);
+                const normalizedModel = slugifyText(record.device_model);
+                const index = state.sharedDevices.findIndex((item) => slugifyText(item.sample_name) === normalizedSample && slugifyText(item.device_model) === normalizedModel);
+                if (index >= 0) {
+                    state.sharedDevices[index] = {
+                        ...state.sharedDevices[index],
+                        ...record
+                    };
+                } else {
+                    state.sharedDevices.push(record);
+                }
+                saveSharedDevices();
+                return record;
+            }
+
+            async function loadComplianceDraftFromBackend() {
+                const response = await moduleDataRequest("/compliance/draft", { method: "GET" });
+                return response.data || {};
+            }
+
+            async function saveComplianceDraftRemote(payload) {
+                return moduleDataRequest("/compliance/draft", {
+                    method: "POST",
+                    body: JSON.stringify({ payload: payload || {} })
+                });
+            }
+
+            async function clearComplianceDraftRemote() {
+                return moduleDataRequest("/compliance/draft", { method: "DELETE" });
+            }
+
+            async function loadFirmwareDraftFromBackend() {
+                const response = await moduleDataRequest("/firmware/draft", { method: "GET" });
+                return response.data || {};
+            }
+
+            async function saveFirmwareDraftRemote(payload) {
+                return moduleDataRequest("/firmware/draft", {
+                    method: "POST",
+                    body: JSON.stringify({ payload: payload || {} })
+                });
+            }
+
+            async function clearFirmwareDraftRemote() {
+                return moduleDataRequest("/firmware/draft", { method: "DELETE" });
+            }
+
+            async function loadComplianceLedgerFromBackend(filters = {}) {
+                const params = new URLSearchParams();
+                Object.entries(filters || {}).forEach(([key, value]) => {
+                    if (value !== "" && value !== null && value !== undefined) {
+                        params.set(key, String(value));
+                    }
+                });
+                params.set("page_size", "500");
+                const response = await moduleDataRequest(`/compliance/records?${params.toString()}`, { method: "GET" });
+                state.complianceLedger = (response.data && Array.isArray(response.data.items)) ? response.data.items : [];
+                return state.complianceLedger;
+            }
+
+            async function loadFirmwareLedgerFromBackend(filters = {}) {
+                const params = new URLSearchParams();
+                Object.entries(filters || {}).forEach(([key, value]) => {
+                    if (value !== "" && value !== null && value !== undefined) {
+                        params.set(key, String(value));
+                    }
+                });
+                params.set("page_size", "500");
+                const response = await moduleDataRequest(`/firmware/records?${params.toString()}`, { method: "GET" });
+                state.firmwareLedger = (response.data && Array.isArray(response.data.items)) ? response.data.items : [];
+                return state.firmwareLedger;
+            }
+
+            async function fetchNextRecordNo(moduleKey) {
+                const response = await moduleDataRequest(`/${moduleKey}/next-record-no`, { method: "GET" });
+                return normalizeText(response.data && response.data.record_no);
             }
 
             async function loadCaptcha() {
@@ -5216,6 +6332,226 @@
                 document.getElementById("history-date-from").value = "";
                 document.getElementById("history-date-to").value = "";
                 historyDetailCard.hidden = true;
+            }
+
+            function getAnalyticsModuleName(item) {
+                const sourceModule = (item.source_module || "").toLowerCase();
+                const operationType = item.operation_type || "";
+                const taskName = item.task_name || "";
+                const content = item.content || "";
+                const text = `${sourceModule} ${operationType} ${taskName} ${content}`.toLowerCase();
+
+                if (text.includes("compliance") || text.includes("合规")) return "合规性检查";
+                if (text.includes("wired") || text.includes("有线")) return "有线网络流量安全检测";
+                if (text.includes("wireless") || text.includes("无线")) return "无线协议安全检测";
+                if (text.includes("firmware") || text.includes("固件")) return "嵌入式设备固件提取及检测分析";
+                if (text.includes("electromagnetic-device") || text.includes("设备电磁")) return "设备电磁安全检测";
+                if (text.includes("electromagnetic-peripheral") || text.includes("周边电磁")) return "设备周边电磁安全检测";
+                if (text.includes("nondestructive") || text.includes("无损")) return "设备无损拆解检测";
+                if (text.includes("report") || text.includes("报告")) return "报告编制";
+                if (
+                    text.includes("basic") ||
+                    text.includes("nmap") ||
+                    text.includes("fscan") ||
+                    text.includes("nsfocus") ||
+                    text.includes("evaluation") ||
+                    text.includes("漏洞")
+                ) return "漏洞检测";
+                if (text.includes("task") || text.includes("任务")) return "任务管理";
+                return "其他";
+            }
+
+            function getAnalyticsToolName(item) {
+                const text = `${item.source_module || ""} ${item.operation_type || ""} ${item.task_name || ""} ${item.content || ""}`.toLowerCase();
+                if (text.includes("basic") || text.includes("基础探测") || text.includes("ping") || text.includes("tracert")) return "基础网络探测";
+                if (text.includes("nmap")) return "Nmap 识别";
+                if (text.includes("fscan")) return "Fscan 巡检";
+                if (text.includes("nsfocus") || text.includes("web漏扫") || text.includes("web 漏扫")) return "Web 漏扫下发";
+                if (text.includes("evaluation") || text.includes("综合评估")) return "综合评估";
+                return "";
+            }
+
+            function renderAnalyticsBars(container, items) {
+                if (!container) return;
+                if (!items.length) {
+                    container.innerHTML = '<div class="empty-state">暂无可统计数据。</div>';
+                    return;
+                }
+                const maxValue = Math.max(...items.map((item) => item.value), 1);
+                container.innerHTML = items.map((item) => `
+                    <div class="analytics-bar-row">
+                        <div class="analytics-bar-meta">
+                            <span>${escapeHtml(item.label)}</span>
+                            <strong>${item.value}</strong>
+                        </div>
+                        <div class="analytics-bar-track">
+                            <div class="analytics-bar-fill" style="width:${Math.max((item.value / maxValue) * 100, item.value ? 6 : 0)}%"></div>
+                        </div>
+                    </div>
+                `).join("");
+            }
+
+            function renderAnalyticsInsightList(items) {
+                if (!analyticsDom.insightList) return;
+                analyticsDom.insightList.innerHTML = items.map((item) => `
+                    <div class="analytics-side-item">
+                        <strong>${escapeHtml(item.label)}</strong>
+                        <span>${escapeHtml(String(item.value))}</span>
+                    </div>
+                `).join("");
+            }
+
+            function renderAnalyticsChipGrid(items) {
+                if (!analyticsDom.vulnChipGrid) return;
+                analyticsDom.vulnChipGrid.innerHTML = items.map((item) => `
+                    <div class="analytics-chip">
+                        <strong>${escapeHtml(String(item.value))}</strong>
+                        <span>${escapeHtml(item.label)}</span>
+                    </div>
+                `).join("");
+            }
+
+            function renderAnalyticsMiniGrid(items) {
+                if (!analyticsDom.miniGrid) return;
+                analyticsDom.miniGrid.innerHTML = items.map((item) => `
+                    <div class="analytics-mini-card">
+                        <strong>${escapeHtml(String(item.value))}</strong>
+                        <span>${escapeHtml(item.label)}</span>
+                    </div>
+                `).join("");
+            }
+
+            function renderAnalyticsDashboard() {
+                const historyItems = state.analyticsData.historyLoaded ? state.historyData : [];
+                const issueItems = state.analyticsData.issuesLoaded ? state.analyticsData.issues : [];
+                const managedItems = state.analyticsData.managedLoaded ? state.analyticsData.managedTasks : [];
+
+                const moduleCounts = new Map();
+                const toolCounts = new Map();
+                const executorCounts = new Map();
+                const dayCounts = new Map();
+
+                historyItems.forEach((item) => {
+                    const moduleName = getAnalyticsModuleName(item);
+                    moduleCounts.set(moduleName, (moduleCounts.get(moduleName) || 0) + 1);
+                    const toolName = getAnalyticsToolName(item);
+                    if (toolName) {
+                        toolCounts.set(toolName, (toolCounts.get(toolName) || 0) + 1);
+                    }
+                    const executor = item.executor || "未知执行人";
+                    executorCounts.set(executor, (executorCounts.get(executor) || 0) + 1);
+                    const dayKey = String(item.execute_time || "").slice(0, 10);
+                    if (dayKey) {
+                        dayCounts.set(dayKey, (dayCounts.get(dayKey) || 0) + 1);
+                    }
+                });
+
+                const severityCounts = new Map();
+                const rectificationCounts = new Map();
+                issueItems.forEach((item) => {
+                    severityCounts.set(item.severity_level || "未分类", (severityCounts.get(item.severity_level || "未分类") || 0) + 1);
+                    rectificationCounts.set(item.rectification_status || "未分类", (rectificationCounts.get(item.rectification_status || "未分类") || 0) + 1);
+                });
+
+                const moduleBarItems = [...moduleCounts.entries()]
+                    .map(([label, value]) => ({ label, value }))
+                    .sort((a, b) => b.value - a.value);
+                const toolBarItems = [...toolCounts.entries()]
+                    .map(([label, value]) => ({ label, value }))
+                    .sort((a, b) => b.value - a.value);
+                const severityBarItems = [...severityCounts.entries()]
+                    .map(([label, value]) => ({ label, value }))
+                    .sort((a, b) => b.value - a.value);
+                const rankingBarItems = moduleBarItems.slice(0, 8);
+
+                const vulnCount = issueItems.length;
+                const activeToolCount = toolBarItems.filter((item) => item.value > 0).length;
+                const latestDayCount = [...dayCounts.entries()].sort((a, b) => b[0].localeCompare(a[0]))[0]?.[1] || 0;
+                const topModule = moduleBarItems[0];
+                const topTool = toolBarItems[0];
+                const topExecutor = [...executorCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+                const highSeverityCount = issueItems.filter((item) => ["高", "严重", "高危"].includes(item.severity_level)).length;
+                const completedManagedCount = managedItems.filter((item) => ["已完成", "已关闭"].includes(item.status)).length;
+                const overdueManagedCount = managedItems.filter((item) => item.is_overdue).length;
+                const historyErrorCount = historyItems.filter((item) => item.status === "ERROR").length;
+                const completionRate = managedItems.length ? `${Math.round((completedManagedCount / managedItems.length) * 100)}%` : "0%";
+                const abnormalRate = historyItems.length ? `${Math.round((historyErrorCount / historyItems.length) * 100)}%` : "0%";
+
+                if (analyticsDom.totalExecutions) analyticsDom.totalExecutions.textContent = String(historyItems.length);
+                if (analyticsDom.totalVulns) analyticsDom.totalVulns.textContent = String(vulnCount);
+                if (analyticsDom.totalManaged) analyticsDom.totalManaged.textContent = String(managedItems.length);
+                if (analyticsDom.activeTools) analyticsDom.activeTools.textContent = String(activeToolCount);
+
+                renderAnalyticsInsightList([
+                    { label: "最高频模块", value: topModule ? `${topModule.label} · ${topModule.value}` : "-" },
+                    { label: "最高频工具", value: topTool ? `${topTool.label} · ${topTool.value}` : "-" },
+                    { label: "活跃执行人", value: topExecutor ? `${topExecutor[0]} · ${topExecutor[1]}` : "-" },
+                    { label: "最近热度", value: `${latestDayCount} 次/最近活跃日` }
+                ]);
+
+                renderAnalyticsBars(analyticsDom.moduleBars, moduleBarItems);
+                renderAnalyticsBars(analyticsDom.toolBars, toolBarItems);
+                renderAnalyticsBars(analyticsDom.severityBars, severityBarItems);
+                renderAnalyticsBars(analyticsDom.rankingBars, rankingBarItems);
+
+                renderAnalyticsChipGrid([
+                    { label: "漏洞总数", value: vulnCount },
+                    { label: "高危 / 严重漏洞", value: highSeverityCount },
+                    { label: "整改状态类型", value: rectificationCounts.size },
+                    { label: "问题台账记录", value: issueItems.length }
+                ]);
+
+                renderAnalyticsMiniGrid([
+                    { label: "任务完成率", value: completionRate },
+                    { label: "执行异常率", value: abnormalRate },
+                    { label: "逾期任务数", value: overdueManagedCount },
+                    { label: "漏洞工具调用总数", value: toolBarItems.reduce((sum, item) => sum + item.value, 0) },
+                    { label: "模块覆盖数", value: moduleBarItems.length },
+                    { label: "整改状态项", value: [...rectificationCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "-" }
+                ]);
+            }
+
+            async function loadAnalyticsData() {
+                try {
+                    const [historyResponse, managedResponse, issueResponse] = await Promise.all([
+                        apiRequest("/ops/history?page_size=200", { method: "GET" }),
+                        apiRequest("/ops/managed-tasks?page_size=200", { method: "GET" }),
+                        apiRequest("/issue-statistics?page_size=200", { method: "GET" })
+                    ]);
+
+                    if (historyResponse.code === 200) {
+                        state.historyData = historyResponse.data.items || [];
+                        state.analyticsData.historyLoaded = true;
+                    }
+                    if (managedResponse.code === 200) {
+                        state.analyticsData.managedTasks = managedResponse.data.items || [];
+                        state.analyticsData.managedLoaded = true;
+                    }
+                    if (issueResponse.code === 200) {
+                        state.analyticsData.issues = issueResponse.data.items || [];
+                        state.analyticsData.issuesLoaded = true;
+                    }
+
+                    renderAnalyticsDashboard();
+                } catch (error) {
+                    if (error.status === 401) {
+                        handleAuthFailure();
+                        return;
+                    }
+                    renderAnalyticsInsightList([
+                        { label: "数据加载失败", value: error.message || "请稍后重试" }
+                    ]);
+                    renderAnalyticsBars(analyticsDom.moduleBars, []);
+                    renderAnalyticsBars(analyticsDom.toolBars, []);
+                    renderAnalyticsBars(analyticsDom.severityBars, []);
+                    renderAnalyticsBars(analyticsDom.rankingBars, []);
+                    renderAnalyticsChipGrid([
+                        { label: "统计状态", value: "加载失败" }
+                    ]);
+                    renderAnalyticsMiniGrid([
+                        { label: "提示", value: "请确认后端数据接口可用" }
+                    ]);
+                }
             }
 
             async function secureDownload(path, query = {}, fallbackName = "download.bin") {
@@ -5603,6 +6939,20 @@
                         captchaCodeInput.value = "";
                         renderAuth(true);
                         setLoginMessage("", "");
+                        try {
+                            await loadSharedDevicesFromBackend();
+                            await Promise.all([
+                                renderComplianceLedger(),
+                                renderFirmwareLedger(),
+                                restoreComplianceDraft(),
+                                restoreFirmwareDraft(),
+                                ensureComplianceRecordNo(),
+                                ensureFirmwareRecordNo()
+                            ]);
+                            syncAllSharedDeviceConsumers();
+                        } catch (loadError) {
+                            console.error(loadError);
+                        }
                     } else {
                         setLoginMessage(response.message || "登录失败。", "error");
                         captchaCodeInput.value = "";
@@ -5614,7 +6964,7 @@
                     loadCaptcha();
                 } finally {
                     loginButton.disabled = false;
-                    loginButton.textContent = "登录并进入系统";
+                    loginButton.textContent = "登录";
                 }
             }
 
@@ -5636,6 +6986,20 @@
                         sessionStorage.setItem(EXPIRE_KEY, response.data.expire_time);
                         localStorage.setItem(USERNAME_KEY, response.data.username);
                         renderAuth(true);
+                        try {
+                            await loadSharedDevicesFromBackend();
+                            await Promise.all([
+                                renderComplianceLedger(),
+                                renderFirmwareLedger(),
+                                restoreComplianceDraft(),
+                                restoreFirmwareDraft(),
+                                ensureComplianceRecordNo(),
+                                ensureFirmwareRecordNo()
+                            ]);
+                            syncAllSharedDeviceConsumers();
+                        } catch (loadError) {
+                            console.error(loadError);
+                        }
                     } else {
                         clearAuthState();
                     }
@@ -5801,7 +7165,7 @@
                 const panelKey = "report-device-survey";
                 const currentName = getReportCompileDisplayName(state.currentReportCompileTab);
                 if (normalizeText(payload.sample_name) && normalizeText(payload.sample_model)) {
-                    upsertSharedDevice({
+                    await upsertSharedDevice({
                         sample_name: payload.sample_name,
                         device_model: payload.sample_model,
                         manufacturer: payload.manufacturer || "",
@@ -5959,26 +7323,27 @@
                 });
             }
 
-            function setupAccordions() {
-                document.querySelectorAll(".accordion-item").forEach((item) => {
-                    const button = item.querySelector(".accordion-btn");
-                    const content = item.querySelector(".accordion-content");
-                    button.addEventListener("click", () => {
-                        const isOpen = item.classList.contains("open");
-                        document.querySelectorAll(".accordion-item").forEach((otherItem) => {
-                            otherItem.classList.remove("open");
-                            const otherContent = otherItem.querySelector(".accordion-content");
-                            if (otherContent) {
-                                otherContent.hidden = true;
-                            }
-                        });
+            function setupVulnerabilityTabs() {
+                const tabs = document.querySelectorAll("[data-vuln-tab]");
+                const panels = document.querySelectorAll("[data-vuln-panel]");
+                if (!tabs.length || !panels.length) {
+                    return;
+                }
 
-                        if (!isOpen) {
-                            item.classList.add("open");
-                            content.hidden = false;
-                        }
+                const activateTab = (key) => {
+                    tabs.forEach((tab) => {
+                        tab.classList.toggle("active", tab.dataset.vulnTab === key);
                     });
+                    panels.forEach((panel) => {
+                        panel.hidden = panel.dataset.vulnPanel !== key;
+                    });
+                };
+
+                tabs.forEach((tab) => {
+                    tab.addEventListener("click", () => activateTab(tab.dataset.vulnTab));
                 });
+
+                activateTab("basic");
             }
 
             function setupHomeCards() {
@@ -6107,7 +7472,7 @@
 
             window.addEventListener("beforeunload", clearAllPollers);
 
-            setupAccordions();
+            setupVulnerabilityTabs();
             setupHomeCards();
             renderDataRetentionTables();
             renderItemConfirmationTables();
@@ -6116,12 +7481,11 @@
             bindItemConfirmationEvents();
             ensureSharedDevicesLoaded();
             ensureComplianceLedgerLoaded();
-            ensureComplianceRecordNo();
+            ensureFirmwareLedgerLoaded();
             renderSharedDeviceDatalists();
-            renderComplianceLedger();
             bindComplianceEvents();
+            bindFirmwareEvents();
             bindSharedDeviceEvents();
-            restoreComplianceDraft();
             syncAllSharedDeviceConsumers();
             resetManagedTaskForm();
             renderReportCompileStep();
